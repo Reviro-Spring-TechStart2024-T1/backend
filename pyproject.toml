@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "reviro-backend"
+version = "0.1.0"
+description = ""
+authors = ["eddy.di <eddy.di.fint@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+django = "^5.0.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
