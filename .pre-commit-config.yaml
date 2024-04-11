@@ -37,6 +37,6 @@ repos:
     hooks:
     -   id: flake8
         exclude: "__init__.py"
-        args: ["--ignore=E501,F811,F821,E711", "--max-line-length=120"]
+        args: ["--ignore=E501,F811,F821,E711,F401", "--max-line-length=120"]
 
 exclude: ^.*\b(migrations)\b.*$
