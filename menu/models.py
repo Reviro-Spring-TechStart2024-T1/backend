@@ -1,11 +1,36 @@
 from django.db import models
-from establishments.models import Establishment, Category
+from establishments.models import Establishment
+
+
+class ItemCategory(models.Model):
+    name = models.CharField(max_length=255)
+
+    class Meta:
+        verbose_name = "Item Category"
+        verbose_name_plural = "Item Categories"
+
+    def __str__(self):
+        return self.name
+
+
+class Menu(models.Model):
+    establishment = models.OneToOneField(Establishment, on_delete=models.CASCADE, related_name="menu")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    qr_code_image = models.ImageField(upload_to='menus/qr_codes/', blank=True, null=True)
+
+    class Meta:
+        verbose_name = "Menu"
+        verbose_name_plural = "Menus"
+
+    def __str__(self):
+        return f"Menu of the {self.establishment.name}"
 
 
 class MenuItem(models.Model):
-    """ AKA Beverage, this model name hasn't been confirmed"""
+    menu = models.ForeignKey(Menu, on_delete=models.CASCADE, related_name='items')
     name = models.CharField(max_length=255)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='menu_items')
+    item_category = models.ForeignKey(ItemCategory, on_delete=models.CASCADE, related_name='menu_items')
     price = models.DecimalField(max_digits=8, decimal_places=2)
     description = models.TextField(blank=True)
     availability_status = models.BooleanField()
@@ -18,25 +43,3 @@ class MenuItem(models.Model):
 
     def __str__(self):
         return self.name
-
-
-class Menu(models.Model):
-    establishment = models.OneToOneField(Establishment, on_delete=models.CASCADE, related_name="menu")
-    create_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        verbose_name = "Menu"
-        verbose_name_plural = "Menus"
-
-    def __str__(self):
-        return self.establishment.name
-
-
-class MenuMenuItem(models.Model):
-    """ This is not confirmed model name, we can change it to MenuEntry"""
-    menu = models.ForeignKey(Menu, on_delete=models.CASCADE, related_name="menu_entries")
-    menu_item = models.ForeignKey(MenuItem, on_delete=models.CASCADE, related_name="menu_entries")
-
-    def __str__(self):
-        return f"{self.menu_item} of the {self.menu}"
