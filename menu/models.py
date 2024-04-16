@@ -17,7 +17,7 @@ class Menu(models.Model):
     establishment = models.OneToOneField(Establishment, on_delete=models.CASCADE, related_name="menu")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    qr_code_image = models.ImageField(upload_to='menus/qr_codes/', blank=True, null=True)
+    qr_code_image = models.ImageField(upload_to='menu/qr_code_images/', blank=True, null=True)
 
     class Meta:
         verbose_name = "Menu"

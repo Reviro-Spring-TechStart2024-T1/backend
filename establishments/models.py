@@ -15,7 +15,7 @@ class Establishment(models.Model):
         message="Phone number must be entered in the format: '+996-XXX-XXXXXX'."
     )
     phone_number = models.CharField(validators=[phone_regex], max_length=15)
-    avatar = models.ImageField(upload_to='avatar/', null=True, blank=True)
+    logo = models.ImageField(upload_to='establishments/logos/', null=True, blank=True)
 
     class Meta:
         verbose_name = "Establishment"
