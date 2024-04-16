@@ -4,7 +4,7 @@ from rest_framework import permissions
 from django.conf import settings
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 
 schema_view = get_schema_view(
@@ -24,6 +24,11 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('drinkjoy/users/', include('accounts.urls')),
+    path('drinkjoy/establishments/', include('establishments.urls')),
+    # path('drinkjoy/menu/', include('menu.urls')),
+    # path('drinkjoy/orders/', include('orders.urls')),
+    # path('drinkjoy/feedback/', include('feedback.urls')),
 ]
 
 if settings.DEBUG:
