@@ -22,6 +22,7 @@ sqlparse = "0.4.4"
 platformdirs = "4.2.0"
 dj-database-url = "^2.1.0"
 psycopg2-binary = "^2.9.9"
+pillow = "^10.3.0"
 
 
 [build-system]
