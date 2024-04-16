@@ -14,8 +14,6 @@ from pathlib import Path
 
 import dj_database_url
 
-# from decouple import config
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -27,10 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get(
     'SECRET_KEY',
     'django-insecure-=!naodx94arlq%f_70%12d%g=@-qgu@po)8ae!e&b&*15vs93n'
-)  # config('SECRET_KEY')
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', True)  # config('DEBUG', default=False, cast=bool)
+DEBUG = os.environ.get('DEBUG', True)
 
 ALLOWED_HOSTS = [
     'backend-gvhy.onrender.com',
@@ -61,6 +59,7 @@ MY_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'drf_yasg',
+    'rest_framework_simplejwt',
 ]
 
 INSTALLED_APPS += MY_APPS + THIRD_PARTY_APPS
@@ -151,3 +150,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Restframework settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
