@@ -58,7 +58,7 @@ THIRD_PARTY_APPS = [
     'drf_yasg',
 ]
 
-INSTALLED_APPS += THIRD_PARTY_APPS
+INSTALLED_APPS += MY_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -101,6 +101,7 @@ DATABASES = {
     }
 }
 
+AUTH_USER_MODEL = 'accounts.User'
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
