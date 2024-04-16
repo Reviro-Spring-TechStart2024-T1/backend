@@ -1,14 +1,20 @@
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, password=None, role='customer'):
+    def create_user(self, email, first_name=None, last_name=None, password=None, role='customer'):
         if not email:
             raise ValueError('The email address must be set')
 
         user = self.model(
             email=self.normalize_email(email),
+            first_name=first_name,
+            last_name=last_name,
             role=role,
         )
 

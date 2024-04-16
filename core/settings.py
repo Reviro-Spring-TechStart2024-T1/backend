@@ -33,7 +33,7 @@ SECRET_KEY = os.environ.get(
 DEBUG = os.environ.get('DEBUG', True)  # config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = [
-    'backend-nhs0.onrender.com',
+    'backend-gvhy.onrender.com',
     '127.0.0.1',
     'localhost'
 ]
