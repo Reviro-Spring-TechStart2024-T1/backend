@@ -16,6 +16,7 @@ class Establishment(models.Model):
     )
     phone_number = models.CharField(validators=[phone_regex], max_length=15)
     logo = models.ImageField(upload_to='establishments/logos/', null=True, blank=True)
+    banner_image = models.ImageField(upload_to='establishments/banners/', null=True, blank=True)
 
     class Meta:
         verbose_name = "Establishment"
