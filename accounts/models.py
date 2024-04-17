@@ -7,7 +7,16 @@ from django.db import models
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, first_name=None, last_name=None, password=None, role='customer', sex='Prefer not to say'):
+    def create_user(
+            self,
+            email,
+            first_name=None,
+            last_name=None,
+            password=None,
+            date_of_birth=None,
+            role='customer',
+            sex='Prefer not to say'
+    ):
         if not email:
             raise ValueError('The email address must be set')
 
@@ -16,7 +25,8 @@ class UserManager(BaseUserManager):
             first_name=first_name,
             last_name=last_name,
             role=role,
-            sex=sex
+            sex=sex,
+            date_of_birth=date_of_birth
         )
 
         user.set_password(password)
