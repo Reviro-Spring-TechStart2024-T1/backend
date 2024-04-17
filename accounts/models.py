@@ -56,8 +56,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=100)
     date_of_birth = models.DateField(null=True, blank=True)
     avatar = models.ImageField(upload_to='accounts/avatars/', null=True, blank=True)
-    role = models.CharField(max_length=10, choices=USER_ROLES, default='customer')
-    sex = models.CharField(max_length=10, choices=SEX_CHOICES, default='not_say')
+    role = models.CharField(max_length=25, choices=USER_ROLES, default='customer')
+    sex = models.CharField(max_length=18, choices=SEX_CHOICES, default='not_say')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
