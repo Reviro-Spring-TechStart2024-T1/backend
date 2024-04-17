@@ -1,8 +1,11 @@
-from django.contrib.auth.hashers import check_password
-from rest_framework import serializers
-from django.contrib.auth.hashers import make_password
-from .models import User
 import re
+
+from django.contrib.auth.hashers import check_password
+from django.contrib.auth.password_validation import validate_password
+from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
+
+from .models import User
 
 
 class PasswordMixin(serializers.Serializer):
@@ -15,16 +18,23 @@ class PasswordMixin(serializers.Serializer):
 
         password = attrs['password']
         if not re.search(r'[A-Z]', password):
-            raise serializers.ValidationError({'password': "Password must contain at least one uppercase letter."})
+            raise serializers.ValidationError({'password': 'Password must contain at least one uppercase letter.'})
         if not re.search(r'[!@#$%^&*]', password):
             raise serializers.ValidationError(
-                {'password': "Password must contain at least one special character (!@#$%^&*)."})
+                {'password': 'Password must contain at least one special character (!@#$%^&*).'})
         if len(password) < 8:
-            raise serializers.ValidationError({'password': "Password must be at least 8 characters long."})
+            raise serializers.ValidationError({'password': 'Password must be at least 8 characters long.'})
         return attrs
 
 
 class UserRegisterSerializer(serializers.ModelSerializer, PasswordMixin):
+    email = serializers.EmailField(
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all())]
+    )
+    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
+    confirm_password = serializers.CharField(write_only=True, required=True)
+
     class Meta:
         model = User
         fields = [
@@ -39,9 +49,21 @@ class UserRegisterSerializer(serializers.ModelSerializer, PasswordMixin):
         ]
 
     def create(self, validated_data):
-        validated_data.pop('confirm_password', None)
-        validated_data['password'] = make_password(validated_data.get('password'))
-        return User.objects.create_user(**validated_data)
+
+        password = validated_data.pop('password', None)
+        confirm_password = validated_data.pop('confirm_password', None)
+
+        if password != confirm_password:
+            raise serializers.ValidationError({'password': "Password fields didn't match."})
+
+        user = User.objects.create(
+            email=validated_data['email']
+        )
+
+        user.set_password(password)
+        user.save()
+
+        return user
 
     # def to_representation(self, instance):
     # """Extra method if needed: Return limited data upon registration"""
@@ -71,13 +93,13 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "id",
-            "first_name",
-            "last_name",
-            "role",
-            "date_of_birth",
-            "email",
-            "sex"
+            'id',
+            'first_name',
+            'last_name',
+            'role',
+            'date_of_birth',
+            'email',
+            'sex'
         ]
 
 
@@ -91,8 +113,8 @@ class LoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            "email",
-            "password",
+            'email',
+            'password',
         ]
 
 
@@ -104,7 +126,7 @@ class ChangePasswordSerializer(serializers.ModelSerializer, PasswordMixin):
     def validate_old_password(self, value):
         user = self.context['request'].user
         if not check_password(value, user.password):
-            raise serializers.ValidationError({"error": "Invalid old password."})
+            raise serializers.ValidationError({'error': 'Invalid old password.'})
         return value
 
     class Meta:

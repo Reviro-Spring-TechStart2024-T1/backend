@@ -17,6 +17,7 @@ class UserManager(BaseUserManager):
             role='customer',
             sex='Prefer not to say'
     ):
+
         if not email:
             raise ValueError('The email address must be set')
 
@@ -33,11 +34,9 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, first_name, last_name, password):
+    def create_superuser(self, email=None, password=None):
         user = self.create_user(
-            email,
-            first_name=first_name,
-            last_name=last_name,
+            email=email,
             password=password,
             role='admin',
             sex='Prefer not to say'

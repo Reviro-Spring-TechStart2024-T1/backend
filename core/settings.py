@@ -11,8 +11,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 from pathlib import Path
-from dotenv import load_dotenv
+
 import dj_database_url
+from dotenv import load_dotenv
 
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -60,6 +61,7 @@ MY_APPS = [
 THIRD_PARTY_APPS = [
     'rest_framework',
     'drf_yasg',
+    'rest_framework_simplejwt',
 ]
 
 INSTALLED_APPS += MY_APPS + THIRD_PARTY_APPS
@@ -154,3 +156,10 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# REST_FRAMEWORK settings
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
