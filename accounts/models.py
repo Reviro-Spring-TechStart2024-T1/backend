@@ -7,7 +7,7 @@ from django.db import models
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, first_name=None, last_name=None, password=None, role='customer'):
+    def create_user(self, email, first_name=None, last_name=None, password=None, role='customer', sex='Prefer not to say'):
         if not email:
             raise ValueError('The email address must be set')
 
@@ -16,6 +16,7 @@ class UserManager(BaseUserManager):
             first_name=first_name,
             last_name=last_name,
             role=role,
+            sex=sex
         )
 
         user.set_password(password)
@@ -29,6 +30,7 @@ class UserManager(BaseUserManager):
             last_name=last_name,
             password=password,
             role='admin',
+            sex='Prefer not to say'
         )
         user.is_staff = True
         user.is_superuser = True
@@ -43,12 +45,19 @@ class User(AbstractBaseUser, PermissionsMixin):
         ('admin', 'Administrator'),
     ]
 
+    SEX_CHOICES = [
+        ('female', 'Female'),
+        ('male', 'Male'),
+        ('not_say', 'Prefer not to say')
+    ]
+
     email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     date_of_birth = models.DateField(null=True, blank=True)
     avatar = models.ImageField(upload_to='accounts/avatars/', null=True, blank=True)
     role = models.CharField(max_length=10, choices=USER_ROLES, default='customer')
+    sex = models.CharField(max_length=10, choices=SEX_CHOICES, default='not_say')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 

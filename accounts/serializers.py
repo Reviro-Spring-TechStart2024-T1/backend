@@ -11,7 +11,7 @@ class PasswordMixin(serializers.Serializer):
 
     def validate(self, attrs):
         if attrs['password'] != attrs['confirm_password']:
-            raise serializers.ValidationError({"Error": "Password fields didn't match."})
+            raise serializers.ValidationError({'confirm_password': "Password fields didn't match."})
 
         password = attrs['password']
         if not re.search(r'[A-Z]', password):
@@ -32,8 +32,10 @@ class UserRegisterSerializer(serializers.ModelSerializer, PasswordMixin):
             'first_name',
             'last_name',
             'password',
+            'confirm_password',
             'date_of_birth',
-            'role'
+            'role',
+            'sex'
         ]
 
     def create(self, validated_data):
@@ -52,12 +54,15 @@ class UserRegisterSerializer(serializers.ModelSerializer, PasswordMixin):
 class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['email', 'first_name', 'last_name', 'avatar']
+        fields = ['email', 'first_name', 'last_name', 'avatar', 'sex', 'date_of_birth']
 
     def update(self, instance, validated_data):
         instance.email = validated_data.get('email', instance.email)
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.sex = validated_data.get('sex', instance.sex)
+        instance.date_of_birth = validated_data('date_of_birth', instance.date_of_birth)
+        instance.avatar = validated_data.get('avatar', instance.avatar)
         instance.save()
         return instance
 
@@ -72,6 +77,7 @@ class UserSerializer(serializers.ModelSerializer):
             "role",
             "date_of_birth",
             "email",
+            "sex"
         ]
 
 
