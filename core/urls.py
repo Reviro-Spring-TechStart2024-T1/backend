@@ -27,8 +27,8 @@ urlpatterns = [
     path('api/v1/users/', include('accounts.urls')),
     path('api/v1/establishments/', include('establishments.urls')),
     path('api/v1/menu/', include('menu.urls')),
-    # path('api/v1/orders/', include('orders.urls')),
-    # path('api/v1/feedback/', include('feedback.urls')),
+    path('api/v1/orders/', include('orders.urls')),
+    path('api/v1/feedback/', include('feedback.urls')),
 ]
 
 if settings.DEBUG:
