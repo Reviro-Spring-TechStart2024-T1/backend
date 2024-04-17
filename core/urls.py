@@ -24,11 +24,11 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('drinkjoy/users/', include('accounts.urls')),
-    path('drinkjoy/establishments/', include('establishments.urls')),
-    # path('drinkjoy/menu/', include('menu.urls')),
-    # path('drinkjoy/orders/', include('orders.urls')),
-    # path('drinkjoy/feedback/', include('feedback.urls')),
+    path('api/v1/users/', include('accounts.urls')),
+    path('api/v1/establishments/', include('establishments.urls')),
+    path('api/v1/menu/', include('menu.urls')),
+    # path('api/v1/orders/', include('orders.urls')),
+    # path('api/v1/feedback/', include('feedback.urls')),
 ]
 
 if settings.DEBUG:
