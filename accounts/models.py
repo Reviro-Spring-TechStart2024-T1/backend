@@ -8,26 +8,16 @@ from django.db import models
 
 class UserManager(BaseUserManager):
     def create_user(
-            self,
-            email,
-            first_name=None,
-            last_name=None,
-            password=None,
-            date_of_birth=None,
-            role='customer',
-            sex='Prefer not to say'
+        self,
+        email,
+        password=None,
     ):
 
         if not email:
             raise ValueError('The email address must be set')
 
         user = self.model(
-            email=self.normalize_email(email),
-            first_name=first_name,
-            last_name=last_name,
-            role=role,
-            sex=sex,
-            date_of_birth=date_of_birth
+            email=self.normalize_email(email)
         )
 
         user.set_password(password)
@@ -37,12 +27,11 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email=None, password=None):
         user = self.create_user(
             email=email,
-            password=password,
-            role='admin',
-            sex='Prefer not to say'
+            password=password
         )
         user.is_staff = True
         user.is_superuser = True
+        user.role = 'admin'
         user.save(using=self._db)
         return user
 

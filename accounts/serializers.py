@@ -1,7 +1,6 @@
 import re
 
 from django.contrib.auth.hashers import check_password
-from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
@@ -9,8 +8,8 @@ from .models import User
 
 
 class PasswordMixin(serializers.Serializer):
-    password = serializers.CharField(write_only=True, required=True)
-    confirm_password = serializers.CharField(write_only=True, required=True)
+    password = serializers.CharField(write_only=True, required=False)
+    confirm_password = serializers.CharField(write_only=True, required=False)
 
     def validate(self, attrs):
         if attrs['password'] != attrs['confirm_password']:
@@ -32,35 +31,22 @@ class UserRegisterSerializer(serializers.ModelSerializer, PasswordMixin):
         required=True,
         validators=[UniqueValidator(queryset=User.objects.all())]
     )
-    password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
-    confirm_password = serializers.CharField(write_only=True, required=True)
 
     class Meta:
         model = User
         fields = [
             'email',
-            'first_name',
-            'last_name',
             'password',
-            'confirm_password',
-            'date_of_birth',
-            'role',
-            'sex'
+            'confirm_password'
         ]
 
     def create(self, validated_data):
 
-        password = validated_data.pop('password', None)
-        confirm_password = validated_data.pop('confirm_password', None)
-
-        if password != confirm_password:
-            raise serializers.ValidationError({'password': "Password fields didn't match."})
-
-        user = User.objects.create(
+        user = User.objects.create_user(
             email=validated_data['email']
         )
 
-        user.set_password(password)
+        user.set_password(validated_data['password'])
         user.save()
 
         return user
@@ -83,7 +69,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
         instance.sex = validated_data.get('sex', instance.sex)
-        instance.date_of_birth = validated_data('date_of_birth', instance.date_of_birth)
+        instance.date_of_birth = validated_data.get('date_of_birth', instance.date_of_birth)
         instance.avatar = validated_data.get('avatar', instance.avatar)
         instance.save()
         return instance
