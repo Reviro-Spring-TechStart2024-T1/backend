@@ -4,9 +4,10 @@ from pytest_factoryboy import register
 from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from tests.factories import UserFactory
+from tests.factories import ItemCategoryFactory, UserFactory
 
 register(UserFactory)
+register(ItemCategoryFactory)
 
 
 fake = Faker()
@@ -58,3 +59,17 @@ def dict_data_to_create_test_user() -> dict:
         'confirm_password': confirm_pass
     }
     return post_data
+
+
+@pytest.fixture
+def create_num_of_item_categories_in_array(db):
+    '''
+    Fixture to create number of item categories utilizing factories.
+        usage:
+            categories = create_num_of_item_categories_in_array(5)
+        result:
+            ['category1', 'category2', 'category3', 'category4', 'category5']
+    '''
+    def make_num_of_categories(num: int = 1) -> list:
+        return ItemCategoryFactory.create_batch(size=num)
+    return make_num_of_categories

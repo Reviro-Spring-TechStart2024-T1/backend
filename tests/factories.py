@@ -3,6 +3,7 @@ from factory.django import DjangoModelFactory, Password
 from faker import Faker
 
 from accounts.models import User
+from menu.models import ItemCategory
 
 fake = Faker()
 
@@ -19,3 +20,10 @@ class UserFactory(DjangoModelFactory):
     date_of_birth = fake.date()
     is_active = True
     is_staff = False
+
+
+class ItemCategoryFactory(DjangoModelFactory):
+    class Meta:
+        model = ItemCategory
+
+    name = LazyFunction(fake.word)
