@@ -166,3 +166,53 @@ def test_patch_profile_with_jwt_auth_user(
     assert response.data['sex'] == 'not_say'
     assert response.data['date_of_birth'] is not None
     assert response.data['avatar'] is None
+
+
+@pytest.mark.django_db
+def test_put_change_password_as_auth_user(
+    jwt_auth_api_client
+):
+    # given: autheticated user
+    client = jwt_auth_api_client
+    url = reverse('change_password')
+    old_pass = 'VeryStrongP@$$123'
+    new_pass = 'superVeryStrongP@$$123'
+    put_data = {
+        'old_password': old_pass,
+        'password': new_pass,
+        'confirm_password': new_pass
+    }
+    # when:
+    response = client.put(
+        url,
+        data=json.dumps(put_data),
+        content_type='application/json'
+    )
+    # then:
+    assert response.status_code == 200
+    assert response.data['message'] == 'Password updated successfully'
+
+
+@pytest.mark.django_db
+def test_put_change_password_as_anonym_user(
+    unauth_api_client
+):
+    # given: autheticated user
+    client = unauth_api_client
+    url = reverse('change_password')
+    old_pass = 'VeryStrongP@$$123'
+    new_pass = 'superVeryStrongP@$$123'
+    put_data = {
+        'old_password': old_pass,
+        'password': new_pass,
+        'confirm_password': new_pass
+    }
+    # when:
+    response = client.put(
+        url,
+        data=json.dumps(put_data),
+        content_type='application/json'
+    )
+    # then:
+    assert response.status_code == 401
+    assert response.data['detail'] == 'Authentication credentials were not provided.'
