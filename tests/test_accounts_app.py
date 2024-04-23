@@ -21,8 +21,9 @@ def test_register_api_with_unauth_client(
     )
     print(response.content.decode('utf-8'))
     # then: expecting to get status code 201 and other passed params
-    # assert response.status_code == 201
-    # assert response.data['email'] == post_data['email']
+    assert response.status_code == 201
+    assert response.data['access'] is not None
+    assert response.data['refresh'] is not None
 
 
 @pytest.mark.django_db
