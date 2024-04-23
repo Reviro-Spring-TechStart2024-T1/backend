@@ -1,6 +1,8 @@
 from rest_framework import serializers
-from .models import Establishment
+
 from accounts.models import User
+
+from .models import Establishment
 
 
 class EstablishmentSerializer(serializers.ModelSerializer):
@@ -18,5 +20,7 @@ class EstablishmentSerializer(serializers.ModelSerializer):
             'description',
             'phone_number',
             'logo',
-            'banner_image'
+            'banner_image',
+            'happy_hour_start',
+            'happy_hour_end'
         ]

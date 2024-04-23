@@ -1,6 +1,7 @@
-from django.db import models
-from accounts.models import User
 from django.core.validators import RegexValidator
+from django.db import models
+
+from accounts.models import User
 
 
 class Establishment(models.Model):
@@ -17,10 +18,12 @@ class Establishment(models.Model):
     phone_number = models.CharField(validators=[phone_regex], max_length=15)
     logo = models.ImageField(upload_to='establishments/logos/', null=True, blank=True)
     banner_image = models.ImageField(upload_to='establishments/banners/', null=True, blank=True)
+    happy_hour_start = models.TimeField(null=True, blank=True)
+    happy_hour_end = models.TimeField(null=True, blank=True)
 
     class Meta:
-        verbose_name = "Establishment"
-        verbose_name_plural = "Establishments"
+        verbose_name = 'Establishment'
+        verbose_name_plural = 'Establishments'
 
     def __str__(self):
         return self.name
