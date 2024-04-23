@@ -36,7 +36,7 @@ def test_get_list_of_item_categories_for_auth_user(
     create_num_of_item_categories_in_array
 ):
     # given:
-    client = jwt_auth_api_client
+    client = jwt_auth_api_client(role='customer')
     number_of_categories = 5
     categories = create_num_of_item_categories_in_array(number_of_categories)
     # when:
@@ -81,7 +81,7 @@ def test_create_item_category_as_user(
     jwt_auth_api_client
 ):
     # given: a standart user
-    client = jwt_auth_api_client
+    client = jwt_auth_api_client(role='customer')
     # when: executing POST operation to create category
     cat_name = {
         'name': 'milkshakes'
@@ -126,7 +126,7 @@ def test_retrieve_item_category_as_user(
 ):
     # given: a superuser and some categories
     categories = create_num_of_item_categories_in_array(5)
-    client = jwt_auth_api_client
+    client = jwt_auth_api_client(role='customer')
     # when:
     url = reverse('item-category-detail', kwargs={'pk': categories[0].id})
     response = client.get(
@@ -170,7 +170,7 @@ def test_patch_item_category_as_user(
 ):
     # given: a superuser and some categories
     categories = create_num_of_item_categories_in_array(5)
-    client = jwt_auth_api_client
+    client = jwt_auth_api_client(role='customer')
     update_data = {
         'name': 'patch_category'
     }
@@ -216,7 +216,7 @@ def test_delete_item_category_as_user(
 ):
     # given: a superuser and some categories
     categories = create_num_of_item_categories_in_array(5)
-    client = jwt_auth_api_client
+    client = jwt_auth_api_client(role='customer')
     # when:
     url = reverse('item-category-detail', kwargs={'pk': categories[0].id})
     response = client.patch(

@@ -29,7 +29,7 @@ def test_get_profile_with_jwt_auth_user(
     jwt_auth_api_client
 ):
     # given: authenticated user
-    client = jwt_auth_api_client
+    client = jwt_auth_api_client(role='customer')
     # when: user is executing GET operation on profile page
     url = reverse('profile')
     response = client.get(
@@ -50,7 +50,7 @@ def test_put_profile_with_jwt_auth_user(
     jwt_auth_api_client
 ):
     # given: authenticated user
-    client = jwt_auth_api_client
+    client = jwt_auth_api_client(role='customer')
     put_data = {
         'email': 'put_email@drinkjoy.kg',
         'first_name': 'put_first_name',
@@ -144,7 +144,7 @@ def test_patch_profile_with_jwt_auth_user(
     jwt_auth_api_client
 ):
     # given: authenticated user
-    client = jwt_auth_api_client
+    client = jwt_auth_api_client(role='customer')
     patch_data = {
         'email': 'patch_email@drinkjoy.kg',
         'first_name': 'patch_first_name',
@@ -173,7 +173,7 @@ def test_put_change_password_as_auth_user(
     jwt_auth_api_client
 ):
     # given: autheticated user
-    client = jwt_auth_api_client
+    client = jwt_auth_api_client(role='customer')
     url = reverse('change_password')
     old_pass = 'VeryStrongP@$$123'
     new_pass = 'superVeryStrongP@$$123'
@@ -216,3 +216,12 @@ def test_put_change_password_as_anonym_user(
     # then:
     assert response.status_code == 401
     assert response.data['detail'] == 'Authentication credentials were not provided.'
+
+
+@pytest.mark.django_db
+def test_creation_of_partner_user(
+    create_user_from_factory
+):
+    partner = create_user_from_factory(role='partner')
+
+    assert partner.role == 'partner'

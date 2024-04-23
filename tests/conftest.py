@@ -20,7 +20,14 @@ def unauth_api_client():
 
 @pytest.fixture
 def create_user_from_factory(db) -> UserFactory:
-    return UserFactory()
+    def make_user(role='customer', **kwargs):
+        if role == 'admin':
+            return UserFactory.create(admin=True, **kwargs)
+        elif role == 'partner':
+            return UserFactory.create(partner=True, **kwargs)
+        else:
+            return UserFactory.create(**kwargs)
+    return make_user
 
 
 @pytest.fixture
@@ -32,17 +39,21 @@ def create_num_of_users_from_factory(db):
 
 
 @pytest.fixture
-def jwt_auth_api_client(create_user_from_factory) -> APIClient:
+def jwt_auth_api_client(
+    create_user_from_factory
+) -> APIClient:
     """
     Fixture authenticates created user that is created using fixture above.
     Returns authorized APIClient instance.
     """
-    user = create_user_from_factory
-    client = APIClient()
-    refresh = RefreshToken.for_user(user)
-    client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh.access_token}')
+    def make_role_user(role: str = 'customer'):
+        user = create_user_from_factory(role=role)
+        client = APIClient()
+        refresh = RefreshToken.for_user(user)
+        client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh.access_token}')
 
-    return client
+        return client
+    return make_role_user
 
 
 @pytest.fixture
