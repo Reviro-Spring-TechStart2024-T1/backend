@@ -3,6 +3,7 @@ import re
 from django.contrib.auth.hashers import check_password
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 from .models import User
 
@@ -49,7 +50,9 @@ class UserRegisterSerializer(serializers.ModelSerializer, PasswordMixin):
         user.set_password(validated_data['password'])
         user.save()
 
-        return user
+        tokens = user.tokens()
+
+        return tokens
 
     # def to_representation(self, instance):
     # """Extra method if needed: Return limited data upon registration"""
@@ -121,9 +124,18 @@ class ChangePasswordSerializer(serializers.ModelSerializer, PasswordMixin):
 
 
 # Needed later with JWT tokens
-# class LogoutSerializer(serializers.Serializer):
-#     refresh_token = serializers.CharField()
+class LogoutSerializer(serializers.Serializer):
+    refresh_token = serializers.CharField()
 
+    def validate(self, attrs):
+        self.token = attrs['refresh']
+        return attrs
+
+    def save(self, **kwargs):
+        try:
+            RefreshToken(self.token).blacklist()
+        except TokenError:
+            self.fail('bad_token')
 
 # class ForgotPasswordSerializer(serializers.Serializer):
 #     email = serializers.EmailField()
