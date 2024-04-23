@@ -39,6 +39,7 @@ ALLOWED_HOSTS = [
     'localhost'
 ]
 
+CSRF_TRUSTED_ORIGINS = ['https://backend-gvhy.onrender.com']
 
 # Application definition
 
