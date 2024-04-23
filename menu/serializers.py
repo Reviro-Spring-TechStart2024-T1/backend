@@ -1,5 +1,7 @@
 from rest_framework import serializers
+
 from establishments.models import Establishment
+
 from .models import ItemCategory, Menu, MenuItem
 
 
@@ -18,8 +20,7 @@ class MenuSerializer(serializers.ModelSerializer):
             'id',
             'establishment',
             'created_at',
-            'updated_at',
-            'qr_code_image'
+            'updated_at'
         ]
 
 
@@ -36,7 +37,5 @@ class MenuItemSerializer(serializers.ModelSerializer):
             'item_category',
             'price',
             'description',
-            'availability_status',
-            'happy_hour_start',
-            'happy_hour_end'
+            'in_stock'
         ]
