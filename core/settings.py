@@ -13,6 +13,7 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+# import cloudinary_storage
 import dj_database_url
 from dotenv import load_dotenv
 
@@ -64,6 +65,8 @@ THIRD_PARTY_APPS = [
     'rest_framework',
     'drf_yasg',
     'rest_framework_simplejwt',
+    'cloudinary_storage',
+    'cloudinary',
 ]
 
 INSTALLED_APPS += MY_APPS + THIRD_PARTY_APPS
@@ -173,3 +176,12 @@ SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=7),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
 }
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUD_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUD_API_SECRET')
+}
+
+MEDIA_URL = '/media/'
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
