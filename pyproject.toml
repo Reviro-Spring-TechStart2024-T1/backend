@@ -23,6 +23,10 @@ platformdirs = "4.2.0"
 dj-database-url = "^2.1.0"
 psycopg2-binary = "^2.9.9"
 pillow = "^10.3.0"
+djangorestframework-simplejwt = "^5.3.1"
+pytest-django = "^4.8.0"
+pytest-factoryboy = "^2.7.0"
+faker = "^24.11.0"
 
 
 [build-system]
