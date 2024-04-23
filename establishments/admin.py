@@ -10,7 +10,7 @@ class EstablishmentAdmin(admin.ModelAdmin):
     fieldsets = (
         (None, {'fields': ('owner', 'name', 'email')}),
         ('Location', {'fields': ('latitude', 'longitude')}),
-        ('Contact', {'fields': ('phone_number', 'avatar')}),
+        ('Contact', {'fields': ('phone_number',)}),
         ('Description', {'fields': ('description', 'happy_hour_start', 'happy_hour_end')}),
     )
 
