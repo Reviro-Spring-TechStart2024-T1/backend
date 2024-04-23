@@ -1,10 +1,13 @@
 from django.urls import path
+
 from .views import (
-    ItemCategoryListCreateView,
     ItemCategoryDetailView,
+    ItemCategoryListCreateView,
     MenuDetailView,
+    MenuItemDetailView,
     MenuItemListCreateView,
-    MenuItemDetailView
+    QrCodeCreateView,
+    QrCodeDetailView,
 )
 
 urlpatterns = [
@@ -13,4 +16,6 @@ urlpatterns = [
     path('menus/<int:pk>/', MenuDetailView.as_view(), name='menu-detail'),
     path('menu-items/', MenuItemListCreateView.as_view(), name='menu-item-list'),
     path('menu-items/<int:pk>/', MenuItemDetailView.as_view(), name='menu-item-detail'),
+    path('qrcodes/<int:pk>/', QrCodeDetailView.as_view(), name='qrcode-detail'),
+    path('qrcodes/create/', QrCodeCreateView.as_view(), name='qrcode-create')
 ]

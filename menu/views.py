@@ -1,8 +1,13 @@
 from rest_framework import generics, permissions
 
-from .models import ItemCategory, Menu, MenuItem
+from .models import ItemCategory, Menu, MenuItem, QrCode
 from .permissions import IsAdminOrReadOnly
-from .serializers import ItemCategorySerializer, MenuItemSerializer, MenuSerializer
+from .serializers import (
+    ItemCategorySerializer,
+    MenuItemSerializer,
+    MenuSerializer,
+    QrCodeSerializer,
+)
 
 
 class ItemCategoryListCreateView(generics.ListCreateAPIView):
@@ -32,4 +37,16 @@ class MenuItemListCreateView(generics.ListCreateAPIView):
 class MenuItemDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = MenuItem.objects.all()
     serializer_class = MenuItemSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class QrCodeDetailView(generics.RetrieveUpdateAPIView):
+    queryset = QrCode.objects.all()
+    serializer_class = QrCodeSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class QrCodeCreateView(generics.CreateAPIView):
+    queryset = QrCode.objects.all()
+    serializer_class = QrCodeSerializer
     permission_classes = [permissions.IsAuthenticated]
