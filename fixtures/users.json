@@ -1,0 +1,22 @@
+[
+    {
+      "model": "accounts.user",
+      "pk": 1,
+      "fields": {
+        "password": "pbkdf2_sha256$720000$XH9FH2vsCxY83ZrCcQI57V$bfRNlRIHw1ZLXcJ5rg/chZumYJE/FxhsgT1FEh/Fm78=",
+        "last_login": null,
+        "is_superuser": true,
+        "email": "admin@drinkjoy.kg",
+        "first_name": null,
+        "last_name": null,
+        "date_of_birth": null,
+        "avatar": "",
+        "role": "admin",
+        "sex": "not_say",
+        "is_active": true,
+        "is_staff": true,
+        "groups": [],
+        "user_permissions": []
+      }
+    }
+    ]
