@@ -3,6 +3,7 @@ import re
 from django.contrib.auth.hashers import check_password
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 from .models import User
 
@@ -49,14 +50,9 @@ class UserRegisterSerializer(serializers.ModelSerializer, PasswordMixin):
         user.set_password(validated_data['password'])
         user.save()
 
-        return user
+        tokens = user.tokens()
 
-    # def to_representation(self, instance):
-    # """Extra method if needed: Return limited data upon registration"""
-    #     return {
-    #         'id': instance.id,
-    #         'email': instance.email
-    #     }
+        return tokens
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
@@ -120,10 +116,58 @@ class ChangePasswordSerializer(serializers.ModelSerializer, PasswordMixin):
         fields = ['old_password', 'password', 'confirm_password']
 
 
-# Needed later with JWT tokens
-# class LogoutSerializer(serializers.Serializer):
-#     refresh_token = serializers.CharField()
+class LogoutSerializer(serializers.Serializer):
+    """
+    Serializer for the logout endpoint.
 
+    This serializer expects a JSON object with a single key:
+        - refresh_token: A string representing the refresh token to be invalidated.
+
+    Upon successful execution, this serializer invalidates the provided refresh token
+    and does not return any data. If the refresh token is successfully invalidated,
+    the user will be logged out of the system.
+    """
+
+    refresh_token = serializers.CharField()
+
+    def validate(self, attrs):
+        """
+        Validates the input data.
+
+        Args:
+            attrs (dict): The input data containing the refresh token.
+
+        Returns:
+            dict: The validated data.
+
+        Raises:
+            serializers.ValidationError: If the refresh token is missing.
+        """
+
+        refresh_token = attrs['refresh_token']
+
+        if not refresh_token:
+            raise serializers.ValidationError({'detail': 'Refresh token is required.'}, 400)
+
+        return attrs
+
+    def save(self, **kwargs):
+        """
+        Invalidates the provided refresh token.
+
+        Args:
+            **kwargs: Additional keyword arguments.
+
+        Raises:
+            serializers.ValidationError: If the refresh token is invalid.
+        """
+
+        refresh_token = self.validated_data['refresh_token']
+
+        try:
+            RefreshToken(refresh_token).blacklist()
+        except TokenError:
+            raise serializers.ValidationError({'detail': 'Invalid refresh token.'}, 400)
 
 # class ForgotPasswordSerializer(serializers.Serializer):
 #     email = serializers.EmailField()

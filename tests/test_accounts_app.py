@@ -19,9 +19,11 @@ def test_register_api_with_unauth_client(
         data=json.dumps(post_data),
         content_type='application/json'
     )
+    print(response.content.decode('utf-8'))
     # then: expecting to get status code 201 and other passed params
     assert response.status_code == 201
-    assert response.data['email'] == post_data['email']
+    assert response.data['access'] is not None
+    assert response.data['refresh'] is not None
 
 
 @pytest.mark.django_db
@@ -225,3 +227,78 @@ def test_creation_of_partner_user(
     partner = create_user_from_factory(role='partner')
 
     assert partner.role == 'partner'
+
+
+@pytest.mark.django_db
+def test_successful_logout_as_auth_user_with_refresh(
+    unauth_api_client
+):
+    # given: autheticated user
+    client = unauth_api_client
+    user1 = {
+        'email': 'user1@drinkjoy.kg',
+        'password': 'user1sReally$trongPass123',
+        'confirm_password': 'user1sReally$trongPass123'
+    }
+    register_url = reverse('register')
+    response1 = client.post(
+        register_url,
+        data=json.dumps(user1),
+        content_type='application/json'
+    )
+    assert response1.status_code == 201
+    assert response1.data['access'] is not None
+    assert response1.data['refresh'] is not None
+    access_token = response1.data['access']
+    refresh_token = response1.data['refresh']
+    headers = {'Authorization': f'Bearer {access_token}'}
+    # when:
+    url = reverse('logout')
+    response = client.post(
+        url,
+        headers=headers,
+        data=json.dumps({
+            'refresh_token': refresh_token
+        }),
+        content_type='application/json'
+    )
+    # then:
+    assert response.status_code == 204
+    assert response.data is None
+
+
+@pytest.mark.django_db
+def test_unsuccessful_logout_as_auth_user_with_access(
+    unauth_api_client
+):
+    # given: autheticated user
+    client = unauth_api_client
+    user1 = {
+        'email': 'user1@drinkjoy.kg',
+        'password': 'user1sReally$trongPass123',
+        'confirm_password': 'user1sReally$trongPass123'
+    }
+    register_url = reverse('register')
+    response1 = client.post(
+        register_url,
+        data=json.dumps(user1),
+        content_type='application/json'
+    )
+    assert response1.status_code == 201
+    assert response1.data['access'] is not None
+    assert response1.data['refresh'] is not None
+    access_token = response1.data['access']
+    headers = {'Authorization': f'Bearer {access_token}'}
+    # when:
+    url = reverse('logout')
+    response = client.post(
+        url,
+        headers=headers,
+        data=json.dumps({
+            'refresh_token': access_token
+        }),
+        content_type='application/json'
+    )
+    # then:
+    assert response.status_code == 400
+    assert response.data['detail'] == 'Invalid refresh token.'
