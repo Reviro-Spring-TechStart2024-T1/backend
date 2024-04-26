@@ -39,3 +39,18 @@ class MenuItemSerializer(serializers.ModelSerializer):
             'description',
             'in_stock'
         ]
+
+
+class MenuSpecificSerializer(serializers.ModelSerializer):
+    establishment = serializers.PrimaryKeyRelatedField(queryset=Establishment.objects.all())
+    items = MenuItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Menu
+        fields = [
+            'id',
+            'establishment',
+            'created_at',
+            'updated_at',
+            'items'
+        ]
