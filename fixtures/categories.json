@@ -1,0 +1,100 @@
+[
+{
+  "model": "menu.itemcategory",
+  "pk": 1,
+  "fields": {
+    "name": "Non-Alcoholic Beverages"
+  }
+},
+{
+  "model": "menu.itemcategory",
+  "pk": 2,
+  "fields": {
+    "name": "Alcoholic Beverages"
+  }
+},
+{
+  "model": "menu.itemcategory",
+  "pk": 3,
+  "fields": {
+    "name": "Carbonated Beverages:"
+  }
+},
+{
+  "model": "menu.itemcategory",
+  "pk": 4,
+  "fields": {
+    "name": "Hot Beverages"
+  }
+},
+{
+  "model": "menu.itemcategory",
+  "pk": 5,
+  "fields": {
+    "name": "Cold Beverages"
+  }
+},
+{
+  "model": "menu.itemcategory",
+  "pk": 6,
+  "fields": {
+    "name": "Dairy Beverages"
+  }
+},
+{
+  "model": "menu.itemcategory",
+  "pk": 7,
+  "fields": {
+    "name": "Plant-Based Beverages"
+  }
+},
+{
+  "model": "menu.itemcategory",
+  "pk": 8,
+  "fields": {
+    "name": "Fermented Beverages"
+  }
+},
+{
+  "model": "menu.itemcategory",
+  "pk": 9,
+  "fields": {
+    "name": "Regional and Cultural Beverages"
+  }
+},
+{
+  "model": "menu.itemcategory",
+  "pk": 10,
+  "fields": {
+    "name": "Specialty Beverages"
+  }
+},
+{
+  "model": "menu.itemcategory",
+  "pk": 11,
+  "fields": {
+    "name": "Non-Caffeinated Beverages"
+  }
+},
+{
+  "model": "menu.itemcategory",
+  "pk": 12,
+  "fields": {
+    "name": "Condensed Beverages"
+  }
+},
+{
+  "model": "menu.itemcategory",
+  "pk": 13,
+  "fields": {
+    "name": "Hybrid Beverages"
+  }
+},
+{
+  "model": "menu.itemcategory",
+  "pk": 14,
+  "fields": {
+    "name": "Homemade Beverages"
+  }
+}
+]

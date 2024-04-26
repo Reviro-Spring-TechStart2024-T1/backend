@@ -67,6 +67,7 @@ THIRD_PARTY_APPS = [
     'rest_framework_simplejwt',
     'cloudinary_storage',
     'cloudinary',
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 INSTALLED_APPS += MY_APPS + THIRD_PARTY_APPS

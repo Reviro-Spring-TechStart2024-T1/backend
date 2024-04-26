@@ -1,14 +1,29 @@
+from rest_framework import generics, permissions, status
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework import generics, permissions
+
 from .models import User
-from .serializers import UserRegisterSerializer, UserProfileSerializer, ChangePasswordSerializer
+from .serializers import (
+    ChangePasswordSerializer,
+    LogoutSerializer,
+    UserProfileSerializer,
+    UserRegisterSerializer,
+)
 
 
 class UserRegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = UserRegisterSerializer
     permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        serializer = UserRegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            tokens = serializer.save()
+            return Response(
+                tokens,
+                status=status.HTTP_201_CREATED
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
@@ -34,10 +49,25 @@ class ChangePasswordView(generics.UpdateAPIView):
         if serializer.is_valid():
             # Check old password
             if not self.object.check_password(serializer.validated_data['old_password']):
-                return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'old_password': ['Wrong password.']}, status=status.HTTP_400_BAD_REQUEST)
             # Set new password
             self.object.set_password(serializer.validated_data['password'])
             self.object.save()
-            return Response({"message": "Password updated successfully"}, status=status.HTTP_200_OK)
+            return Response({'message': 'Password updated successfully'}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogoutView(generics.GenericAPIView):
+    '''
+    Refresh token has to be passed to log out user and put their refresh token into blacklist.
+    '''
+
+    serializer_class = LogoutSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
