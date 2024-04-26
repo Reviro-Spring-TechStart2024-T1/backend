@@ -4,13 +4,21 @@ from pytest_factoryboy import register
 from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from tests.factories import ItemCategoryFactory, UserFactory
+from accounts.models import User
+from tests.factories import (
+    EstablishmentFactory,
+    ItemCategoryFactory,
+    KyrgyzPhoneNumberProvider,
+    UserFactory,
+)
 
 register(UserFactory)
 register(ItemCategoryFactory)
+register(EstablishmentFactory)
 
 
 fake = Faker()
+fake.add_provider(KyrgyzPhoneNumberProvider)
 
 
 @pytest.fixture
@@ -84,3 +92,33 @@ def create_num_of_item_categories_in_array(db):
     def make_num_of_categories(num: int = 1) -> list:
         return ItemCategoryFactory.create_batch(size=num)
     return make_num_of_categories
+
+
+@pytest.fixture
+def create_establishment_from_factory(db):
+    return EstablishmentFactory()
+
+
+@pytest.fixture
+def create_num_of_establishments_from_factory(db):
+    def make_num_establishments(num: int = 1) -> list:
+        return EstablishmentFactory.create_batch(size=num)
+    return make_num_establishments
+
+
+@pytest.fixture
+def dict_data_to_create_establishment() -> dict:
+    def wrapper_to_provide_user(user: User):
+        data = {
+            'owner': user.id,
+            'name': fake.word(),
+            'email': fake.email(),
+            'latitude': str(fake.pydecimal(2, 8, True)),
+            'longitude': str(fake.pydecimal(3, 8, True)),
+            'description': fake.word(),
+            'phone_number': fake.kg_phone_number(),
+            'happy_hour_start': fake.time(),
+            'happy_hour_end': fake.time(),
+        }
+        return data
+    return wrapper_to_provide_user

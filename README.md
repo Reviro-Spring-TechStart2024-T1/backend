@@ -36,6 +36,7 @@ Fixtures for main parts are usually used after dropping db.
 
 ```shell
 python manage.py loaddata fixtures/users.json --app accounts.User
+python manage.py loaddata fixtures/categories.json --app menu.ItemCategory
 ```
 
 
