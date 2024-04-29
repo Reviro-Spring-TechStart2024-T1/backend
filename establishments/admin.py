@@ -4,14 +4,15 @@ from .models import Establishment
 
 
 class EstablishmentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'email', 'phone_number', 'owner', 'happy_hour_start', 'happy_hour_end')
-    list_filter = ('owner',)
+    list_display = ('name', 'email', 'phone_number', 'owner')
     search_fields = ('name', 'email', 'phone_number')
+    list_filter = ('owner', 'happy_hour_start', 'happy_hour_end')
+
     fieldsets = (
-        (None, {'fields': ('owner', 'name', 'email')}),
-        ('Location', {'fields': ('latitude', 'longitude')}),
-        ('Contact', {'fields': ('phone_number',)}),
-        ('Description', {'fields': ('description', 'happy_hour_start', 'happy_hour_end')}),
+        ('General Information', {'fields': ('name', 'email', 'owner')}),
+        ('Address', {'fields': ('street_name', 'street_number', 'latitude', 'longitude')}),
+        ('Details', {'fields': ('description', 'phone_number', 'logo', 'banner_image')}),
+        ('Happy Hour', {'fields': ('happy_hour_start', 'happy_hour_end')}),
     )
 
 

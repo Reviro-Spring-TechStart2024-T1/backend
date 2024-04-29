@@ -2,12 +2,12 @@ from rest_framework import serializers
 
 from establishments.models import Establishment
 
-from .models import ItemCategory, Menu, MenuItem
+from .models import Beverage, Category, Menu, QrCode
 
 
-class ItemCategorySerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = ItemCategory
+        model = Category
         fields = ['id', 'name']
 
 
@@ -24,18 +24,33 @@ class MenuSerializer(serializers.ModelSerializer):
         ]
 
 
-class MenuItemSerializer(serializers.ModelSerializer):
-    item_category = serializers.PrimaryKeyRelatedField(queryset=ItemCategory.objects.all())
+class BeverageSerializer(serializers.ModelSerializer):
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
     menu = serializers.PrimaryKeyRelatedField(queryset=Menu.objects.all())
 
     class Meta:
-        model = MenuItem
+        model = Beverage
         fields = [
             'id',
             'menu',
             'name',
-            'item_category',
+            'category',
             'price',
             'description',
             'in_stock'
+        ]
+
+
+class QrCodeSerializer(serializers.ModelSerializer):
+    menu = serializers.PrimaryKeyRelatedField(queryset=Menu.objects.all())
+    qr_code_image = serializers.ImageField(max_length=None, use_url=True, required=False, allow_null=True)
+
+    class Meta:
+        model = QrCode
+        fields = [
+            'id',
+            'menu',
+            'qr_code_image',
+            'created_at',
+            'updated_at'
         ]

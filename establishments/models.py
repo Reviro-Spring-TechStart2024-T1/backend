@@ -8,6 +8,8 @@ class Establishment(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': 'partner'})
     name = models.CharField(max_length=255)
     email = models.EmailField()
+    street_name = models.CharField(max_length=255, null=True, blank=True)
+    street_number = models.CharField(max_length=10, null=True, blank=True)
     latitude = models.DecimalField(max_digits=10, decimal_places=8)
     longitude = models.DecimalField(max_digits=11, decimal_places=8)
     description = models.TextField(blank=True)
