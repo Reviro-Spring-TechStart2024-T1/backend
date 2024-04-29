@@ -1,28 +1,28 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import ItemCategory, Menu, MenuItem, QrCode
+from .models import Beverage, Category, Menu, QrCode
 
 
-class ItemCategoryAdmin(admin.ModelAdmin):
+class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name',)
     search_fields = ('name',)
 
 
-admin.site.register(ItemCategory, ItemCategoryAdmin)
+admin.site.register(Category, CategoryAdmin)
 
 
-class MenuItemAdmin(admin.ModelAdmin):
-    list_display = ('name', 'item_category', 'price', 'in_stock', 'menu')
-    list_filter = ('item_category', 'menu', 'in_stock')
+class BeverageAdmin(admin.ModelAdmin):
+    list_display = ('name', 'category', 'price', 'in_stock', 'menu')
+    list_filter = ('category', 'menu', 'in_stock')
     search_fields = ('name', 'description')
     fieldsets = (
-        (None, {'fields': ('menu', 'name', 'item_category', 'price', 'in_stock')}),
+        (None, {'fields': ('menu', 'name', 'category', 'price', 'in_stock')}),
         ('Description and Timing', {'fields': ('description',)}),
     )
 
 
-admin.site.register(MenuItem, MenuItemAdmin)
+admin.site.register(Beverage, BeverageAdmin)
 
 
 class MenuAdmin(admin.ModelAdmin):

@@ -15,6 +15,8 @@ class EstablishmentSerializer(serializers.ModelSerializer):
             'owner',
             'name',
             'email',
+            'street_name',
+            'street_number',
             'latitude',
             'longitude',
             'description',

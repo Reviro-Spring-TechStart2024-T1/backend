@@ -186,3 +186,17 @@ CLOUDINARY_STORAGE = {
 
 MEDIA_URL = '/media/'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Basic': {
+            'type': 'basic'
+        },
+        'Bearer': {
+            'type': 'apiKey',
+            'description': 'Enter JWT Bearer token in the format: **Bearer {your token}**',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    }
+}
