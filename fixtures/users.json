@@ -1,22 +1,142 @@
 [
-    {
-      "model": "accounts.user",
-      "pk": 1,
-      "fields": {
-        "password": "pbkdf2_sha256$720000$XH9FH2vsCxY83ZrCcQI57V$bfRNlRIHw1ZLXcJ5rg/chZumYJE/FxhsgT1FEh/Fm78=",
-        "last_login": null,
-        "is_superuser": true,
-        "email": "admin@drinkjoy.kg",
-        "first_name": null,
-        "last_name": null,
-        "date_of_birth": null,
-        "avatar": "",
-        "role": "admin",
-        "sex": "not_say",
-        "is_active": true,
-        "is_staff": true,
-        "groups": [],
-        "user_permissions": []
-      }
-    }
-    ]
+{
+  "model": "accounts.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$XH9FH2vsCxY83ZrCcQI57V$bfRNlRIHw1ZLXcJ5rg/chZumYJE/FxhsgT1FEh/Fm78=",
+    "last_login": "2024-04-23T15:21:39.787Z",
+    "is_superuser": true,
+    "email": "admin@drinkjoy.kg",
+    "first_name": null,
+    "last_name": null,
+    "date_of_birth": null,
+    "avatar": "",
+    "role": "admin",
+    "sex": "not_say",
+    "is_active": true,
+    "is_staff": true,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 2,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$xFwoZTY5cVwd4P7eq5eXIH$TOacpnS/c5Sc8iqopyqXayOYszxcXshg32qyIMfKPQ4=",
+    "last_login": null,
+    "is_superuser": false,
+    "email": "Aza662485@gmail.com",
+    "first_name": null,
+    "last_name": null,
+    "date_of_birth": null,
+    "avatar": "",
+    "role": "customer",
+    "sex": "not_say",
+    "is_active": true,
+    "is_staff": false,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 3,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$0aNXqP26CANPco7ncWaP2I$4PZ6BjzozkC/I9KmKacrMFklOIvpVcIe07Ewl85xR3g=",
+    "last_login": null,
+    "is_superuser": false,
+    "email": "test@gmail.com",
+    "first_name": null,
+    "last_name": null,
+    "date_of_birth": null,
+    "avatar": "",
+    "role": "customer",
+    "sex": "not_say",
+    "is_active": true,
+    "is_staff": false,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$fa2uXAZ79yYntQgrcldJ73$pOA342i2a3+zuKgCOufdu+emXZ96Bcdb03pVR9FoheM=",
+    "last_login": null,
+    "is_superuser": false,
+    "email": "akylai.bekbolsun@gmail.com",
+    "first_name": null,
+    "last_name": null,
+    "date_of_birth": null,
+    "avatar": "",
+    "role": "customer",
+    "sex": "not_say",
+    "is_active": true,
+    "is_staff": false,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$TXdu4Ktl3YboacRRMBiH1t$JYttflHyXc4jrxFHq4jPnAU5YBOhWxHNHO0wl+5Q/Rs=",
+    "last_login": null,
+    "is_superuser": false,
+    "email": "partner@drinkjoy.kg",
+    "first_name": "partner",
+    "last_name": "partner",
+    "date_of_birth": "2000-04-29",
+    "avatar": "",
+    "role": "partner",
+    "sex": "not_say",
+    "is_active": true,
+    "is_staff": false,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 6,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$c6hxtHPVV2aZeXxSMLtGKN$natbzNvMJMk8/PRSoEGITKdH2ZTETlpKSJKUtCWB7WA=",
+    "last_login": null,
+    "is_superuser": false,
+    "email": "partner1@drinkjoy.kg",
+    "first_name": "partner1",
+    "last_name": "partner1",
+    "date_of_birth": "1994-04-29",
+    "avatar": "",
+    "role": "partner",
+    "sex": "not_say",
+    "is_active": true,
+    "is_staff": false,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 7,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$FpuJlSMOlbm3QjiXCEY7nt$95nhKtst+sZ46Se6r1/2B0BYJJDqOa0atBCHqUb3C5k=",
+    "last_login": null,
+    "is_superuser": false,
+    "email": "partner2@drinkjoy.kg",
+    "first_name": "partner2",
+    "last_name": "partner2",
+    "date_of_birth": "1994-04-29",
+    "avatar": "",
+    "role": "partner",
+    "sex": "not_say",
+    "is_active": true,
+    "is_staff": false,
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]

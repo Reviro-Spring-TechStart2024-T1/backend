@@ -1,10 +1,14 @@
 asgiref==3.8.1
+certifi==2024.2.2
 cffi==1.16.0
 cfgv==3.4.0
+charset-normalizer==3.3.2
+cloudinary==1.40.0
 cryptography==42.0.5
 distlib==0.3.8
 dj-database-url==2.1.0
 Django==5.0.4
+django-cloudinary-storage==0.3.0
 djangorestframework==3.15.1
 djangorestframework-simplejwt==5.3.1
 drf-yasg==1.21.7
@@ -12,6 +16,7 @@ factory-boy==3.3.0
 Faker==24.11.0
 filelock==3.13.3
 identify==2.5.35
+idna==3.7
 inflection==0.5.1
 iniconfig==2.0.0
 nodeenv==1.8.0
@@ -23,6 +28,7 @@ pre-commit==3.7.0
 psycopg2-binary==2.9.9
 pycparser==2.22
 PyJWT==2.8.0
+pypng==0.20220715.0
 pytest==8.1.1
 pytest-django==4.8.0
 pytest-factoryboy==2.7.0
@@ -31,9 +37,11 @@ python-decouple==3.8
 python-dotenv==1.0.1
 pytz==2024.1
 PyYAML==6.0.1
+qrcode==7.4.2
+requests==2.31.0
 six==1.16.0
 sqlparse==0.4.4
 typing_extensions==4.11.0
 uritemplate==4.1.1
+urllib3==2.2.1
 virtualenv==20.25.1
-django-cloudinary-storage==0.3.0

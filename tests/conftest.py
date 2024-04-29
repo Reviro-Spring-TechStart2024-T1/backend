@@ -5,16 +5,21 @@ from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.models import User
+from menu.models import Menu
 from tests.factories import (
+    BeverageFactory,
+    CategoryFactory,
     EstablishmentFactory,
-    ItemCategoryFactory,
     KyrgyzPhoneNumberProvider,
+    MenuFactory,
     UserFactory,
 )
 
 register(UserFactory)
-register(ItemCategoryFactory)
+register(CategoryFactory)
 register(EstablishmentFactory)
+register(MenuFactory)
+register(BeverageFactory)
 
 
 fake = Faker()
@@ -81,7 +86,12 @@ def dict_data_to_create_test_user() -> dict:
 
 
 @pytest.fixture
-def create_num_of_item_categories_in_array(db):
+def create_category_from_factory(db):
+    return CategoryFactory()
+
+
+@pytest.fixture
+def create_num_of_categories_in_array(db):
     '''
     Fixture to create number of item categories utilizing factories.
         usage:
@@ -90,7 +100,7 @@ def create_num_of_item_categories_in_array(db):
             ['category1', 'category2', 'category3', 'category4', 'category5']
     '''
     def make_num_of_categories(num: int = 1) -> list:
-        return ItemCategoryFactory.create_batch(size=num)
+        return CategoryFactory.create_batch(size=num)
     return make_num_of_categories
 
 
@@ -122,3 +132,43 @@ def dict_data_to_create_establishment() -> dict:
         }
         return data
     return wrapper_to_provide_user
+
+
+@pytest.fixture
+def create_menu_from_factory(db):
+    return MenuFactory()
+
+
+@pytest.fixture
+def create_num_of_menus_from_factory(db):
+    def make_num_of_menus(num: int = 1) -> list:
+        return MenuFactory.create_batch(size=num)
+    return make_num_of_menus
+
+
+@pytest.fixture
+def create_beverage_from_factory(db):
+    return BeverageFactory()
+
+
+@pytest.fixture
+def create_num_of_beverages_from_factory(db):
+    def make_num_of_beverages(num: int = 1) -> list:
+        return BeverageFactory.create_batch(size=num)
+    return make_num_of_beverages
+
+
+@pytest.fixture
+def create_num_of_beverages_in_one_menu_from_factories(db, create_menu_from_factory):
+    def make_num_beverages(num: int = 1) -> list:
+        menu = create_menu_from_factory
+        items = BeverageFactory.create_batch(size=num, menu=menu)
+        return items
+    return make_num_beverages
+
+
+@pytest.fixture
+def create_num_of_beverages_in_one_menu_from_outside_factory(db):
+    def make_num_of_beverages(menu: Menu, num: int = 1) -> list:
+        return BeverageFactory.create_batch(size=num, menu=menu)
+    return make_num_of_beverages

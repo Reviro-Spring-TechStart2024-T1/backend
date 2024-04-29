@@ -1,0 +1,12 @@
+[
+{
+  "model": "menu.qrcode",
+  "pk": 1,
+  "fields": {
+    "menu": 1,
+    "qr_code_image": "media/menu/qr_code_images/qrcode-1_jk7zho",
+    "created_at": "2024-04-29T16:55:23.955Z",
+    "updated_at": "2024-04-29T16:55:23.956Z"
+  }
+}
+]

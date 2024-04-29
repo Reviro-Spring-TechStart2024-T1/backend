@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.core.files.base import ContentFile
 from django.db import models
+from rest_framework.reverse import reverse
 
 from establishments.models import Establishment
 
@@ -54,7 +56,9 @@ class QrCode(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.qr_code_image:
-            data = f'https//drinkjoy.com/menu/{self.menu.id}/details'
+            # f'https//drinkjoy.com/menu/{self.menu.id}/details'
+            data = 'https://{}{}'.format(settings.ALLOWED_HOSTS[0],
+                                         reverse('menu-detail', args=[self.menu.id]))  # type: ignore
             buffer = generate_qr_code(data)
             filename = f'qrcode-{self.menu.id}.png'
 

@@ -1,0 +1,53 @@
+[
+{
+  "model": "establishments.establishment",
+  "pk": 1,
+  "fields": {
+    "owner": 5,
+    "name": "Establishment",
+    "email": "partner.est@drinkjoy.kg",
+    "latitude": "42.88200400",
+    "longitude": "74.58274800",
+    "description": "test establishment of partner",
+    "phone_number": "+996-132-123123",
+    "logo": "",
+    "banner_image": "",
+    "happy_hour_start": "12:00:00",
+    "happy_hour_end": "15:00:00"
+  }
+},
+{
+  "model": "establishments.establishment",
+  "pk": 2,
+  "fields": {
+    "owner": 6,
+    "name": "Establishment1",
+    "email": "partner1.est@drinkjoy.kg",
+    "latitude": "42.88200400",
+    "longitude": "74.58274800",
+    "description": "test establishment for partner1",
+    "phone_number": "+996-123-321456",
+    "logo": "",
+    "banner_image": "",
+    "happy_hour_start": "13:00:00",
+    "happy_hour_end": "16:00:00"
+  }
+},
+{
+  "model": "establishments.establishment",
+  "pk": 3,
+  "fields": {
+    "owner": 7,
+    "name": "Establishment2",
+    "email": "partner2.est@drinkjoy.kg",
+    "latitude": "42.88200400",
+    "longitude": "74.58274800",
+    "description": "test establishment for partner2",
+    "phone_number": "+996-234-345456",
+    "logo": "",
+    "banner_image": "",
+    "happy_hour_start": "11:00:00",
+    "happy_hour_end": "14:00:00"
+  }
+}
+]

@@ -11,19 +11,6 @@ class CategorySerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
-class MenuSerializer(serializers.ModelSerializer):
-    establishment = serializers.PrimaryKeyRelatedField(queryset=Establishment.objects.all())
-
-    class Meta:
-        model = Menu
-        fields = [
-            'id',
-            'establishment',
-            'created_at',
-            'updated_at'
-        ]
-
-
 class BeverageSerializer(serializers.ModelSerializer):
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
     menu = serializers.PrimaryKeyRelatedField(queryset=Menu.objects.all())
@@ -38,6 +25,21 @@ class BeverageSerializer(serializers.ModelSerializer):
             'price',
             'description',
             'in_stock'
+        ]
+
+
+class MenuSerializer(serializers.ModelSerializer):
+    establishment = serializers.PrimaryKeyRelatedField(queryset=Establishment.objects.all())
+    beverages = BeverageSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Menu
+        fields = [
+            'id',
+            'establishment',
+            'created_at',
+            'updated_at',
+            'beverages'
         ]
 
 

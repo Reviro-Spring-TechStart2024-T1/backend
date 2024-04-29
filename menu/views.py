@@ -1,6 +1,8 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import generics, permissions
+from rest_framework import generics
 from rest_framework.exceptions import ValidationError
+
+from establishments.permissions import IsPartnerOrReadOnly
 
 from .models import Beverage, Category, Menu, QrCode
 from .permissions import IsAdminOrReadOnly, IsAdminUser
@@ -24,28 +26,34 @@ class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAdminOrReadOnly]
 
 
+class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+
 class MenuListCreateView(generics.ListCreateAPIView):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsPartnerOrReadOnly]
 
 
 class MenuDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsPartnerOrReadOnly]
 
 
 class BeverageListCreateView(generics.ListCreateAPIView):
     queryset = Beverage.objects.all()
     serializer_class = BeverageSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsPartnerOrReadOnly]
 
 
 class BeverageDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Beverage.objects.all()
     serializer_class = BeverageSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [IsPartnerOrReadOnly]
 
 
 class QrCodeList(generics.ListAPIView):
@@ -63,7 +71,7 @@ class QrCodeDetail(generics.RetrieveAPIView):
 class QrCodeCreate(generics.CreateAPIView):
     queryset = QrCode.objects.all()
     serializer_class = QrCodeSerializer
-    permission_classes = [IsAdminUser]
+    # permission_classes = [IsAdminOrReadOnly]
 
     def perform_create(self, serializer):
         menu_id = self.kwargs.get('menu_id')
