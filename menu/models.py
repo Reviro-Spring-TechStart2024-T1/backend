@@ -1,14 +1,17 @@
+from django.core.files.base import ContentFile
 from django.db import models
 
 from establishments.models import Establishment
 
+from .utils import generate_qr_code
 
-class ItemCategory(models.Model):
+
+class Category(models.Model):
     name = models.CharField(max_length=255)
 
     class Meta:
-        verbose_name = 'Item Category'
-        verbose_name_plural = 'Item Categories'
+        verbose_name = 'Category'
+        verbose_name_plural = 'Categories'
 
     def __str__(self):
         return self.name
@@ -27,17 +30,17 @@ class Menu(models.Model):
         return f'Menu of the {self.establishment.name}'
 
 
-class MenuItem(models.Model):
-    menu = models.ForeignKey(Menu, on_delete=models.CASCADE, related_name='items')
+class Beverage(models.Model):
+    menu = models.ForeignKey(Menu, on_delete=models.CASCADE, related_name='beverages')
     name = models.CharField(max_length=255)
-    item_category = models.ForeignKey(ItemCategory, on_delete=models.CASCADE, related_name='menu_items')
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='beverages')
     price = models.DecimalField(max_digits=8, decimal_places=2)
     description = models.TextField(blank=True)
     in_stock = models.PositiveIntegerField(default=0)
 
     class Meta:
-        verbose_name = 'Menu Item'
-        verbose_name_plural = 'Menu Items'
+        verbose_name = 'Beverage'
+        verbose_name_plural = 'Beverages'
 
     def __str__(self):
         return self.name
@@ -48,6 +51,17 @@ class QrCode(models.Model):
     qr_code_image = models.ImageField(upload_to='menu/qr_code_images/', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def save(self, *args, **kwargs):
+        if not self.qr_code_image:
+            data = f'https//drinkjoy.com/menu/{self.menu.id}/details'
+            buffer = generate_qr_code(data)
+            filename = f'qrcode-{self.menu.id}.png'
+
+            # Saving the image from buffer to the Imagefield
+            self.qr_code_image.save(filename, ContentFile(buffer.getvalue()), save=False)
+
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = 'QR code'
