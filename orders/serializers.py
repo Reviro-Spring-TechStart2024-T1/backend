@@ -1,8 +1,10 @@
 from rest_framework import serializers
-from .models import Order
+
 from accounts.models import User
 from establishments.models import Establishment
-from menu.models import MenuItem
+from menu.models import Beverage
+
+from .models import Order
 
 
 class UserEmailSerializer(serializers.ModelSerializer):
@@ -17,16 +19,16 @@ class EstablishmentOrderSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 
-class MenuItemOrderSerializer(serializers.ModelSerializer):
+class BeverageOrderSerializer(serializers.ModelSerializer):
     class Meta:
-        model = MenuItem
+        model = Beverage
         fields = ['id', 'name']
 
 
 class OrderSerializer(serializers.ModelSerializer):
     user_email = UserEmailSerializer(read_only=True)
     establishment_name = EstablishmentOrderSerializer(read_only=True)
-    menu_item_name = MenuItemOrderSerializer(read_only=True)
+    beverage_name = BeverageOrderSerializer(read_only=True)
 
     class Meta:
         model = Order
@@ -35,8 +37,8 @@ class OrderSerializer(serializers.ModelSerializer):
             'user',
             'user_email',
             'establishment_name',
-            'menu_item',
-            'menu_item_name',
+            'beverage',
+            'beverage_name',
             'order_date',
             'status',
             'quantity',

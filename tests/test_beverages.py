@@ -5,49 +5,49 @@ from rest_framework.reverse import reverse
 
 
 @pytest.mark.django_db
-def test_get_list_of_menu_items_as_customer(
+def test_get_list_of_beverages_as_customer(
     jwt_auth_api_client,
-    create_num_of_menu_items_in_one_menu_from_factories
+    create_num_of_beverages_in_one_menu_from_factories
 ):
     # given:
     client = jwt_auth_api_client('customer')
-    five_menu_items = create_num_of_menu_items_in_one_menu_from_factories(5)
+    five_beverages = create_num_of_beverages_in_one_menu_from_factories(5)
     # when:
-    url = reverse('menu-item-list')
+    url = reverse('beverage-list')
     response = client.get(url)
     print(response.content.decode('utf-8'))
     # then:
     assert response.status_code == 200
-    assert len(response.json()) == len(five_menu_items)
+    assert len(response.json()) == len(five_beverages)
 
 
 @pytest.mark.django_db
-def test_get_list_of_menu_items_as_partner(
+def test_get_list_of_beverages_as_partner(
     jwt_auth_api_client,
-    create_num_of_menu_items_in_one_menu_from_factories
+    create_num_of_beverages_in_one_menu_from_factories
 ):
     # given:
     client = jwt_auth_api_client('partner')
-    five_menu_items = create_num_of_menu_items_in_one_menu_from_factories(5)
+    five_beverages = create_num_of_beverages_in_one_menu_from_factories(5)
     # when:
-    url = reverse('menu-item-list')
+    url = reverse('beverage-list')
     response = client.get(url)
     print(response.content.decode('utf-8'))
     # then:
     assert response.status_code == 200
-    assert len(response.json()) == len(five_menu_items)
+    assert len(response.json()) == len(five_beverages)
 
 
 @pytest.mark.django_db
-def test_post_of_menu_items_as_customer(
+def test_post_of_beverages_as_customer(
     jwt_auth_api_client,
     create_menu_from_factory,
-    create_item_category_from_factory
+    create_category_from_factory
 ):
     # given:
     client = jwt_auth_api_client('customer')
     menu = create_menu_from_factory
-    category = create_item_category_from_factory
+    category = create_category_from_factory
     item_data = {
         'menu': menu.id,
         'name': 'tea',
@@ -57,7 +57,7 @@ def test_post_of_menu_items_as_customer(
         'in_stock': 50
     }
     # when:
-    url = reverse('menu-item-list')
+    url = reverse('beverage-list')
     response = client.post(
         url,
         data=json.dumps(item_data),
@@ -70,25 +70,25 @@ def test_post_of_menu_items_as_customer(
 
 
 @pytest.mark.django_db
-def test_post_of_menu_items_as_partner(
+def test_post_of_beverages_as_partner(
     jwt_auth_api_client,
     create_menu_from_factory,
-    create_item_category_from_factory
+    create_category_from_factory
 ):
     # given:
     client = jwt_auth_api_client('partner')
     menu = create_menu_from_factory
-    category = create_item_category_from_factory
+    category = create_category_from_factory
     item_data = {
         'menu': menu.id,
         'name': 'tea',
-        'item_category': category.id,
+        'category': category.id,
         'price': '99.99',
         'description': 'Nice tea',
         'in_stock': 50
     }
     # when:
-    url = reverse('menu-item-list')
+    url = reverse('beverage-list')
     response = client.post(
         url,
         data=json.dumps(item_data),
@@ -99,22 +99,22 @@ def test_post_of_menu_items_as_partner(
     assert response.status_code == 201
     assert response.data['menu'] == menu.id
     assert response.data['name'] == item_data['name']
-    assert response.data['item_category'] == category.id
+    assert response.data['category'] == category.id
     assert response.data['price'] == item_data['price']
     assert response.data['description'] == item_data['description']
     assert response.data['in_stock'] == item_data['in_stock']
 
 
 @pytest.mark.django_db
-def test_get_menu_item_as_partner(
+def test_get_beverage_as_partner(
     jwt_auth_api_client,
-    create_menu_item_from_factory
+    create_beverage_from_factory
 ):
     # given:
     client = jwt_auth_api_client('partner')
-    item = create_menu_item_from_factory
+    item = create_beverage_from_factory
     # when:
-    url = reverse('menu-item-detail', args=[item.id])
+    url = reverse('beverage-detail', args=[item.id])
     response = client.get(
         url
     )
@@ -128,15 +128,15 @@ def test_get_menu_item_as_partner(
 
 
 @pytest.mark.django_db
-def test_get_menu_item_as_customer(
+def test_get_beverage_as_customer(
     jwt_auth_api_client,
-    create_menu_item_from_factory
+    create_beverage_from_factory
 ):
     # given:
     client = jwt_auth_api_client('customer')
-    item = create_menu_item_from_factory
+    item = create_beverage_from_factory
     # when:
-    url = reverse('menu-item-detail', args=[item.id])
+    url = reverse('beverage-detail', args=[item.id])
     response = client.get(
         url
     )
@@ -150,19 +150,19 @@ def test_get_menu_item_as_customer(
 
 
 @pytest.mark.django_db
-def test_patch_menu_item_as_partner(
+def test_patch_beverage_as_partner(
     jwt_auth_api_client,
-    create_menu_item_from_factory
+    create_beverage_from_factory
 ):
     # given:
     client = jwt_auth_api_client('partner')
-    item = create_menu_item_from_factory
+    item = create_beverage_from_factory
     patch_data = {
         'name': 'apple juice',
         'description': 'best apple juice'
     }
     # when:
-    url = reverse('menu-item-detail', args=[item.id])
+    url = reverse('beverage-detail', args=[item.id])
     response = client.patch(
         url,
         data=json.dumps(patch_data),
@@ -178,19 +178,19 @@ def test_patch_menu_item_as_partner(
 
 
 @pytest.mark.django_db
-def test_patch_menu_item_as_customer(
+def test_patch_beverage_as_customer(
     jwt_auth_api_client,
-    create_menu_item_from_factory
+    create_beverage_from_factory
 ):
     # given:
     client = jwt_auth_api_client('customer')
-    item = create_menu_item_from_factory
+    item = create_beverage_from_factory
     patch_data = {
         'name': 'apple juice',
         'description': 'best apple juice'
     }
     # when:
-    url = reverse('menu-item-detail', args=[item.id])
+    url = reverse('beverage-detail', args=[item.id])
     response = client.patch(
         url,
         data=json.dumps(patch_data),
@@ -203,15 +203,15 @@ def test_patch_menu_item_as_customer(
 
 
 @pytest.mark.django_db
-def test_delete_menu_item_as_partner(
+def test_delete_beverage_as_partner(
     jwt_auth_api_client,
-    create_menu_item_from_factory
+    create_beverage_from_factory
 ):
     # given:
     client = jwt_auth_api_client('partner')
-    item = create_menu_item_from_factory
+    item = create_beverage_from_factory
     # when:
-    url = reverse('menu-item-detail', args=[item.id])
+    url = reverse('beverage-detail', args=[item.id])
     response = client.delete(
         url
     )
@@ -222,15 +222,15 @@ def test_delete_menu_item_as_partner(
 
 
 @pytest.mark.django_db
-def test_delete_menu_item_as_customer(
+def test_delete_beverage_as_customer(
     jwt_auth_api_client,
-    create_menu_item_from_factory
+    create_beverage_from_factory
 ):
     # given:
     client = jwt_auth_api_client('customer')
-    item = create_menu_item_from_factory
+    item = create_beverage_from_factory
     # when:
-    url = reverse('menu-item-detail', args=[item.id])
+    url = reverse('beverage-detail', args=[item.id])
     response = client.delete(
         url
     )

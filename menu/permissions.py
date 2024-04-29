@@ -14,3 +14,12 @@ class IsAdminOrReadOnly(BasePermission):
 
         # Write permissions are only allowed to admin users
         return request.user and request.user.is_staff
+
+
+class IsAdminUser(BasePermission):
+    """
+    Allows access only to admin users.
+    """
+
+    def has_permission(self, request, view):
+        return request.user and request.user.is_authenticated and request.user.role == 'admin'

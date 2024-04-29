@@ -2,17 +2,35 @@ from rest_framework import serializers
 
 from establishments.models import Establishment
 
-from .models import ItemCategory, Menu, MenuItem
+from .models import Beverage, Category, Menu, QrCode
 
 
-class ItemCategorySerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = ItemCategory
+        model = Category
         fields = ['id', 'name']
+
+
+class BeverageSerializer(serializers.ModelSerializer):
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
+    menu = serializers.PrimaryKeyRelatedField(queryset=Menu.objects.all())
+
+    class Meta:
+        model = Beverage
+        fields = [
+            'id',
+            'menu',
+            'name',
+            'category',
+            'price',
+            'description',
+            'in_stock'
+        ]
 
 
 class MenuSerializer(serializers.ModelSerializer):
     establishment = serializers.PrimaryKeyRelatedField(queryset=Establishment.objects.all())
+    beverages = BeverageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Menu
@@ -20,35 +38,21 @@ class MenuSerializer(serializers.ModelSerializer):
             'id',
             'establishment',
             'created_at',
-            'updated_at'
+            'updated_at',
+            'beverages'
         ]
 
 
-class MenuItemSerializer(serializers.ModelSerializer):
-    item_category = serializers.PrimaryKeyRelatedField(queryset=ItemCategory.objects.all())
+class QrCodeSerializer(serializers.ModelSerializer):
     menu = serializers.PrimaryKeyRelatedField(queryset=Menu.objects.all())
+    qr_code_image = serializers.ImageField(max_length=None, use_url=True, required=False, allow_null=True)
 
     class Meta:
-        model = MenuItem
+        model = QrCode
         fields = [
             'id',
             'menu',
-            'name',
-            'item_category',
-            'price',
-            'description',
-            'in_stock'
-        ]
-
-
-class MenuSpecificSerializer(serializers.ModelSerializer):
-    establishment = serializers.PrimaryKeyRelatedField(queryset=Establishment.objects.all())
-    items = MenuItemSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Menu
-        fields = [
-            'id',
-            'establishment',
-            'items'
+            'qr_code_image',
+            'created_at',
+            'updated_at'
         ]
