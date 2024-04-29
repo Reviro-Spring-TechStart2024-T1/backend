@@ -71,7 +71,7 @@ class QrCodeDetail(generics.RetrieveAPIView):
 class QrCodeCreate(generics.CreateAPIView):
     queryset = QrCode.objects.all()
     serializer_class = QrCodeSerializer
-    permission_classes = [IsAdminUser]
+    # permission_classes = [IsAdminOrReadOnly]
 
     def perform_create(self, serializer):
         menu_id = self.kwargs.get('menu_id')
