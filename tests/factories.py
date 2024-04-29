@@ -11,7 +11,7 @@ from faker.providers import BaseProvider
 
 from accounts.models import User
 from establishments.models import Establishment
-from menu.models import ItemCategory
+from menu.models import ItemCategory, Menu, MenuItem
 
 
 class KyrgyzPhoneNumberProvider(BaseProvider):
@@ -86,3 +86,22 @@ class EstablishmentFactory(DjangoModelFactory):
     phone_number = LazyFunction(fake.kg_phone_number)
     happy_hour_start = LazyFunction(fake.time)
     happy_hour_end = LazyFunction(fake.time)
+
+
+class MenuFactory(DjangoModelFactory):
+    class Meta:
+        model = Menu
+
+    establishment = SubFactory(EstablishmentFactory)
+
+
+class MenuItemFactory(DjangoModelFactory):
+    class Meta:
+        model = MenuItem
+
+    menu = SubFactory(MenuFactory)
+    name = LazyFunction(fake.word)
+    item_category = SubFactory(ItemCategoryFactory)
+    price = LazyAttribute(lambda _: fake.pydecimal(3, 2, True))
+    description = LazyFunction(fake.word)
+    in_stock = LazyAttribute(lambda _: fake.pyint(min_value=0, max_value=100))

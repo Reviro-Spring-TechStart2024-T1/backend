@@ -1,0 +1,146 @@
+[
+{
+  "model": "menu.menuitem",
+  "pk": 1,
+  "fields": {
+    "menu": 1,
+    "name": "Fanta 250ml.",
+    "item_category": 1,
+    "price": "100.00",
+    "description": "Fanta",
+    "in_stock": 10
+  }
+},
+{
+  "model": "menu.menuitem",
+  "pk": 2,
+  "fields": {
+    "menu": 1,
+    "name": "Shoro 250ml.",
+    "item_category": 7,
+    "price": "50.00",
+    "description": "Shoro",
+    "in_stock": 20
+  }
+},
+{
+  "model": "menu.menuitem",
+  "pk": 3,
+  "fields": {
+    "menu": 1,
+    "name": "Apple juice 250ml.",
+    "item_category": 3,
+    "price": "150.00",
+    "description": "Apple juice",
+    "in_stock": 10
+  }
+},
+{
+  "model": "menu.menuitem",
+  "pk": 4,
+  "fields": {
+    "menu": 1,
+    "name": "Green tea 250ml.",
+    "item_category": 2,
+    "price": "30.00",
+    "description": "Green tea",
+    "in_stock": 55
+  }
+},
+{
+  "model": "menu.menuitem",
+  "pk": 5,
+  "fields": {
+    "menu": 2,
+    "name": "Fanta 250ml.",
+    "item_category": 1,
+    "price": "100.00",
+    "description": "Fanta",
+    "in_stock": 10
+  }
+},
+{
+  "model": "menu.menuitem",
+  "pk": 6,
+  "fields": {
+    "menu": 2,
+    "name": "Shoro 250ml.",
+    "item_category": 7,
+    "price": "50.00",
+    "description": "Shoro",
+    "in_stock": 20
+  }
+},
+{
+  "model": "menu.menuitem",
+  "pk": 7,
+  "fields": {
+    "menu": 2,
+    "name": "Apple juice 250ml.",
+    "item_category": 3,
+    "price": "150.00",
+    "description": "Apple juice",
+    "in_stock": 10
+  }
+},
+{
+  "model": "menu.menuitem",
+  "pk": 8,
+  "fields": {
+    "menu": 2,
+    "name": "Green tea 250ml.",
+    "item_category": 2,
+    "price": "30.00",
+    "description": "Green tea",
+    "in_stock": 55
+  }
+},
+{
+  "model": "menu.menuitem",
+  "pk": 9,
+  "fields": {
+    "menu": 3,
+    "name": "Fanta 250ml.",
+    "item_category": 1,
+    "price": "100.00",
+    "description": "Fanta",
+    "in_stock": 10
+  }
+},
+{
+  "model": "menu.menuitem",
+  "pk": 10,
+  "fields": {
+    "menu": 3,
+    "name": "Shoro 250ml.",
+    "item_category": 7,
+    "price": "50.00",
+    "description": "Shoro",
+    "in_stock": 20
+  }
+},
+{
+  "model": "menu.menuitem",
+  "pk": 11,
+  "fields": {
+    "menu": 3,
+    "name": "Apple juice 250ml.",
+    "item_category": 3,
+    "price": "150.00",
+    "description": "Apple juice",
+    "in_stock": 10
+  }
+},
+{
+  "model": "menu.menuitem",
+  "pk": 12,
+  "fields": {
+    "menu": 3,
+    "name": "Green tea 250ml.",
+    "item_category": 2,
+    "price": "30.00",
+    "description": "Green tea",
+    "in_stock": 55
+  }
+}
+]

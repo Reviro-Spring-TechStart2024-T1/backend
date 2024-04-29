@@ -50,7 +50,5 @@ class MenuSpecificSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'establishment',
-            'created_at',
-            'updated_at',
             'items'
         ]

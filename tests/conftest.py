@@ -5,16 +5,21 @@ from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.models import User
+from menu.models import Menu
 from tests.factories import (
     EstablishmentFactory,
     ItemCategoryFactory,
     KyrgyzPhoneNumberProvider,
+    MenuFactory,
+    MenuItemFactory,
     UserFactory,
 )
 
 register(UserFactory)
 register(ItemCategoryFactory)
 register(EstablishmentFactory)
+register(MenuFactory)
+register(MenuItemFactory)
 
 
 fake = Faker()
@@ -81,6 +86,11 @@ def dict_data_to_create_test_user() -> dict:
 
 
 @pytest.fixture
+def create_item_category_from_factory(db):
+    return ItemCategoryFactory()
+
+
+@pytest.fixture
 def create_num_of_item_categories_in_array(db):
     '''
     Fixture to create number of item categories utilizing factories.
@@ -122,3 +132,43 @@ def dict_data_to_create_establishment() -> dict:
         }
         return data
     return wrapper_to_provide_user
+
+
+@pytest.fixture
+def create_menu_from_factory(db):
+    return MenuFactory()
+
+
+@pytest.fixture
+def create_num_of_menus_from_factory(db):
+    def make_num_of_menus(num: int = 1) -> list:
+        return MenuFactory.create_batch(size=num)
+    return make_num_of_menus
+
+
+@pytest.fixture
+def create_menu_item_from_factory(db):
+    return MenuItemFactory()
+
+
+@pytest.fixture
+def create_num_of_menu_items_from_factory(db):
+    def make_num_of_menu_items(num: int = 1) -> list:
+        return MenuItemFactory.create_batch(size=num)
+    return make_num_of_menu_items
+
+
+@pytest.fixture
+def create_num_of_menu_items_in_one_menu_from_factories(db, create_menu_from_factory):
+    def make_num_of_menu_items(num: int = 1) -> list:
+        menu = create_menu_from_factory
+        items = MenuItemFactory.create_batch(size=num, menu=menu)
+        return items
+    return make_num_of_menu_items
+
+
+@pytest.fixture
+def create_num_of_menu_items_in_one_menu_from_outside_factory(db):
+    def make_num_of_menu_items(menu: Menu, num: int = 1) -> list:
+        return MenuItemFactory.create_batch(size=num, menu=menu)
+    return make_num_of_menu_items
