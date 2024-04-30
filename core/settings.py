@@ -68,6 +68,7 @@ THIRD_PARTY_APPS = [
     'cloudinary_storage',
     'cloudinary',
     'rest_framework_simplejwt.token_blacklist',
+    'corsheaders',
 ]
 
 INSTALLED_APPS += MY_APPS + THIRD_PARTY_APPS
@@ -75,6 +76,7 @@ INSTALLED_APPS += MY_APPS + THIRD_PARTY_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -200,3 +202,9 @@ SWAGGER_SETTINGS = {
         }
     }
 }
+
+# CORS Headers django-cors-headers settings
+# https://pypi.org/project/django-cors-headers/
+
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_HEADERS = '*'
