@@ -69,6 +69,7 @@ THIRD_PARTY_APPS = [
     'cloudinary',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
+    'django_rest_passwordreset',
 ]
 
 INSTALLED_APPS += MY_APPS + THIRD_PARTY_APPS
@@ -208,3 +209,24 @@ SWAGGER_SETTINGS = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_HEADERS = '*'
+
+# Django email backend settings
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = os.environ.get('DRINKJOY_EMAIL_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('DRINKJOY_EMAIL_PASSWORD')
+
+# Django reset password package settings
+# token life by default is 24 hours
+
+DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
+    'CLASS': 'django_rest_passwordreset.tokens.RandomStringTokenGenerator',
+    'OPTIONS': {
+        'min_length': 20,
+        'max_length': 30
+    }
+}
