@@ -35,7 +35,7 @@ class UserFactory(DjangoModelFactory):
     first_name = LazyFunction(fake.first_name)
     last_name = LazyFunction(fake.last_name)
     password = Password('VeryStrongP@$$123')
-    email = LazyAttribute(lambda obj: '%s@example.com' % obj.first_name)
+    email = LazyAttribute(lambda obj: '%s@example.com' % (obj.first_name + '.' + obj.last_name))
     is_superuser = False
     date_of_birth = fake.date()
     is_active = True
