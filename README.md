@@ -1,3 +1,8 @@
+# Backend for Reviro-Techstart-Spring-2024-Team-1 DrinkJoy project
+
+![](https://github.com/Reviro-Spring-TechStart2024-T1/backend/workflows/Django%20CI/badge.svg)
+![](https://github.com/Reviro-Spring-TechStart2024-T1/backend/workflows/Pytest%20CI/badge.svg)
+
 # Django database fixtures to dump and upload them
 
 ## Explanation:
