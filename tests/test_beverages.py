@@ -18,7 +18,7 @@ def test_get_list_of_beverages_as_customer(
     print(response.content.decode('utf-8'))
     # then:
     assert response.status_code == 200
-    assert len(response.json()) == len(five_beverages)
+    assert len(response.json()['results']) == len(five_beverages)
 
 
 @pytest.mark.django_db
@@ -35,7 +35,7 @@ def test_get_list_of_beverages_as_partner(
     print(response.content.decode('utf-8'))
     # then:
     assert response.status_code == 200
-    assert len(response.json()) == len(five_beverages)
+    assert len(response.json()['results']) == len(five_beverages)
 
 
 @pytest.mark.django_db
