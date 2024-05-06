@@ -31,16 +31,16 @@ def test_if_factory_creates_establishment_with_owner(
     response = client.get(url)
     # then:
     assert response.status_code == 200
-    assert response.json()[0]['id'] == est.id
-    assert response.json()[0]['owner'] == est.owner.id
-    assert response.json()[0]['name'] == est.name
-    assert response.json()[0]['email'] == est.email
-    assert response.json()[0]['latitude'] == str(est.latitude)
-    assert response.json()[0]['longitude'] == str(est.longitude)
-    assert response.json()[0]['description'] == est.description
-    assert response.json()[0]['phone_number'] == est.phone_number
-    assert response.json()[0]['happy_hour_start'] == est.happy_hour_start
-    assert response.json()[0]['happy_hour_end'] == est.happy_hour_end
+    assert response.json()['results'][0]['id'] == est.id
+    assert response.json()['results'][0]['owner'] == est.owner.id
+    assert response.json()['results'][0]['name'] == est.name
+    assert response.json()['results'][0]['email'] == est.email
+    assert response.json()['results'][0]['latitude'] == str(est.latitude)
+    assert response.json()['results'][0]['longitude'] == str(est.longitude)
+    assert response.json()['results'][0]['description'] == est.description
+    assert response.json()['results'][0]['phone_number'] == est.phone_number
+    assert response.json()['results'][0]['happy_hour_start'] == est.happy_hour_start
+    assert response.json()['results'][0]['happy_hour_end'] == est.happy_hour_end
 
 
 @pytest.mark.django_db
@@ -56,7 +56,7 @@ def test_len_of_num_of_factories_as_auth_user(
     response = client.get(url)
     # then:
     assert response.status_code == 200
-    assert len(response.json()) == len(establishments)
+    assert len(response.json()['results']) == len(establishments)
 
 
 @pytest.mark.django_db
@@ -72,7 +72,7 @@ def test_len_of_num_of_factories_as_unauth_user(
     response = client.get(url)
     # then:
     assert response.status_code == 200
-    assert len(response.json()) == len(establishments)
+    assert len(response.json()['results']) == len(establishments)
 
 
 @pytest.mark.django_db

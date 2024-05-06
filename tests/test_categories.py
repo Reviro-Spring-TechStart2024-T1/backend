@@ -22,12 +22,12 @@ def test_get_list_categories_for_unauth_user(
     # print(response.content.decode('utf-8'))
     # then:
     assert response.status_code == 200
-    assert len(response.json()) == number_of_categories
-    assert response.json()[0]['name'] == categories[0].name
-    assert response.json()[1]['name'] == categories[1].name
-    assert response.json()[2]['name'] == categories[2].name
-    assert response.json()[3]['name'] == categories[3].name
-    assert response.json()[4]['name'] == categories[4].name
+    assert len(response.json()['results']) == number_of_categories
+    assert response.json()['results'][0]['name'] == categories[0].name
+    assert response.json()['results'][1]['name'] == categories[1].name
+    assert response.json()['results'][2]['name'] == categories[2].name
+    assert response.json()['results'][3]['name'] == categories[3].name
+    assert response.json()['results'][4]['name'] == categories[4].name
 
 
 @pytest.mark.django_db
@@ -44,12 +44,12 @@ def test_get_list_of_item_categories_for_auth_user(
     response = client.get(url)
     # then:
     assert response.status_code == 200
-    assert len(response.json()) == number_of_categories
-    assert response.json()[0]['name'] == categories[0].name
-    assert response.json()[1]['name'] == categories[1].name
-    assert response.json()[2]['name'] == categories[2].name
-    assert response.json()[3]['name'] == categories[3].name
-    assert response.json()[4]['name'] == categories[4].name
+    assert len(response.json()['results']) == number_of_categories
+    assert response.json()['results'][0]['name'] == categories[0].name
+    assert response.json()['results'][1]['name'] == categories[1].name
+    assert response.json()['results'][2]['name'] == categories[2].name
+    assert response.json()['results'][3]['name'] == categories[3].name
+    assert response.json()['results'][4]['name'] == categories[4].name
 
 
 @pytest.mark.django_db

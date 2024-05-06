@@ -31,6 +31,7 @@ django-cloudinary-storage = "0.3.0"
 qrcode = "^7.4.2"
 django-cors-headers = "^4.3.1"
 django-rest-passwordreset = "^1.4.1"
+django-filter = "^24.2"
 
 
 [build-system]
