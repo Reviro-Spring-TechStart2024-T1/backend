@@ -14,6 +14,8 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+import dj_database_url
+
 # import cloudinary_storage
 from dotenv import load_dotenv
 
@@ -27,13 +29,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get(
-    'SECRET_KEY', 'django-insecure-=!naodx94arlq%f_70%12d%g=@-qgu@po)8ae!e&b&*15vs93n'
+    'SECRET_KEY',
+    'django-insecure-=!naodx94arlq%f_70%12d%g=@-qgu@po)8ae!e&b&*15vs93n'
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', True)  # config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['backend-gvhy.onrender.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = [
+    'backend-gvhy.onrender.com',
+    '127.0.0.1',
+    'localhost'
+]
 
 CSRF_TRUSTED_ORIGINS = ['https://backend-gvhy.onrender.com']
 
@@ -116,8 +123,8 @@ DATABASES = {
     }
 }
 
-# db_from_env = dj_database_url.config(env='DATABASE_URL', conn_max_age=600)
-# DATABASES['default'].update(db_from_env)
+db_from_env = dj_database_url.config(env='DATABASE_URL', conn_max_age=600)
+DATABASES['default'].update(db_from_env)
 
 AUTH_USER_MODEL = 'accounts.User'
 
