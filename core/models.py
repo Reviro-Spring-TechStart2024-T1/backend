@@ -11,8 +11,8 @@ class BaseModelManager(models.Manager):
 class BaseModel(models.Model):
     is_deleted = models.BooleanField(default=False)
     deleted_at = models.DateTimeField(null=True, blank=True)
-    everything = models.Manager()  # Retain access to all objects, deleted or not
-    objects = BaseModelManager()  # Default manager filters out deleted objects
+    everything = models.Manager()  # Manager to access to all objects, including deleted
+    objects = BaseModelManager()  # Default manager filters out deleted objects and returns non-deleted
 
     def soft_delete(self):
         '''

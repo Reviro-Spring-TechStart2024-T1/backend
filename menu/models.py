@@ -1,6 +1,6 @@
 from django.db import models
 
-from core.models import BaseModel, BaseModelManager
+from core.models import BaseModel
 from establishments.models import Establishment
 
 
@@ -20,8 +20,6 @@ class Menu(BaseModel):
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
 
-    objects = BaseModelManager()
-
     class Meta:
         verbose_name = 'Menu'
         verbose_name_plural = 'Menus'
@@ -37,8 +35,6 @@ class Beverage(BaseModel):
     price = models.DecimalField(max_digits=8, decimal_places=2)
     description = models.TextField(null=True, blank=True)
     in_stock = models.PositiveIntegerField(default=0)
-
-    objects = BaseModelManager()
 
     class Meta:
         verbose_name = 'Beverage'

@@ -2,7 +2,7 @@ from django.db import models
 from django.utils import timezone
 
 from accounts.models import User
-from core.models import BaseModel, BaseModelManager
+from core.models import BaseModel
 from establishments.models import Establishment
 from menu.models import Beverage
 
@@ -21,8 +21,6 @@ class Order(BaseModel):
     status = models.CharField(max_length=10, choices=ORDER_STATUS_CHOICES, default='pending')
     quantity = models.PositiveIntegerField(default=1)
     last_updated = models.DateTimeField(auto_now=True)
-
-    objects = BaseModelManager()
 
     class Meta:
         verbose_name = 'Order'

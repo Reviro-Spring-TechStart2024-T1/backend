@@ -2,7 +2,7 @@ from django.core.validators import RegexValidator
 from django.db import models
 
 from accounts.models import User
-from core.models import BaseModel, BaseModelManager
+from core.models import BaseModel
 
 
 class Establishment(BaseModel):
@@ -23,8 +23,6 @@ class Establishment(BaseModel):
     banner_image = models.ImageField(upload_to='establishments/banners/', null=True, blank=True)
     happy_hour_start = models.TimeField(null=True, blank=True)
     happy_hour_end = models.TimeField(null=True, blank=True)
-
-    objects = BaseModelManager()
 
     class Meta:
         verbose_name = 'Establishment'
