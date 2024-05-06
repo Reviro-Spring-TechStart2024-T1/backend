@@ -1,11 +1,14 @@
 import re
 
+from django.conf import settings
 from django.contrib.auth.hashers import check_password
+from django.core.mail import send_mail
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 from .models import User
+from .utils import generate_strong_password
 
 
 class PasswordMixin(serializers.Serializer):
@@ -169,5 +172,41 @@ class LogoutSerializer(serializers.Serializer):
         except TokenError:
             raise serializers.ValidationError({'detail': 'Invalid refresh token.'}, 400)
 
-# class ForgotPasswordSerializer(serializers.Serializer):
-#     email = serializers.EmailField()
+
+class PartnerUserRegisterSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(
+        required=True,
+        validators=[UniqueValidator(queryset=User.objects.all())]
+    )
+
+    class Meta:
+        model = User
+        fields = [
+            'email'
+        ]
+
+    def create(self, validated_data):
+
+        random_password = generate_strong_password()
+
+        user = User.objects.create_user(
+            email=validated_data['email'],
+            password=random_password
+        )
+
+        user.role = 'partner'
+        user.save()
+
+        # Send email to the created user
+        subject = 'Your DrinkJoyAccount Information'
+        message = (f'Your account has been created.\n\n'
+                   f'Email: {validated_data["email"]}\n'
+                   f'Password: {random_password}\n\n'
+                   f'Please make sure to update your password after first login.\n'
+                   f'Best regards,\n'
+                   f'Your DrinkJoy Team')
+        from_email = settings.EMAIL_HOST_USER
+        to_email = [validated_data['email']]
+        send_mail(subject, message, from_email, to_email, fail_silently=False)
+
+        return user

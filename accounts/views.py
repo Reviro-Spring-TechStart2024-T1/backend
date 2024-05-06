@@ -1,10 +1,13 @@
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
+from menu.permissions import IsAdminOrReadOnly
+
 from .models import User
 from .serializers import (
     ChangePasswordSerializer,
     LogoutSerializer,
+    PartnerUserRegisterSerializer,
     UserProfileSerializer,
     UserRegisterSerializer,
 )
@@ -71,3 +74,9 @@ class LogoutView(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class PartnerListCreateView(generics.ListCreateAPIView):
+    queryset = User.objects.filter(role__in=['partner'])
+    serializer_class = PartnerUserRegisterSerializer
+    permission_classes = [IsAdminOrReadOnly]
