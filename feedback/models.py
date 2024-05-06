@@ -1,8 +1,9 @@
-from django.db import models
 from django.core.exceptions import ValidationError
+from django.db import models
 from django.db.models import UniqueConstraint
-from establishments.models import Establishment
+
 from accounts.models import User
+from establishments.models import Establishment
 
 
 class Feedback(models.Model):

@@ -9,12 +9,12 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+
 import os
 from datetime import timedelta
 from pathlib import Path
 
 # import cloudinary_storage
-import dj_database_url
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -27,18 +27,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get(
-    'SECRET_KEY',
-    'django-insecure-=!naodx94arlq%f_70%12d%g=@-qgu@po)8ae!e&b&*15vs93n'
+    'SECRET_KEY', 'django-insecure-=!naodx94arlq%f_70%12d%g=@-qgu@po)8ae!e&b&*15vs93n'
 )
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', True)  # config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = [
-    'backend-gvhy.onrender.com',
-    '127.0.0.1',
-    'localhost'
-]
+ALLOWED_HOSTS = ['backend-gvhy.onrender.com', '127.0.0.1', 'localhost']
 
 CSRF_TRUSTED_ORIGINS = ['https://backend-gvhy.onrender.com']
 
@@ -121,8 +116,8 @@ DATABASES = {
     }
 }
 
-db_from_env = dj_database_url.config(env='DATABASE_URL', conn_max_age=600)
-DATABASES['default'].update(db_from_env)
+# db_from_env = dj_database_url.config(env='DATABASE_URL', conn_max_age=600)
+# DATABASES['default'].update(db_from_env)
 
 AUTH_USER_MODEL = 'accounts.User'
 
@@ -188,7 +183,7 @@ SIMPLE_JWT = {
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUD_NAME'),
     'API_KEY': os.environ.get('CLOUD_API_KEY'),
-    'API_SECRET': os.environ.get('CLOUD_API_SECRET')
+    'API_SECRET': os.environ.get('CLOUD_API_SECRET'),
 }
 
 MEDIA_URL = '/media/'
@@ -196,15 +191,13 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
-        'Basic': {
-            'type': 'basic'
-        },
+        'Basic': {'type': 'basic'},
         'Bearer': {
             'type': 'apiKey',
             'description': 'Enter JWT Bearer token in the format: **Bearer {your token}**',
             'name': 'Authorization',
-            'in': 'header'
-        }
+            'in': 'header',
+        },
     }
 }
 

@@ -6,8 +6,10 @@ from django.contrib.auth.models import (
 from django.db import models
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
+from core.models import BaseModel, BaseModelManager
 
-class UserManager(BaseUserManager):
+
+class UserManager(BaseUserManager, BaseModelManager):
     def create_user(
         self,
         email,
@@ -37,7 +39,7 @@ class UserManager(BaseUserManager):
         return user
 
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(BaseModel, AbstractBaseUser, PermissionsMixin):
     USER_ROLES = [
         ('customer', 'Customer'),
         ('partner', 'Establishment Partner'),
