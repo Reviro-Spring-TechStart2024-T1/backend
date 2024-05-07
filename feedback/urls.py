@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import FeedbackListView, FeedbackDetailView
+
+from .views import FeedbackDetailView, FeedbackListView
 
 urlpatterns = [
     path('', FeedbackListView.as_view(), name='feedback-list'),

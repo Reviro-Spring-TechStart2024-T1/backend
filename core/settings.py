@@ -9,12 +9,14 @@ https://docs.djangoproject.com/en/5.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
+
 import os
 from datetime import timedelta
 from pathlib import Path
 
-# import cloudinary_storage
 import dj_database_url
+
+# import cloudinary_storage
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -188,7 +190,7 @@ SIMPLE_JWT = {
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.environ.get('CLOUD_NAME'),
     'API_KEY': os.environ.get('CLOUD_API_KEY'),
-    'API_SECRET': os.environ.get('CLOUD_API_SECRET')
+    'API_SECRET': os.environ.get('CLOUD_API_SECRET'),
 }
 
 MEDIA_URL = '/media/'
@@ -196,15 +198,13 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 SWAGGER_SETTINGS = {
     'SECURITY_DEFINITIONS': {
-        'Basic': {
-            'type': 'basic'
-        },
+        'Basic': {'type': 'basic'},
         'Bearer': {
             'type': 'apiKey',
             'description': 'Enter JWT Bearer token in the format: **Bearer {your token}**',
             'name': 'Authorization',
-            'in': 'header'
-        }
+            'in': 'header',
+        },
     }
 }
 

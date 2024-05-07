@@ -1,4 +1,5 @@
 from rest_framework import generics, permissions
+
 from .models import Order
 from .serializers import OrderSerializer
 
@@ -24,5 +25,3 @@ class OrderDetailView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.user.is_staff:
             return Order.objects.all()
         return Order.objects.filter(user=self.request.user)
-
-

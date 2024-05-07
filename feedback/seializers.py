@@ -1,7 +1,9 @@
 from rest_framework import serializers
-from .models import Feedback
-from establishments.models import Establishment
+
 from accounts.models import User
+from establishments.models import Establishment
+
+from .models import Feedback
 
 
 class UserNameSerializer(serializers.ModelSerializer):
@@ -39,5 +41,5 @@ class FeedbackSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         if request and hasattr(request, 'user'):
             if request.user.role != 'customer':
-                raise serializers.ValidationError("Only customers can leave feedback.")
+                raise serializers.ValidationError('Only customers can leave feedback.')
         return data
