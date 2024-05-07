@@ -2,7 +2,30 @@ from secrets import SystemRandom, choice
 from string import ascii_lowercase, ascii_uppercase, digits
 
 
-def generate_strong_password(length=12):
+def generate_strong_password(length: int = 12) -> str:
+    """
+    Generate a strong password with specified length.
+
+    Parameters:
+        length (int): The length of the password to be generated. Default is 12.
+
+    Returns:
+        str: A strong password containing at least one lowercase letter,
+             one uppercase letter, one digit, and one special character.
+
+    Notes:
+        This function uses the secrets module to generate a strong password
+        with sufficient randomness. The generated password will contain at
+        least one character from each of the following character sets:
+        - Lowercase letters (a-z)
+        - Uppercase letters (A-Z)
+        - Digits (0-9)
+        - Special characters (such as !@#$%^&*)
+
+        The remaining characters in the password are randomly chosen from
+        all character sets. The final password is shuffled to ensure randomness.
+    """
+
     # Define character sets
     lowercase_letters = ascii_lowercase
     uppercase_letters = ascii_uppercase

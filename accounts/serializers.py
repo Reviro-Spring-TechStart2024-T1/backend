@@ -4,6 +4,7 @@ from django.conf import settings
 from django.contrib.auth.hashers import check_password
 from django.core.mail import send_mail
 from rest_framework import serializers
+from rest_framework.reverse import reverse
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
@@ -198,13 +199,16 @@ class PartnerUserRegisterSerializer(serializers.ModelSerializer):
         user.save()
 
         # Send email to the created user
+        login_url = settings.ALLOWED_HOSTS[0] + reverse('token_obtain_pair')
         subject = 'Your DrinkJoyAccount Information'
         message = (f'Your account has been created.\n\n'
                    f'Email: {validated_data["email"]}\n'
                    f'Password: {random_password}\n\n'
                    f'Please make sure to update your password after first login.\n'
+                   f'Login URL: https://{login_url}\n\n'
                    f'Best regards,\n'
-                   f'Your DrinkJoy Team')
+                   f'Your DrinkJoy Team\n\n'
+                   f'If you received this email by mistake please ignore it.')
         from_email = settings.EMAIL_HOST_USER
         to_email = [validated_data['email']]
         send_mail(subject, message, from_email, to_email, fail_silently=False)

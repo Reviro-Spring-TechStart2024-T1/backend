@@ -3,6 +3,8 @@
   "model": "menu.beverage",
   "pk": 1,
   "fields": {
+    "is_deleted": false,
+    "deleted_at": null,
     "menu": 1,
     "name": "Fanta 250ml.",
     "category": 1,
@@ -15,6 +17,8 @@
   "model": "menu.beverage",
   "pk": 2,
   "fields": {
+    "is_deleted": false,
+    "deleted_at": null,
     "menu": 1,
     "name": "Shoro 250ml.",
     "category": 7,
@@ -27,6 +31,8 @@
   "model": "menu.beverage",
   "pk": 3,
   "fields": {
+    "is_deleted": false,
+    "deleted_at": null,
     "menu": 1,
     "name": "Apple juice 250ml.",
     "category": 3,
@@ -39,6 +45,8 @@
   "model": "menu.beverage",
   "pk": 4,
   "fields": {
+    "is_deleted": false,
+    "deleted_at": null,
     "menu": 1,
     "name": "Green tea 250ml.",
     "category": 2,
@@ -51,6 +59,8 @@
   "model": "menu.beverage",
   "pk": 5,
   "fields": {
+    "is_deleted": false,
+    "deleted_at": null,
     "menu": 2,
     "name": "Fanta 250ml.",
     "category": 1,
@@ -63,6 +73,8 @@
   "model": "menu.beverage",
   "pk": 6,
   "fields": {
+    "is_deleted": false,
+    "deleted_at": null,
     "menu": 2,
     "name": "Shoro 250ml.",
     "category": 7,
@@ -75,6 +87,8 @@
   "model": "menu.beverage",
   "pk": 7,
   "fields": {
+    "is_deleted": false,
+    "deleted_at": null,
     "menu": 2,
     "name": "Apple juice 250ml.",
     "category": 3,
@@ -87,6 +101,8 @@
   "model": "menu.beverage",
   "pk": 8,
   "fields": {
+    "is_deleted": false,
+    "deleted_at": null,
     "menu": 2,
     "name": "Green tea 250ml.",
     "category": 2,
@@ -99,6 +115,8 @@
   "model": "menu.beverage",
   "pk": 9,
   "fields": {
+    "is_deleted": false,
+    "deleted_at": null,
     "menu": 3,
     "name": "Fanta 250ml.",
     "category": 1,
@@ -111,6 +129,8 @@
   "model": "menu.beverage",
   "pk": 10,
   "fields": {
+    "is_deleted": false,
+    "deleted_at": null,
     "menu": 3,
     "name": "Shoro 250ml.",
     "category": 7,
@@ -123,6 +143,8 @@
   "model": "menu.beverage",
   "pk": 11,
   "fields": {
+    "is_deleted": false,
+    "deleted_at": null,
     "menu": 3,
     "name": "Apple juice 250ml.",
     "category": 3,
@@ -135,12 +157,56 @@
   "model": "menu.beverage",
   "pk": 12,
   "fields": {
+    "is_deleted": false,
+    "deleted_at": null,
     "menu": 3,
     "name": "Green tea 250ml.",
     "category": 2,
     "price": "30.00",
     "description": "Green tea",
     "in_stock": 55
+  }
+},
+{
+  "model": "menu.beverage",
+  "pk": 14,
+  "fields": {
+    "is_deleted": false,
+    "deleted_at": null,
+    "menu": 1,
+    "name": "new test bev",
+    "category": 2,
+    "price": "555.00",
+    "description": "new test desc",
+    "in_stock": 3
+  }
+},
+{
+  "model": "menu.beverage",
+  "pk": 15,
+  "fields": {
+    "is_deleted": false,
+    "deleted_at": null,
+    "menu": 7,
+    "name": "test bev 321321",
+    "category": 2,
+    "price": "432.00",
+    "description": "test desc 1",
+    "in_stock": 23
+  }
+},
+{
+  "model": "menu.beverage",
+  "pk": 16,
+  "fields": {
+    "is_deleted": false,
+    "deleted_at": null,
+    "menu": 7,
+    "name": "new test bev",
+    "category": 2,
+    "price": "321.00",
+    "description": "new test desc",
+    "in_stock": 4
   }
 }
 ]
