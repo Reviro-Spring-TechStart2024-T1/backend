@@ -360,3 +360,108 @@ def test_delete_specific_establishment_as_admin(
     # then:
     assert response.status_code == 403
     assert response.data['detail'] == 'You do not have permission to perform this action.'
+
+
+@pytest.mark.django_db
+def test_create_establishment_banner_as_partner(
+    jwt_auth_api_client,
+    create_establishment_from_factory,
+    sample_image_file
+):
+    # given
+    client = jwt_auth_api_client(role='partner')
+    est = create_establishment_from_factory
+    data = {
+        'establishment': est.id,
+        'url': sample_image_file
+    }
+    url = reverse('banner-create')
+    response = client.post(url, data=data, format='multipart')
+    assert response.status_code == 201
+    assert 'url' in response.data
+
+
+@pytest.mark.django_db
+def test_create_establishment_banner_as_admin(
+    jwt_auth_api_client,
+    create_establishment_from_factory,
+    sample_image_file
+):
+    # given
+    client = jwt_auth_api_client(role='admin')
+    est = create_establishment_from_factory
+    data = {
+        'establishment': est.id,
+        'url': sample_image_file
+    }
+    url = reverse('banner-create')
+    response = client.post(url, data=data, format='multipart')
+    assert response.status_code == 403
+    assert response.data['detail'] == 'You do not have permission to perform this action.'
+
+
+@pytest.mark.django_db
+def test_create_establishment_banner_as_customer(
+    jwt_auth_api_client,
+    create_establishment_from_factory,
+    sample_image_file
+):
+    # given
+    client = jwt_auth_api_client(role='customer')
+    est = create_establishment_from_factory
+    data = {
+        'establishment': est.id,
+        'url': sample_image_file
+    }
+    url = reverse('banner-create')
+    response = client.post(url, data=data, format='multipart')
+    assert response.status_code == 403
+    assert response.data['detail'] == 'You do not have permission to perform this action.'
+
+
+@pytest.mark.django_db
+def test_delete_establishment_banner_as_partner(
+    jwt_auth_api_client,
+    create_establishment_banner_from_factory
+):
+    # given:
+    client = jwt_auth_api_client(role='partner')
+    banner = create_establishment_banner_from_factory
+    # when:
+    url = reverse('banner-delete', args=[banner.id])
+    response = client.delete(url)
+    # then:
+    assert response.status_code == 204
+    assert response.data == None
+
+
+@pytest.mark.django_db
+def test_delete_establishment_banner_as_admin(
+    jwt_auth_api_client,
+    create_establishment_banner_from_factory
+):
+    # given:
+    client = jwt_auth_api_client(role='admin')
+    banner = create_establishment_banner_from_factory
+    # when:
+    url = reverse('banner-delete', args=[banner.id])
+    response = client.delete(url)
+    # then:
+    assert response.status_code == 403
+    assert response.data['detail'] == 'You do not have permission to perform this action.'
+
+
+@pytest.mark.django_db
+def test_delete_establishment_banner_as_customer(
+    jwt_auth_api_client,
+    create_establishment_banner_from_factory
+):
+    # given:
+    client = jwt_auth_api_client(role='customer')
+    banner = create_establishment_banner_from_factory
+    # when:
+    url = reverse('banner-delete', args=[banner.id])
+    response = client.delete(url)
+    # then:
+    assert response.status_code == 403
+    assert response.data['detail'] == 'You do not have permission to perform this action.'
