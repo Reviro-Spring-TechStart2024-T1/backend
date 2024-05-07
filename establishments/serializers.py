@@ -6,6 +6,8 @@ from .models import Establishment, EstablishmentBanner
 
 
 class EstablishmentBannerSerializer(serializers.ModelSerializer):
+    url = serializers.ImageField()
+
     class Meta:
         model = EstablishmentBanner
         fields = [
@@ -13,6 +15,11 @@ class EstablishmentBannerSerializer(serializers.ModelSerializer):
             'establishment',
             'url'
         ]
+
+    def validate_establishment(self, value):
+        if not Establishment.objects.filter(id=value.id).exists():
+            raise serializers.ValidationError('Establishment not found with the given ID.')
+        return value
 
 
 class EstablishmentSerializer(serializers.ModelSerializer):

@@ -24,7 +24,13 @@ class EstablishmentDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsPartnerOrReadOnly]
 
 
-class EstablishmentBannerDetailView(generics.RetrieveUpdateDestroyAPIView):
+class EstablishmentBannerCreateView(generics.CreateAPIView):
+    queryset = EstablishmentBanner.objects.all()
+    serializer_class = EstablishmentBannerSerializer
+    permission_classes = [IsPartnerOrReadOnly]
+
+
+class EstablishmentBannerDeleteView(generics.DestroyAPIView):
     queryset = EstablishmentBanner.objects.all()
     serializer_class = EstablishmentBannerSerializer
     permission_classes = [IsPartnerOrReadOnly]
