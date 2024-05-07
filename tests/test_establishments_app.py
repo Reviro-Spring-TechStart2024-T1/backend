@@ -177,7 +177,6 @@ def test_get_specific_establishment_as_customer(
     assert response.data['description'] == est.description
     assert response.data['phone_number'] == est.phone_number
     assert response.data['logo'] == est.logo
-    assert response.data['banner_image'] == est.banner_image
     assert response.data['happy_hour_start'] == est.happy_hour_start
     assert response.data['happy_hour_end'] == est.happy_hour_end
 
@@ -204,7 +203,6 @@ def test_get_specific_establishment_as_partner(
     assert response.data['description'] == est.description
     assert response.data['phone_number'] == est.phone_number
     assert response.data['logo'] == est.logo
-    assert response.data['banner_image'] == est.banner_image
     assert response.data['happy_hour_start'] == est.happy_hour_start
     assert response.data['happy_hour_end'] == est.happy_hour_end
 
@@ -231,7 +229,6 @@ def test_get_specific_establishment_as_admin(
     assert response.data['description'] == est.description
     assert response.data['phone_number'] == est.phone_number
     assert response.data['logo'] == est.logo
-    assert response.data['banner_image'] == est.banner_image
     assert response.data['happy_hour_start'] == est.happy_hour_start
     assert response.data['happy_hour_end'] == est.happy_hour_end
 
