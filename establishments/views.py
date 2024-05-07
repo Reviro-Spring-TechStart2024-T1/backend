@@ -1,8 +1,8 @@
 from rest_framework import filters, generics
 
-from .models import Establishment
+from .models import Establishment, EstablishmentBanner
 from .permissions import IsPartnerOrReadOnly
-from .serializers import EstablishmentSerializer
+from .serializers import EstablishmentBannerSerializer, EstablishmentSerializer
 
 # from django_filters.rest_framework import DjangoFilterBackend
 
@@ -21,4 +21,10 @@ class EstablishmentListCreateView(generics.ListCreateAPIView):
 class EstablishmentDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Establishment.objects.all()
     serializer_class = EstablishmentSerializer
+    permission_classes = [IsPartnerOrReadOnly]
+
+
+class EstablishmentBannerDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = EstablishmentBanner.objects.all()
+    serializer_class = EstablishmentBannerSerializer
     permission_classes = [IsPartnerOrReadOnly]

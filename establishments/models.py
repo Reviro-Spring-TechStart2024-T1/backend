@@ -20,7 +20,6 @@ class Establishment(BaseModel):
     )
     phone_number = models.CharField(validators=[phone_regex], max_length=15)
     logo = models.ImageField(upload_to='establishments/logos/', null=True, blank=True)
-    banner_image = models.ImageField(upload_to='establishments/banners/', null=True, blank=True)
     happy_hour_start = models.TimeField(null=True, blank=True)
     happy_hour_end = models.TimeField(null=True, blank=True)
 
@@ -30,3 +29,15 @@ class Establishment(BaseModel):
 
     def __str__(self):
         return self.name
+
+
+class EstablishmentBanner(models.Model):
+    establishment = models.ForeignKey(Establishment, on_delete=models.CASCADE, related_name='banners')
+    url = models.ImageField(upload_to='establishments/banners/')
+
+    class Meta:
+        verbose_name = 'Establishment Banner'
+        verbose_name_plural = 'Establishment Banners'
+
+    def __str__(self):
+        return f'Banner for {self.establishment.name}'
