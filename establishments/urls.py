@@ -1,5 +1,6 @@
 from django.urls import path
-from .views import EstablishmentListCreateView, EstablishmentDetailView
+
+from .views import EstablishmentDetailView, EstablishmentListCreateView
 
 urlpatterns = [
     path('', EstablishmentListCreateView.as_view(), name='establishment-list'),

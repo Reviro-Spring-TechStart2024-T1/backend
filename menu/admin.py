@@ -1,7 +1,6 @@
 from django.contrib import admin
-from django.utils.safestring import mark_safe
 
-from .models import Beverage, Category, Menu, QrCode
+from .models import Beverage, Category, Menu
 
 
 class CategoryAdmin(admin.ModelAdmin):
@@ -35,20 +34,3 @@ class MenuAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Menu, MenuAdmin)
-
-
-class QrCodeAdmin(admin.ModelAdmin):
-    list_display = ('menu', 'created_at', 'updated_at', 'qr_code_image_preview')
-    readonly_fields = ('created_at', 'updated_at', 'qr_code_image_preview')
-    fieldsets = (
-        (None, {'fields': ('menu', 'qr_code_image', 'qr_code_image_preview')}),
-        ('Timestamps', {'fields': ('created_at', 'updated_at')}),
-    )
-
-    def qr_code_image_preview(self, obj):
-        if obj.qr_code_image:
-            return mark_safe(f'<img src="{obj.qr_code_image.url}" width="150" height="150"/>')
-        return 'No Image'
-
-
-admin.site.register(QrCode, QrCodeAdmin)

@@ -7,10 +7,6 @@ from .views import (
     CategoryListCreateView,
     MenuDetailView,
     MenuListCreateView,
-    QrCodeCreate,
-    QrCodeDelete,
-    QrCodeDetail,
-    QrCodeList,
 )
 
 urlpatterns = [
@@ -20,8 +16,4 @@ urlpatterns = [
     path('menus/<int:pk>/', MenuDetailView.as_view(), name='menu-detail'),
     path('beverages/', BeverageListCreateView.as_view(), name='beverage-list'),
     path('beverages/<int:pk>/', BeverageDetailView.as_view(), name='beverage-detail'),
-    path('qrcodes/', QrCodeList.as_view(), name='qrcode-list'),
-    path('qrcodes/<int:pk>/', QrCodeDetail.as_view(), name='qrcode-detail'),
-    path('qrcodes/create/<int:menu_id>/', QrCodeCreate.as_view(), name='create-qrcode'),
-    path('qrcodes/delete/<int:pk>/', QrCodeDelete.as_view(), name='delete-qrcode'),
 ]
