@@ -200,8 +200,8 @@ class PartnerUserRegisterSerializer(serializers.ModelSerializer):
 
         # Send email to the created user
         login_url = settings.ALLOWED_HOSTS[0] + reverse('token_obtain_pair')
-        subject = 'Your DrinkJoyAccount Information'
-        message = (f'Your account has been created.\n\n'
+        subject = 'Your DrinkJoy Account Information'
+        message = (f'Your account with the role \'partner\' has been created.\n\n'
                    f'Email: {validated_data["email"]}\n'
                    f'Password: {random_password}\n\n'
                    f'Please make sure to update your password after first login.\n'
