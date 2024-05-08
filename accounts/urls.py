@@ -5,6 +5,7 @@ from .views import (
     ChangePasswordView,
     LogoutView,
     PartnerListCreateView,
+    UserListView,
     UserProfileView,
     UserRegisterView,
 )
@@ -18,4 +19,5 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('forgot-password/', include('django_rest_passwordreset.urls', namespace='password_reset')),
+    path('', UserListView.as_view(), name='users_list'),
 ]

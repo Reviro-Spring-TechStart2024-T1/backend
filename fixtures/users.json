@@ -746,5 +746,115 @@
     "groups": [],
     "user_permissions": []
   }
+},
+{
+  "model": "accounts.user",
+  "pk": 38,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$6Sn8TCN9l4sXGQORxQRQ0u$+XX/vnwBXKt/rVr1BdNv8+RozlRCFUYYVdIxD6FFCog=",
+    "last_login": null,
+    "is_superuser": false,
+    "is_deleted": false,
+    "deleted_at": null,
+    "email": "denn@gmail.com",
+    "first_name": null,
+    "last_name": null,
+    "date_of_birth": null,
+    "avatar": "",
+    "role": "customer",
+    "sex": "not_say",
+    "is_active": true,
+    "is_staff": false,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 39,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$tXGP3CmrZwsdUH3BSjziUW$A+mGRwBboVtpN9gktuceZLkEyvCAbRtUT7D8wohdmmI=",
+    "last_login": null,
+    "is_superuser": false,
+    "is_deleted": false,
+    "deleted_at": null,
+    "email": "den123@gmail.com",
+    "first_name": null,
+    "last_name": null,
+    "date_of_birth": null,
+    "avatar": "",
+    "role": "customer",
+    "sex": "not_say",
+    "is_active": true,
+    "is_staff": false,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 40,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$AVu2KtaOAlEYLaZyppxOPx$cLLLB9V4CGxeZp3wOhBdEct1lFv9r83Nptb8Q1FWxDQ=",
+    "last_login": null,
+    "is_superuser": false,
+    "is_deleted": false,
+    "deleted_at": null,
+    "email": "ilias.kadyrkulov@gmail.com",
+    "first_name": null,
+    "last_name": null,
+    "date_of_birth": null,
+    "avatar": "",
+    "role": "partner",
+    "sex": "not_say",
+    "is_active": true,
+    "is_staff": false,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 41,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$BqaosIBTwEGzBX3egrGepz$B7jqt8nIPxvDnAyUMbW1tkUxs5DvaVrpFm9+EIjF9Z8=",
+    "last_login": null,
+    "is_superuser": false,
+    "is_deleted": false,
+    "deleted_at": null,
+    "email": "Aza6624815@gmail.com",
+    "first_name": null,
+    "last_name": null,
+    "date_of_birth": null,
+    "avatar": "",
+    "role": "customer",
+    "sex": "not_say",
+    "is_active": true,
+    "is_staff": false,
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "accounts.user",
+  "pk": 42,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$RMOo38q41qzwZBiHhsyEMa$Rf7U49aQ5yGY8rvH3zBLGs5BNMQ795K/QPFVHKdqIg0=",
+    "last_login": null,
+    "is_superuser": false,
+    "is_deleted": false,
+    "deleted_at": null,
+    "email": "cristiano7@gmail.com",
+    "first_name": null,
+    "last_name": null,
+    "date_of_birth": null,
+    "avatar": "",
+    "role": "customer",
+    "sex": "not_say",
+    "is_active": true,
+    "is_staff": false,
+    "groups": [],
+    "user_permissions": []
+  }
 }
 ]

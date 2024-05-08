@@ -302,3 +302,111 @@ def test_unsuccessful_logout_as_auth_user_with_access(
     # then:
     assert response.status_code == 400
     assert response.data['detail'] == 'Invalid refresh token.'
+
+
+@pytest.mark.django_db
+def test_get_list_of_all_users_by_admin(
+    jwt_auth_api_client
+):
+    # given:
+    client = jwt_auth_api_client('admin')
+    # when:
+    url = reverse('users_list')
+    response = client.get(url)
+    print(response.content.decode('utf-8'))
+    # then:
+    assert response.status_code == 200
+    assert len(response.data['results']) == 1
+
+
+@pytest.mark.django_db
+def test_get_list_of_all_users_by_customer(
+    jwt_auth_api_client
+):
+    # given:
+    client = jwt_auth_api_client('customer')
+    # when:
+    url = reverse('users_list')
+    response = client.get(url)
+    print(response.content.decode('utf-8'))
+    # then:
+    assert response.status_code == 403
+    assert response.data['detail'] == 'You do not have permission to perform this action.'
+
+
+@pytest.mark.django_db
+def test_get_list_of_all_users_by_partner(
+    jwt_auth_api_client
+):
+    # given:
+    client = jwt_auth_api_client('partner')
+    # when:
+    url = reverse('users_list')
+    response = client.get(url)
+    print(response.content.decode('utf-8'))
+    # then:
+    assert response.status_code == 403
+    assert response.data['detail'] == 'You do not have permission to perform this action.'
+
+
+@pytest.mark.django_db
+def test_get_empty_list_of_all_partners_by_admin(
+    jwt_auth_api_client
+):
+    # given:
+    client = jwt_auth_api_client('admin')
+    # when:
+    url = reverse('register_partner')
+    response = client.get(url)
+    print(response.content.decode('utf-8'))
+    # then:
+    assert response.status_code == 200
+    assert len(response.data['results']) == 0
+
+
+@pytest.mark.django_db
+def test_get_list_of_all_partners_by_customer(
+    jwt_auth_api_client
+):
+    # given:
+    client = jwt_auth_api_client('customer')
+    # when:
+    url = reverse('register_partner')
+    response = client.get(url)
+    print(response.content.decode('utf-8'))
+    # then:
+    assert response.status_code == 403
+    assert response.data['detail'] == 'You do not have permission to perform this action.'
+
+
+@pytest.mark.django_db
+def test_get_list_of_all_partners_by_partner(
+    jwt_auth_api_client
+):
+    # given:
+    client = jwt_auth_api_client('partner')
+    # when:
+    url = reverse('register_partner')
+    response = client.get(url)
+    print(response.content.decode('utf-8'))
+    # then:
+    assert response.status_code == 403
+    assert response.data['detail'] == 'You do not have permission to perform this action.'
+
+
+@pytest.mark.django_db
+def test_get_list_of_all_partners_by_admin(
+    jwt_auth_api_client,
+    create_user_from_factory
+):
+    # given:
+    client = jwt_auth_api_client('admin')
+    partner = create_user_from_factory('partner')
+    # when:
+    url = reverse('register_partner')
+    response = client.get(url)
+    print(response.content.decode('utf-8'))
+    # then:
+    assert response.status_code == 200
+    assert len(response.data['results']) == 1
+    assert response.data['results'][0]['id'] == partner.id

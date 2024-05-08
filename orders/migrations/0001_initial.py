@@ -12,7 +12,6 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('establishments', '0001_initial'),
         ('menu', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
@@ -29,7 +28,7 @@ class Migration(migrations.Migration):
                 ('quantity', models.PositiveIntegerField(default=1)),
                 ('last_updated', models.DateTimeField(auto_now=True)),
                 ('beverage', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='orders', to='menu.beverage')),
-                ('establishment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='orders', to='establishments.establishment')),
+                ('menu', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='orders', to='menu.menu')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='orders', to=settings.AUTH_USER_MODEL)),
             ],
             options={
