@@ -15,7 +15,6 @@
     "description": "test establishment of partner",
     "phone_number": "+996-132-123123",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": "12:00:00",
     "happy_hour_end": "15:00:00"
   }
@@ -36,7 +35,6 @@
     "description": "test establishment for partner1",
     "phone_number": "+996-123-321456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": "13:00:00",
     "happy_hour_end": "16:00:00"
   }
@@ -57,7 +55,6 @@
     "description": "test establishment for partner2",
     "phone_number": "+996-234-345456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": "11:00:00",
     "happy_hour_end": "14:00:00"
   }
@@ -78,7 +75,6 @@
     "description": "",
     "phone_number": "+996-500-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": "08:30:00",
     "happy_hour_end": "09:30:00"
   }
@@ -99,7 +95,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -120,7 +115,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -141,7 +135,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -162,7 +155,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -183,7 +175,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -204,7 +195,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -225,7 +215,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -246,7 +235,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -267,7 +255,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -288,7 +275,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -309,7 +295,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -330,7 +315,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -351,7 +335,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -372,7 +355,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -393,7 +375,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -414,7 +395,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -435,7 +415,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -456,7 +435,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -477,7 +455,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -498,7 +475,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -519,7 +495,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -540,7 +515,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -561,7 +535,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -582,7 +555,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -603,7 +575,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -624,7 +595,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -645,7 +615,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -666,7 +635,6 @@
     "description": "",
     "phone_number": "+996-000-123456",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": null,
     "happy_hour_end": null
   }
@@ -687,7 +655,6 @@
     "description": "",
     "phone_number": "+996-700-205314",
     "logo": "",
-    "banner_image": "",
     "happy_hour_start": "02:10:00",
     "happy_hour_end": "03:22:00"
   }

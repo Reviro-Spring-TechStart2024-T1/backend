@@ -23,7 +23,6 @@ jobs:
           POSTGRES_DB: pytest_ci_db
           POSTGRES_USER: pytest_ci_admin
           POSTGRES_PASSWORD: pytest_ci_admin
-
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
 
     steps:
@@ -35,6 +34,9 @@ jobs:
       - name: Make a .env file
         run: |
           cp .env.example .env
+          echo CLOUD_NAME=${{ secrets.CLOUD_NAME }} >> .env
+          echo CLOUD_API_KEY=${{ secrets.CLOUD_API_KEY }} >> .env
+          echo CLOUD_API_SECRET=${{ secrets.CLOUD_API_SECRET }} >> .env
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip

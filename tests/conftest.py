@@ -1,5 +1,9 @@
+import io
+
 import pytest
+from django.core.files.uploadedfile import SimpleUploadedFile
 from faker import Faker
+from PIL import Image
 from pytest_factoryboy import register
 from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -9,6 +13,7 @@ from menu.models import Menu
 from tests.factories import (
     BeverageFactory,
     CategoryFactory,
+    EstablishmentBannerFactory,
     EstablishmentFactory,
     KyrgyzPhoneNumberProvider,
     MenuFactory,
@@ -20,6 +25,7 @@ register(CategoryFactory)
 register(EstablishmentFactory)
 register(MenuFactory)
 register(BeverageFactory)
+register(EstablishmentBannerFactory)
 
 
 fake = Faker()
@@ -132,6 +138,27 @@ def dict_data_to_create_establishment() -> dict:
         }
         return data
     return wrapper_to_provide_user
+
+
+@pytest.fixture
+def create_establishment_banner_from_factory(db):
+    return EstablishmentBannerFactory()
+
+
+@pytest.fixture
+def sample_image_file():
+    '''
+    Generate an in-memory image for testing uploads.
+    '''
+    # Create an image using PIL
+    image = Image.new('RGB', (100, 100), color='red')
+    image_file = io.BytesIO()
+    image.save(image_file, format='JPEG')
+    image_file.seek(0)
+
+    # Create a SimpleUploadedFile that simulates an uploaded file
+    file = SimpleUploadedFile('test.jpg', image_file.read(), content_type='image/jpeg')
+    return file
 
 
 @pytest.fixture

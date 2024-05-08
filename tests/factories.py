@@ -6,12 +6,12 @@ from factory import (
     lazy_attribute,
     post_generation,
 )
-from factory.django import DjangoModelFactory, Password
+from factory.django import DjangoModelFactory, ImageField, Password
 from faker import Faker
 from faker.providers import BaseProvider
 
 from accounts.models import User
-from establishments.models import Establishment
+from establishments.models import Establishment, EstablishmentBanner
 from menu.models import Beverage, Category, Menu
 
 
@@ -108,3 +108,10 @@ class BeverageFactory(DjangoModelFactory):
     price = LazyAttribute(lambda _: fake.pydecimal(3, 2, True))
     description = LazyFunction(fake.word)
     in_stock = LazyAttribute(lambda _: fake.pyint(min_value=0, max_value=100))
+
+
+class EstablishmentBannerFactory(DjangoModelFactory):
+    class Meta:
+        model = EstablishmentBanner
+    establishment = SubFactory(EstablishmentFactory)
+    url = ImageField()
