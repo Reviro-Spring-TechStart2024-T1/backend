@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Establishment
+from .models import Establishment, EstablishmentBanner
 
 
 class EstablishmentAdmin(admin.ModelAdmin):
@@ -17,3 +17,12 @@ class EstablishmentAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Establishment, EstablishmentAdmin)
+
+
+class EstablishmentBannerAdmin(admin.ModelAdmin):
+    list_display = ('id', 'establishment', 'url')
+    list_filter = ('establishment',)
+    search_fields = ('establishment__name',)
+
+
+admin.site.register(EstablishmentBanner, EstablishmentBannerAdmin)
