@@ -1,7 +1,8 @@
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
-from menu.permissions import IsAdminOrReadOnly
+from menu.permissions import IsAdminUser
 
 from .models import User
 from .serializers import (
@@ -10,6 +11,7 @@ from .serializers import (
     PartnerUserRegisterSerializer,
     UserProfileSerializer,
     UserRegisterSerializer,
+    UserSerializer,
 )
 
 
@@ -27,6 +29,23 @@ class UserRegisterView(generics.CreateAPIView):
                 status=status.HTTP_201_CREATED
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserListView(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminUser]
+
+    @swagger_auto_schema(
+        operation_summary='Retrieve a list of all users.',
+        operation_description='''
+        Retrieve a paginated list of all users that are registered in the system.\n
+        - Default elements per page 10.\n
+        - Permissions: Admin only.
+        '''
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
 
 class UserProfileView(generics.RetrieveUpdateAPIView):
@@ -79,4 +98,27 @@ class LogoutView(generics.GenericAPIView):
 class PartnerListCreateView(generics.ListCreateAPIView):
     queryset = User.objects.filter(role__in=['partner'])
     serializer_class = PartnerUserRegisterSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [IsAdminUser]
+
+    @swagger_auto_schema(
+        operation_summary='Retrieve a list of all partners.',
+        operation_description='''
+        Retrieve a paginated list of all partners that are registered in the system.\n
+        - Default elements per page 10.\n
+        - Permissions: Admin only.
+        '''
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_summary='Create partner.',
+        operation_description='''
+        Create partner by passing only email of designated user.\n
+        - Uniqueness of passed email will be checked, if email is in the db error will be raised\n
+        - Secure password is generated on the backend and letter is sent to new partner.\n
+        - Permissions: Admin only.
+        '''
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)

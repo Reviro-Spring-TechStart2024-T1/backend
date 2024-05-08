@@ -183,7 +183,21 @@ class PartnerUserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'email'
+            'id',
+            'first_name',
+            'last_name',
+            'role',
+            'date_of_birth',
+            'email',
+            'sex'
+        ]
+        read_only_fields = [
+            'id',
+            'first_name',
+            'last_name',
+            'role',
+            'date_of_birth',
+            'sex'
         ]
 
     def create(self, validated_data):
