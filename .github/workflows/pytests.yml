@@ -23,6 +23,9 @@ jobs:
           POSTGRES_DB: pytest_ci_db
           POSTGRES_USER: pytest_ci_admin
           POSTGRES_PASSWORD: pytest_ci_admin
+          CLOUD_NAME: cloud_name
+          CLOUD_API_KEY: cloud_key
+          CLOUD_API_SECRET: cloud_api_secret
 
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
 
