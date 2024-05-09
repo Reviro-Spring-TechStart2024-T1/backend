@@ -6,6 +6,7 @@ from django.core.mail import send_mail
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 from rest_framework.validators import UniqueValidator
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 from .models import User
@@ -228,3 +229,19 @@ class PartnerUserRegisterSerializer(serializers.ModelSerializer):
         send_mail(subject, message, from_email, to_email, fail_silently=False)
 
         return user
+
+
+class CustomObtainTokenPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        token['role'] = user.role
+
+        return token
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+        user = self.user
+        data['role'] = user.role
+        return data
