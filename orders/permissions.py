@@ -3,10 +3,19 @@ from rest_framework.permissions import BasePermission
 
 class IsCustomerOnly(BasePermission):
     """
-    Custom permission to allow only partners to create, update,
-    partial update and delete objects but allow any user to view.
+    Custom permission to allow only authenticated customers to perform actions on endpoint.
     """
 
     def has_permission(self, request, view):
         # Write permissions are only allowed to customer users
-        return request.user and request.user.role == 'customer'
+        return request.user.is_authenticated and request.user.role == 'customer'
+
+
+class IsPartnerOnly(BasePermission):
+    """
+    Custom permission to allow only authenticated partners to perform actions on endpoint.
+    """
+
+    def has_permission(self, request, view):
+        # Write permissions are only allowed to customer users
+        return request.user.is_authenticated and request.user.role == 'partner'

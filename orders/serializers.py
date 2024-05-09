@@ -81,4 +81,15 @@ class PartnersOrderSerializer(serializers.ModelSerializer):
             'quantity',
             'last_updated'
         ]
-        read_only_fields = ['quantity', 'order_date', 'last_updated']
+        read_only_fields = [
+            'id',
+            'user_email',
+            'user_first_name',
+            'user_last_name',
+            'establishment_name',
+            'beverage_name',
+            'beverage_price',
+            'order_date',
+            'quantity',
+            'last_updated'
+        ]

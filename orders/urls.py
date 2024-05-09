@@ -4,6 +4,6 @@ from .views import PartnersOrderDetailView, PartnersOrderListView, UsersOrderLis
 
 urlpatterns = [
     path('partners/', PartnersOrderListView.as_view(), name='partners-order-list'),
-    path('<int:pk>/partners/', PartnersOrderDetailView.as_view(), name='partners-order-detail'),
+    path('partners/<int:pk>/', PartnersOrderDetailView.as_view(), name='partners-order-detail'),
     path('', UsersOrderListView.as_view(), name='users-order-list')
 ]
