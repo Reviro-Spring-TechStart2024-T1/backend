@@ -1,0 +1,26 @@
+[
+{
+  "model": "establishments.establishmentbanner",
+  "pk": 1,
+  "fields": {
+    "establishment": 3,
+    "url": "media/establishments/banners/barashek_sp1adn"
+  }
+},
+{
+  "model": "establishments.establishmentbanner",
+  "pk": 2,
+  "fields": {
+    "establishment": 1,
+    "url": "media/establishments/banners/bublik_shhfyz"
+  }
+},
+{
+  "model": "establishments.establishmentbanner",
+  "pk": 3,
+  "fields": {
+    "establishment": 2,
+    "url": "media/establishments/banners/koreana_eptwpc"
+  }
+}
+]
