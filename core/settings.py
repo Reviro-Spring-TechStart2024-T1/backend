@@ -65,7 +65,6 @@ MY_APPS = [
 
 THIRD_PARTY_APPS = [
     'rest_framework',
-    'drf_yasg',
     'rest_framework_simplejwt',
     'cloudinary_storage',
     'cloudinary',
@@ -73,6 +72,8 @@ THIRD_PARTY_APPS = [
     'corsheaders',
     'django_rest_passwordreset',
     'django_filters',
+    'drf_spectacular',
+
 ]
 
 INSTALLED_APPS += MY_APPS + THIRD_PARTY_APPS
@@ -177,7 +178,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend'],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 # DRF_SIMPLEJWT settings
@@ -197,16 +199,21 @@ CLOUDINARY_STORAGE = {
 MEDIA_URL = '/media/'
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
-SWAGGER_SETTINGS = {
-    'SECURITY_DEFINITIONS': {
-        'Basic': {'type': 'basic'},
-        'Bearer': {
-            'type': 'apiKey',
-            'description': 'Enter JWT Bearer token in the format: **Bearer {your token}**',
-            'name': 'Authorization',
-            'in': 'header',
-        },
-    }
+
+PROJECT_DESCRIPTION = (
+    f'## To access DrinkJoy API endpoints:\n'
+    f'1. **Obtain a Bearer Token:** Send a `POST` request to `/users/token/` with your credentials. The server responds with an **access** and **refresh** tokens.\n'
+    f'2. **Use the Bearer Token:** Include the access token in the Authorization header of your requests to protected endpoints: `Authorization: Bearer <access_token>`.\n'
+    f'3. **Handle Unauthorized Access:** If the token is invalid or expired, the server responds with `401 Unauthorized`. Obtain a new token by repeating step 1.'
+)
+
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'DrinkJoy Project API',
+    'DESCRIPTION': PROJECT_DESCRIPTION,
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    # OTHER SETTINGS
 }
 
 # CORS Headers django-cors-headers settings
