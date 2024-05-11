@@ -14,11 +14,8 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
-# import cloudinary_storage
+import dj_database_url
 from dotenv import load_dotenv
-
-# import dj_database_url
-
 
 load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -116,16 +113,16 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT'),
+        'NAME': os.environ.get('POSTGRES_DB', 'drinkjoy'),
+        'USER': os.environ.get('POSTGRES_USER', 'postgres'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'admin'),
+        'HOST': os.environ.get('POSTGRES_HOST'),
+        'PORT': os.environ.get('POSTGRES_PORT'),
     }
 }
 
-# db_from_env = dj_database_url.config(env='DATABASE_URL', conn_max_age=600)
-# DATABASES['default'].update(db_from_env)
+db_from_env = dj_database_url.config(env='DATABASE_URL', conn_max_age=600)
+DATABASES['default'].update(db_from_env)
 
 AUTH_USER_MODEL = 'accounts.User'
 
