@@ -1,4 +1,4 @@
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
@@ -36,13 +36,13 @@ class UserListView(generics.ListAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
 
-    @swagger_auto_schema(
-        operation_summary='Retrieve a list of all users.',
-        operation_description='''
-        Retrieve a paginated list of all users that are registered in the system.\n
-        - Default elements per page 10.\n
-        - Permissions: Admin only.
-        '''
+    @extend_schema(
+        summary='Retrieve a list of all users.',
+        description=(
+            f'Retrieve a paginated list of all users that are registered in the system.\n'
+            f'- Default elements per page 10.\n'
+            f'- Permissions: Admin only.'
+        )
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
@@ -100,25 +100,25 @@ class PartnerListCreateView(generics.ListCreateAPIView):
     serializer_class = PartnerUserRegisterSerializer
     permission_classes = [IsAdminUser]
 
-    @swagger_auto_schema(
-        operation_summary='Retrieve a list of all partners.',
-        operation_description='''
-        Retrieve a paginated list of all partners that are registered in the system.\n
-        - Default elements per page 10.\n
-        - Permissions: Admin only.
-        '''
+    @extend_schema(
+        summary='Retrieve a list of all partners.',
+        description=(
+            f'Retrieve a paginated list of all partners that are registered in the system.\n'
+            f'- Default elements per page 10.\n'
+            f'- Permissions: Admin only.'
+        )
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
-    @swagger_auto_schema(
-        operation_summary='Create partner.',
-        operation_description='''
-        Create partner by passing only email of designated user.\n
-        - Uniqueness of passed email will be checked, if email is in the db error will be raised\n
-        - Secure password is generated on the backend and letter is sent to new partner.\n
-        - Permissions: Admin only.
-        '''
+    @extend_schema(
+        summary='Create partner.',
+        description=(
+            f'Create partner by passing only email of designated user.\n'
+            f'- Uniqueness of passed email will be checked, if email is in the db error will be raised\n'
+            f'- Secure password is generated on the backend and letter is sent to new partner.\n'
+            f'- Permissions: Admin only.'
+        )
     )
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)

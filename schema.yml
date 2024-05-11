@@ -1,0 +1,2064 @@
+openapi: 3.0.3
+info:
+  title: DrinkJoy Project API
+  version: 1.0.0
+  description: |-
+    DrinkJoy Project API предоставляет доступ к различным запросам, требующим аутентификации с помощью токена Bearer.
+    Для аутентификации в Header запросе в заголовке передавайте ключ:значение, где ключ 'Authorization' а значение 'Bearer {access_token}'.
+paths:
+  /establishments/:
+    get:
+      operationId: establishments_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - establishments
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEstablishmentList'
+          description: ''
+    post:
+      operationId: establishments_create
+      tags:
+      - establishments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Establishment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Establishment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Establishment'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Establishment'
+          description: ''
+  /establishments/{id}/:
+    get:
+      operationId: establishments_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - establishments
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Establishment'
+          description: ''
+    put:
+      operationId: establishments_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - establishments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Establishment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Establishment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Establishment'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Establishment'
+          description: ''
+    patch:
+      operationId: establishments_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - establishments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEstablishment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEstablishment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEstablishment'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Establishment'
+          description: ''
+    delete:
+      operationId: establishments_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - establishments
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /establishments/banners/:
+    post:
+      operationId: establishments_banners_create
+      tags:
+      - establishments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EstablishmentBanner'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EstablishmentBanner'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EstablishmentBanner'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EstablishmentBanner'
+          description: ''
+  /establishments/banners/{id}/:
+    delete:
+      operationId: establishments_banners_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - establishments
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /menus/beverages/:
+    get:
+      operationId: menus_beverages_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - menus
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBeverageList'
+          description: ''
+    post:
+      operationId: menus_beverages_create
+      tags:
+      - menus
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Beverage'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Beverage'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Beverage'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Beverage'
+          description: ''
+  /menus/beverages/{id}/:
+    get:
+      operationId: menus_beverages_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - menus
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Beverage'
+          description: ''
+    put:
+      operationId: menus_beverages_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - menus
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Beverage'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Beverage'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Beverage'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Beverage'
+          description: ''
+    patch:
+      operationId: menus_beverages_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - menus
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBeverage'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBeverage'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBeverage'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Beverage'
+          description: ''
+    delete:
+      operationId: menus_beverages_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - menus
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /menus/categories/:
+    get:
+      operationId: menus_categories_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - menus
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCategoryList'
+          description: ''
+    post:
+      operationId: menus_categories_create
+      tags:
+      - menus
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Category'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Category'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+  /menus/categories/{id}/:
+    get:
+      operationId: menus_categories_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - menus
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    put:
+      operationId: menus_categories_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - menus
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Category'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Category'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    patch:
+      operationId: menus_categories_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - menus
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCategory'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCategory'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCategory'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    delete:
+      operationId: menus_categories_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - menus
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /menus/menus/:
+    get:
+      operationId: menus_menus_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - menus
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMenuList'
+          description: ''
+    post:
+      operationId: menus_menus_create
+      tags:
+      - menus
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Menu'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Menu'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Menu'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Menu'
+          description: ''
+  /menus/menus/{id}/:
+    get:
+      operationId: menus_menus_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - menus
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Menu'
+          description: ''
+    put:
+      operationId: menus_menus_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - menus
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Menu'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Menu'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Menu'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Menu'
+          description: ''
+    patch:
+      operationId: menus_menus_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - menus
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMenu'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedMenu'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedMenu'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Menu'
+          description: ''
+    delete:
+      operationId: menus_menus_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - menus
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /orders/:
+    get:
+      operationId: orders_list
+      description: "\n        Retrieve a list of orders created by the authenticated\
+        \ customer user.\n        - Requires authentication.\n        - Each customer\
+        \ gets only their own list of made orders.\n        - Permission: Customers\
+        \ only.\n        "
+      summary: Get customers' orders list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - orders
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUsersOrderList'
+          description: ''
+    post:
+      operationId: orders_create
+      description: "\n        Create a new order for the authenticated customer user.\n\
+        \        - Requires authentication.\n        - To create new order pass beverages\
+        \ id to the field \"beverage_id\".\n        - Returns the newly created order.\n\
+        \        - Permission: Customers only.\n        "
+      summary: Create order
+      tags:
+      - orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UsersOrder'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UsersOrder'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UsersOrder'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersOrder'
+          description: ''
+  /orders/partners/:
+    get:
+      operationId: orders_partners_list
+      description: "\n        Retrieve a list of orders for all the establishments\
+        \ of partner.\n        - Requires authentication.\n        - Permission: Partners\
+        \ only.\n        "
+      summary: Get partners' orders list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - orders
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPartnersOrderList'
+          description: ''
+  /orders/partners/{id}/:
+    get:
+      operationId: orders_partners_retrieve
+      description: "\n        Retrieve an order by its id.\n        - Requires authentication.\n\
+        \        - Permission: Partners only.\n        "
+      summary: Get order
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - orders
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnersOrder'
+          description: ''
+    put:
+      operationId: orders_partners_update
+      description: "\n        Partner can update only status of the order.\n     \
+        \   - Requires authentication.\n        - Permission: Partners only.\n   \
+        \     "
+      summary: Update order
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartnersOrder'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PartnersOrder'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PartnersOrder'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnersOrder'
+          description: ''
+    patch:
+      operationId: orders_partners_partial_update
+      description: "\n        Partner can partially update only status of the order.\n\
+        \        - Requires authentication.\n        - Permission: Partners only.\n\
+        \        "
+      summary: Partially update order
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnersOrder'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnersOrder'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnersOrder'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnersOrder'
+          description: ''
+  /users/:
+    get:
+      operationId: users_list
+      description: "\n        Retrieve a paginated list of all users that are registered\
+        \ in the system.\n\n        - Default elements per page 10.\n\n        - Permissions:\
+        \ Admin only.\n        "
+      summary: Retrieve a list of all users.
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserList'
+          description: ''
+  /users/change-password/:
+    put:
+      operationId: users_change_password_update
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePassword'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ChangePassword'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ChangePassword'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangePassword'
+          description: ''
+    patch:
+      operationId: users_change_password_partial_update
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedChangePassword'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedChangePassword'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedChangePassword'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChangePassword'
+          description: ''
+  /users/forgot-password/:
+    post:
+      operationId: users_forgot_password_create
+      description: |-
+        An Api View which provides a method to request a password reset token based on an e-mail address
+
+        Sends a signal reset_password_token_created when a reset token was created
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Email'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Email'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Email'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Email'
+          description: ''
+  /users/forgot-password/confirm/:
+    post:
+      operationId: users_forgot_password_confirm_create
+      description: An Api View which provides a method to reset a password based on
+        a unique token
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordToken'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PasswordToken'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PasswordToken'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordToken'
+          description: ''
+  /users/forgot-password/validate-token/:
+    post:
+      operationId: users_forgot_password_validate_token_create
+      description: An Api View which provides a method to verify that a token is valid
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetToken'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResetToken'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResetToken'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResetToken'
+          description: ''
+  /users/logout/:
+    post:
+      operationId: users_logout_create
+      description: Refresh token has to be passed to log out user and put their refresh
+        token into blacklist.
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Logout'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Logout'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Logout'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Logout'
+          description: ''
+  /users/profile/:
+    get:
+      operationId: users_profile_retrieve
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    put:
+      operationId: users_profile_update
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserProfile'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+    patch:
+      operationId: users_profile_partial_update
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfile'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfile'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserProfile'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: ''
+  /users/register/:
+    post:
+      operationId: users_register_create
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegister'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRegister'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRegister'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRegister'
+          description: ''
+  /users/register/partner/:
+    get:
+      operationId: users_register_partner_list
+      description: "\n        Retrieve a paginated list of all partners that are registered\
+        \ in the system.\n\n        - Default elements per page 10.\n\n        - Permissions:\
+        \ Admin only.\n        "
+      summary: Retrieve a list of all partners.
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - users
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPartnerUserRegisterList'
+          description: ''
+    post:
+      operationId: users_register_partner_create
+      description: "\n        Create partner by passing only email of designated user.\n\
+        \n        - Uniqueness of passed email will be checked, if email is in the\
+        \ db error will be raised\n\n        - Secure password is generated on the\
+        \ backend and letter is sent to new partner.\n\n        - Permissions: Admin\
+        \ only.\n        "
+      summary: Create partner.
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartnerUserRegister'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PartnerUserRegister'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PartnerUserRegister'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerUserRegister'
+          description: ''
+  /users/token/:
+    post:
+      operationId: users_token_create
+      description: |-
+        Takes a set of user credentials and returns an access and refresh JSON web
+        token pair to prove the authentication of those credentials.
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomObtainTokenPair'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CustomObtainTokenPair'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CustomObtainTokenPair'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomObtainTokenPair'
+          description: ''
+  /users/token/refresh/:
+    post:
+      operationId: users_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+components:
+  schemas:
+    Beverage:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        menu:
+          type: integer
+        name:
+          type: string
+          maxLength: 255
+        category:
+          type: integer
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+        description:
+          type: string
+          nullable: true
+        in_stock:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+      required:
+      - category
+      - id
+      - menu
+      - name
+      - price
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+      required:
+      - id
+      - name
+    ChangePassword:
+      type: object
+      properties:
+        old_password:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        confirm_password:
+          type: string
+          writeOnly: true
+      required:
+      - confirm_password
+      - old_password
+      - password
+    CustomObtainTokenPair:
+      type: object
+      properties:
+        email:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+      required:
+      - email
+      - password
+    Email:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
+    Establishment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          type: integer
+        name:
+          type: string
+          maxLength: 255
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        street_name:
+          type: string
+          nullable: true
+          maxLength: 255
+        street_number:
+          type: string
+          nullable: true
+          maxLength: 10
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,8})?$
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,8})?$
+        description:
+          type: string
+        phone_number:
+          type: string
+          pattern: ^\+996-[0-9]{3}-[0-9]{6}$
+          maxLength: 15
+        logo:
+          type: string
+          format: uri
+          nullable: true
+        banners:
+          type: array
+          items:
+            $ref: '#/components/schemas/EstablishmentBanner'
+          readOnly: true
+        happy_hour_start:
+          type: string
+          format: time
+          nullable: true
+        happy_hour_end:
+          type: string
+          format: time
+          nullable: true
+      required:
+      - banners
+      - email
+      - id
+      - latitude
+      - longitude
+      - name
+      - owner
+      - phone_number
+    EstablishmentBanner:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        establishment:
+          type: integer
+        url:
+          type: string
+          format: uri
+      required:
+      - establishment
+      - id
+      - url
+    Logout:
+      type: object
+      description: |-
+        Serializer for the logout endpoint.
+
+        This serializer expects a JSON object with a single key:
+            - refresh_token: A string representing the refresh token to be invalidated.
+
+        Upon successful execution, this serializer invalidates the provided refresh token
+        and does not return any data. If the refresh token is successfully invalidated,
+        the user will be logged out of the system.
+      properties:
+        refresh_token:
+          type: string
+      required:
+      - refresh_token
+    Menu:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        establishment:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        beverages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Beverage'
+          readOnly: true
+      required:
+      - beverages
+      - created_at
+      - establishment
+      - id
+      - updated_at
+    PaginatedBeverageList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Beverage'
+    PaginatedCategoryList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+    PaginatedEstablishmentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Establishment'
+    PaginatedMenuList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Menu'
+    PaginatedPartnerUserRegisterList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartnerUserRegister'
+    PaginatedPartnersOrderList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PartnersOrder'
+    PaginatedUserList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    PaginatedUsersOrderList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsersOrder'
+    PartnerUserRegister:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        first_name:
+          type: string
+          readOnly: true
+          nullable: true
+        last_name:
+          type: string
+          readOnly: true
+          nullable: true
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          readOnly: true
+        date_of_birth:
+          type: string
+          format: date
+          readOnly: true
+          nullable: true
+        email:
+          type: string
+          format: email
+        sex:
+          allOf:
+          - $ref: '#/components/schemas/SexEnum'
+          readOnly: true
+      required:
+      - date_of_birth
+      - email
+      - first_name
+      - id
+      - last_name
+      - role
+      - sex
+    PartnersOrder:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user_email:
+          type: string
+          format: email
+          readOnly: true
+        user_first_name:
+          type: string
+          readOnly: true
+        user_last_name:
+          type: string
+          readOnly: true
+        establishment_name:
+          type: string
+          readOnly: true
+        beverage_name:
+          type: string
+          readOnly: true
+        beverage_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+        order_date:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        quantity:
+          type: integer
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - beverage_name
+      - beverage_price
+      - establishment_name
+      - id
+      - last_updated
+      - order_date
+      - quantity
+      - user_email
+      - user_first_name
+      - user_last_name
+    PasswordToken:
+      type: object
+      properties:
+        password:
+          type: string
+        token:
+          type: string
+      required:
+      - password
+      - token
+    PatchedBeverage:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        menu:
+          type: integer
+        name:
+          type: string
+          maxLength: 255
+        category:
+          type: integer
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,2})?$
+        description:
+          type: string
+          nullable: true
+        in_stock:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+    PatchedCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+    PatchedChangePassword:
+      type: object
+      properties:
+        old_password:
+          type: string
+          writeOnly: true
+        password:
+          type: string
+          writeOnly: true
+        confirm_password:
+          type: string
+          writeOnly: true
+    PatchedEstablishment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        owner:
+          type: integer
+        name:
+          type: string
+          maxLength: 255
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        street_name:
+          type: string
+          nullable: true
+          maxLength: 255
+        street_number:
+          type: string
+          nullable: true
+          maxLength: 10
+        latitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,8})?$
+        longitude:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,8})?$
+        description:
+          type: string
+        phone_number:
+          type: string
+          pattern: ^\+996-[0-9]{3}-[0-9]{6}$
+          maxLength: 15
+        logo:
+          type: string
+          format: uri
+          nullable: true
+        banners:
+          type: array
+          items:
+            $ref: '#/components/schemas/EstablishmentBanner'
+          readOnly: true
+        happy_hour_start:
+          type: string
+          format: time
+          nullable: true
+        happy_hour_end:
+          type: string
+          format: time
+          nullable: true
+    PatchedMenu:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        establishment:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        beverages:
+          type: array
+          items:
+            $ref: '#/components/schemas/Beverage'
+          readOnly: true
+    PatchedPartnersOrder:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user_email:
+          type: string
+          format: email
+          readOnly: true
+        user_first_name:
+          type: string
+          readOnly: true
+        user_last_name:
+          type: string
+          readOnly: true
+        establishment_name:
+          type: string
+          readOnly: true
+        beverage_name:
+          type: string
+          readOnly: true
+        beverage_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+        order_date:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          $ref: '#/components/schemas/StatusEnum'
+        quantity:
+          type: integer
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedUserProfile:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        first_name:
+          type: string
+          nullable: true
+          maxLength: 100
+        last_name:
+          type: string
+          nullable: true
+          maxLength: 100
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+        sex:
+          $ref: '#/components/schemas/SexEnum'
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+    ResetToken:
+      type: object
+      properties:
+        token:
+          type: string
+      required:
+      - token
+    RoleEnum:
+      enum:
+      - customer
+      - partner
+      - admin
+      type: string
+      description: |-
+        * `customer` - Customer
+        * `partner` - Establishment Partner
+        * `admin` - Administrator
+    SexEnum:
+      enum:
+      - female
+      - male
+      - not_say
+      type: string
+      description: |-
+        * `female` - Female
+        * `male` - Male
+        * `not_say` - Prefer not to say
+    StatusEnum:
+      enum:
+      - pending
+      - completed
+      - canceled
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `completed` - Completed
+        * `canceled` - Canceled
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          writeOnly: true
+      required:
+      - access
+      - refresh
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        first_name:
+          type: string
+          nullable: true
+          maxLength: 100
+        last_name:
+          type: string
+          nullable: true
+          maxLength: 100
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        sex:
+          $ref: '#/components/schemas/SexEnum'
+      required:
+      - email
+      - id
+    UserProfile:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        first_name:
+          type: string
+          nullable: true
+          maxLength: 100
+        last_name:
+          type: string
+          nullable: true
+          maxLength: 100
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+        sex:
+          $ref: '#/components/schemas/SexEnum'
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+      required:
+      - email
+    UserRegister:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          writeOnly: true
+        confirm_password:
+          type: string
+          writeOnly: true
+      required:
+      - email
+    UsersOrder:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        establishment_name:
+          type: string
+          readOnly: true
+        beverage_id:
+          type: integer
+          writeOnly: true
+        beverage_name:
+          type: string
+          readOnly: true
+        beverage_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+        order_date:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          readOnly: true
+        quantity:
+          type: integer
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - beverage_id
+      - beverage_name
+      - beverage_price
+      - establishment_name
+      - id
+      - last_updated
+      - order_date
+      - quantity
+      - status
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

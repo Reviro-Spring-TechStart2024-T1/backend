@@ -1,4 +1,4 @@
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
 from rest_framework import generics
 
 from .models import Order
@@ -14,13 +14,14 @@ class PartnersOrderListView(generics.ListAPIView):
     serializer_class = PartnersOrderSerializer
     permission_classes = [IsPartnerOnly]
 
-    @swagger_auto_schema(
-        operation_summary='Get partners\' orders list',
-        operation_description='''
-        Retrieve a list of orders for all the establishments of partner.
-        - Requires authentication.
-        - Permission: Partners only.
-        '''
+    @extend_schema(
+        summary='Get partners\' orders list',
+        description=(
+            f'Retrieve a list of orders for all the establishments of partner.\n'
+            f'- Requires authentication.\n'
+            f'- Permission: Partners only.'
+        )
+
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
@@ -43,35 +44,35 @@ class PartnersOrderDetailView(generics.RetrieveUpdateAPIView):
     serializer_class = PartnersOrderSerializer
     permission_classes = [IsPartnerOnly]
 
-    @swagger_auto_schema(
-        operation_summary='Get order',
-        operation_description='''
-        Retrieve an order by its id.
-        - Requires authentication.
-        - Permission: Partners only.
-        '''
+    @extend_schema(
+        summary='Get order',
+        description=(
+            f'Retrieve an order by its id.\n'
+            f'- Requires authentication.\n'
+            f'- Permission: Partners only.\n'
+        )
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
-    @swagger_auto_schema(
-        operation_summary='Update order',
-        operation_description='''
-        Partner can update only status of the order.
-        - Requires authentication.
-        - Permission: Partners only.
-        '''
+    @extend_schema(
+        summary='Update order',
+        description=(
+            f'Partner can update only status of the order.\n'
+            f'- Requires authentication.\n'
+            f'- Permission: Partners only.'
+        )
     )
     def put(self, request, *args, **kwargs):
         return super().put(request, *args, **kwargs)
 
-    @swagger_auto_schema(
-        operation_summary='Partially update order',
-        operation_description='''
-        Partner can partially update only status of the order.
-        - Requires authentication.
-        - Permission: Partners only.
-        '''
+    @extend_schema(
+        summary='Partially update order',
+        description=(
+            f'Partner can partially update only status of the order.\n'
+            f'- Requires authentication.\n'
+            f'- Permission: Partners only.'
+        )
     )
     def patch(self, request, *args, **kwargs):
         return super().patch(request, *args, **kwargs)
@@ -113,27 +114,27 @@ class UsersOrderListView(generics.ListCreateAPIView):
     serializer_class = UsersOrderSerializer
     permission_classes = [IsCustomerOnly]
 
-    @swagger_auto_schema(
-        operation_summary='Get customers\' orders list',
-        operation_description='''
-        Retrieve a list of orders created by the authenticated customer user.
-        - Requires authentication.
-        - Each customer gets only their own list of made orders.
-        - Permission: Customers only.
-        '''
+    @extend_schema(
+        summary='Get customers\' orders list',
+        description=(
+            f'Retrieve a list of orders created by the authenticated customer user.\n'
+            f'- Requires authentication.\n'
+            f'- Each customer gets only their own list of made orders.\n'
+            f'- Permission: Customers only.'
+        )
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
 
-    @swagger_auto_schema(
-        operation_summary='Create order',
-        operation_description='''
-        Create a new order for the authenticated customer user.
-        - Requires authentication.
-        - To create new order pass beverages id to the field "beverage_id".
-        - Returns the newly created order.
-        - Permission: Customers only.
-        '''
+    @extend_schema(
+        summary='Create order',
+        description=(
+            f'Create a new order for the authenticated customer user.\n'
+            f'- Requires authentication.\n'
+            f'- To create new order pass beverages id to the field "beverage_id".\n'
+            f'- Returns the newly created order.\n'
+            f'- Permission: Customers only.'
+        )
     )
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
