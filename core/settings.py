@@ -15,8 +15,6 @@ from datetime import timedelta
 from pathlib import Path
 
 import dj_database_url
-
-# import cloudinary_storage
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -119,8 +117,8 @@ DATABASES = {
         'NAME': os.environ.get('POSTGRES_DB', 'drinkjoy'),
         'USER': os.environ.get('POSTGRES_USER', 'postgres'),
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'admin'),
-        'HOST': os.environ.get('POSTGRES_HOST', 'localhost'),
-        'PORT': os.environ.get('POSTGRES_PORT', '5432'),
+        'HOST': os.environ.get('POSTGRES_HOST'),
+        'PORT': os.environ.get('POSTGRES_PORT'),
     }
 }
 
@@ -165,6 +163,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 

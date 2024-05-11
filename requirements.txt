@@ -52,3 +52,4 @@ typing_extensions==4.11.0
 uritemplate==4.1.1
 urllib3==2.2.1
 virtualenv==20.25.1
+gunicorn==21.2.0
