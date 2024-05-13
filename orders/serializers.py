@@ -1,3 +1,4 @@
+from django.utils import timezone
 from rest_framework import serializers
 
 from menu.models import Beverage, Menu
@@ -9,7 +10,6 @@ class UsersOrderSerializer(serializers.ModelSerializer):
     beverage_id = serializers.IntegerField(write_only=True)
     establishment_name = serializers.CharField(source='menu.establishment.name', read_only=True)
     beverage_name = serializers.CharField(source='beverage.name', read_only=True)
-    beverage_price = serializers.DecimalField(source='beverage.price', max_digits=10, decimal_places=2, read_only=True)
 
     class Meta:
         model = Order
@@ -18,7 +18,6 @@ class UsersOrderSerializer(serializers.ModelSerializer):
             'establishment_name',
             'beverage_id',
             'beverage_name',
-            'beverage_price',
             'order_date',
             'status',
             'quantity',
@@ -28,7 +27,6 @@ class UsersOrderSerializer(serializers.ModelSerializer):
             'id',
             'establishment_name',
             'beverage_name',
-            'beverage_price',
             'order_date',
             'status',
             'last_updated',
@@ -37,6 +35,8 @@ class UsersOrderSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         beverage_id = validated_data['beverage_id']
+        user = self.context['request'].user
+        current_time = timezone.now()
 
         if beverage_id is None:
             raise serializers.ValidationError({'error': 'Beverage ID is required.'})
@@ -44,15 +44,30 @@ class UsersOrderSerializer(serializers.ModelSerializer):
         try:
             beverage = Beverage.objects.get(id=beverage_id)
             menu = Menu.objects.get(id=beverage.menu.id)
+            establishment = menu.establishment
         except Beverage.DoesNotExist:
             raise serializers.ValidationError({'error': 'Beverage with given ID does not exist.'})
 
-        user = self.context['request'].user
+        if establishment.happy_hour_start <= current_time.time() <= establishment.happy_hour_end:
+            # Check if the user has already ordered a free beverage at this establishment during the day
+            if Order.objects.filter(
+                user=user,
+                menu=menu,
+                order_date__date=current_time.date()
+            ).exists():
+                raise serializers.ValidationError(
+                    {'error': 'You have already claimed a free beverage at this establishment today.'}
+                )
+        else:
+            raise serializers.ValidationError(
+                {'error': 'It is not happy hour currently. Please order within establishment happy hours'}
+            )
 
         order = Order.objects.create(
             beverage=beverage,
             user=user,
-            menu=menu
+            menu=menu,
+            status='pending'
         )
 
         return order

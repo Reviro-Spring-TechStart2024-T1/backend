@@ -1,5 +1,6 @@
 from drf_spectacular.utils import extend_schema
-from rest_framework import generics
+from rest_framework import generics, status
+from rest_framework.response import Response
 
 from .models import Order
 from .permissions import IsCustomerOnly, IsPartnerOnly
@@ -102,8 +103,8 @@ class UsersOrderListView(generics.ListCreateAPIView):
     POST:
     - Requires authentication.
     - Only accessible to users with the customer role.
-    - Allows authenticated customer users to create a new order.
-    - Returns the newly created order.
+    - Allows authenticated customer users to create a new order during happy hours.
+    - Returns the newly created order or error message if constraints are violated.
 
     Permissions:
     - Users with the customer role have access to both GET and POST endpoints.
@@ -137,7 +138,19 @@ class UsersOrderListView(generics.ListCreateAPIView):
         )
     )
     def post(self, request, *args, **kwargs):
-        return super().post(request, *args, **kwargs)
+        '''
+        Create a new order.
+        '''
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            except Exception as e:
+                # Handles specific errors from serializer with messages
+                return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get_queryset(self):
         '''
