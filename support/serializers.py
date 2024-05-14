@@ -7,8 +7,9 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = [
+            'id',
             'message',
-            'post',
+            # 'post',
             'author',
             'created_at',
             'updated_at',
@@ -19,6 +20,13 @@ class CommentSerializer(serializers.ModelSerializer):
             'updated_at',
         ]
 
+    def create(self, validated_data):
+        post = Comment.objects.create(
+            **validated_data,
+            author=self.context['request'].user
+        )
+        return post
+
 
 class PostSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)
@@ -26,6 +34,7 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = [
+            'id',
             'title',
             'content',
             'created_at',
@@ -38,3 +47,10 @@ class PostSerializer(serializers.ModelSerializer):
             'updated_at',
             'author',
         ]
+
+    def create(self, validated_data):
+        post = Post.objects.create(
+            **validated_data,
+            author=self.context['request'].user
+        )
+        return post
