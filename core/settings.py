@@ -59,6 +59,7 @@ MY_APPS = [
     'establishments',
     'menu',
     'orders',
+    'support',
 ]
 
 THIRD_PARTY_APPS = [

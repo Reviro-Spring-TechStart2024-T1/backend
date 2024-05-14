@@ -14,6 +14,7 @@ urlpatterns = [
     path('', include('menu.urls')),
     path('orders/', include('orders.urls')),
     # path('feedback/', include('feedback.urls')),
+    path('support/', include('support.urls')),
 ]
 
 if settings.DEBUG:
