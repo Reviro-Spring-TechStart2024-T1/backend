@@ -13,6 +13,7 @@ from faker.providers import BaseProvider
 from accounts.models import User
 from establishments.models import Establishment, EstablishmentBanner
 from menu.models import Beverage, Category, Menu
+from orders.models import Order
 
 
 class KyrgyzPhoneNumberProvider(BaseProvider):
@@ -115,3 +116,12 @@ class EstablishmentBannerFactory(DjangoModelFactory):
         model = EstablishmentBanner
     establishment = SubFactory(EstablishmentFactory)
     url = ImageField()
+
+
+class OrderFactory(DjangoModelFactory):
+    class Meta:
+        model = Order
+    beverage = SubFactory(BeverageFactory)
+    user = SubFactory(UserFactory)
+    menu = SubFactory(MenuFactory)
+    status = 'completed'
