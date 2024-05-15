@@ -168,3 +168,5 @@ cython_debug/
 # draw.io cache files that are not necessary in repo
 *.drawio.*
 .DS_Store/
+
+test_content.txt

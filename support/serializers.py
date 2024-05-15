@@ -3,13 +3,32 @@ from rest_framework import serializers
 from .models import Comment, Post
 
 
+class CommentDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Comment
+        fields = [
+            'id',
+            'message',
+            'post',
+            'author',
+            'created_at',
+            'updated_at',
+        ]
+        read_only_fields = [
+            'post',
+            'author',
+            'created_at',
+            'updated_at',
+        ]
+
+
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = [
             'id',
             'message',
-            # 'post',
+            'post',
             'author',
             'created_at',
             'updated_at',

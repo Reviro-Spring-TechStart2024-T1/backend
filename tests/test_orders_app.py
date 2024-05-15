@@ -8,12 +8,12 @@ from rest_framework.reverse import reverse
 
 @pytest.mark.django_db
 def test_history_customer_orders(
-    jwt_auth_api_client_and_user,
+    jwt_auth_api_user_and_client,
     create_num_of_orders_for_one_user_from_factory,
     create_user_from_factory
 ):
     # given: authenticated customer and existing orders
-    user, client = jwt_auth_api_client_and_user(role='customer')
+    user, client = jwt_auth_api_user_and_client(role='customer')
     orders = create_num_of_orders_for_one_user_from_factory(user=user, num=7)
 
     # when:
@@ -87,11 +87,11 @@ def test_create_order_outside_happy_hours_as_customer(
 
 @pytest.mark.django_db
 def test_retrieve_order_as_partner(
-    jwt_auth_api_client_and_user,
+    jwt_auth_api_user_and_client,
     create_order_from_factory
 ):
     # given: authenticated partner and an existing order
-    user, client = jwt_auth_api_client_and_user(role='partner')
+    user, client = jwt_auth_api_user_and_client(role='partner')
     order = create_order_from_factory
     order.beverage.menu.establishment.owner = user
     order.beverage.menu.establishment.save()
@@ -106,16 +106,16 @@ def test_retrieve_order_as_partner(
 
 @pytest.mark.django_db
 def test_update_order_status_as_partner(
-    jwt_auth_api_client_and_user,
+    jwt_auth_api_user_and_client,
     create_user_from_factory,
     create_order_from_factory
 ):
     # given: authenticated partner and an existing order
-    user, client = jwt_auth_api_client_and_user(role='partner')
+    user, client = jwt_auth_api_user_and_client(role='partner')
     order = create_order_from_factory
     order.beverage.menu.establishment.owner = user
     order.beverage.menu.establishment.save()
-    update_data = {'status': 'canceled'}
+    update_data = {'status': 'cancelled'}
     # when:
     url = reverse('partners-order-detail', args=[order.id])
     response = client.patch(
@@ -126,4 +126,4 @@ def test_update_order_status_as_partner(
     # then:
     print(response.json())
     assert response.status_code == 200
-    assert response.json()['status'] == 'canceled'
+    assert response.json()['status'] == 'cancelled'
