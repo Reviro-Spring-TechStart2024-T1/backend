@@ -10,14 +10,17 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.models import User
 from menu.models import Menu
+from support.models import Post
 from tests.factories import (
     BeverageFactory,
     CategoryFactory,
+    CommentFactory,
     EstablishmentBannerFactory,
     EstablishmentFactory,
     KyrgyzPhoneNumberProvider,
     MenuFactory,
     OrderFactory,
+    PostFactory,
     UserFactory,
 )
 
@@ -28,6 +31,8 @@ register(MenuFactory)
 register(BeverageFactory)
 register(EstablishmentBannerFactory)
 register(OrderFactory)
+register(PostFactory)
+register(CommentFactory)
 
 
 fake = Faker()
@@ -78,7 +83,7 @@ def jwt_auth_api_client(
 
 
 @pytest.fixture
-def jwt_auth_api_client_and_user(
+def jwt_auth_api_user_and_client(
     create_user_from_factory
 ) -> APIClient:
     """
@@ -231,3 +236,75 @@ def create_num_of_orders_for_one_user_from_factory(db):
     def make_num_of_orders(user: User, num: int = 1) -> list:
         return OrderFactory.create_batch(user=user, size=num)
     return make_num_of_orders
+
+
+@pytest.fixture
+def create_post_from_factory(db):
+    return PostFactory()
+
+
+@pytest.fixture
+def create_num_of_posts_from_factory(db):
+    def make_posts(num: int = 1) -> list:
+        return PostFactory.create_batch(size=num)
+    return make_posts
+
+
+@pytest.fixture
+def create_num_of_posts_as_specific_user(db):
+    def make_posts(user: User, num: int = 1) -> list:
+        return PostFactory.create_batch(author=user, size=num)
+    return make_posts
+
+
+@pytest.fixture
+def create_comment_from_factory(db):
+    return CommentFactory()
+
+
+@pytest.fixture
+def create_comment_as_specific_user_from_factory(db):
+    def make_comment(user: User):
+        return CommentFactory.create(author=user)
+    return make_comment
+
+
+@pytest.fixture
+def create_num_of_comments_from_factory(db):
+    def make_comments(num: int = 1) -> list:
+        return CommentFactory.create_batch(size=num)
+    return make_comments
+
+
+@pytest.fixture
+def create_num_of_comments_as_one_user_from_factory(db):
+    def make_comments(user: User, num: int = 1) -> list:
+        return CommentFactory.create_batch(author=user, size=num)
+    return make_comments
+
+
+@pytest.fixture
+def create_num_of_comments_for_single_post_from_factory(db):
+    def make_comments(post: Post, num: int = 1) -> list:
+        return CommentFactory.create_batch(post=post, size=num)
+    return make_comments
+
+
+@pytest.fixture
+def dict_data_to_create_post() -> dict:
+    data = {
+        'title': fake.word(),
+        'content': fake.word(),
+        'author': None,
+    }
+    return data
+
+
+@pytest.fixture
+def dict_data_to_create_comment() -> dict:
+    data = {
+        'message': fake.word(),
+        'post': None,
+        'author': None,
+    }
+    return data

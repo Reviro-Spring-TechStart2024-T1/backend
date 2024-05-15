@@ -10,7 +10,7 @@ class Order(BaseModel):
     ORDER_STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('completed', 'Completed'),
-        ('canceled', 'Canceled'),
+        ('cancelled', 'Cancelled'),
     ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
