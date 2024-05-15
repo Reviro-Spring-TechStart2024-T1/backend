@@ -14,6 +14,7 @@ from accounts.models import User
 from establishments.models import Establishment, EstablishmentBanner
 from menu.models import Beverage, Category, Menu
 from orders.models import Order
+from support.models import Comment, Post
 
 
 class KyrgyzPhoneNumberProvider(BaseProvider):
@@ -125,3 +126,21 @@ class OrderFactory(DjangoModelFactory):
     user = SubFactory(UserFactory)
     menu = SubFactory(MenuFactory)
     status = 'completed'
+
+
+class PostFactory(DjangoModelFactory):
+    class Meta:
+        model = Post
+
+    title = LazyFunction(fake.word)
+    content = LazyFunction(fake.sentence)
+    author = SubFactory(UserFactory)
+
+
+class CommentFactory(DjangoModelFactory):
+    class Meta:
+        model = Comment
+
+    message = LazyFunction(fake.sentence)
+    post = SubFactory(PostFactory)
+    author = SubFactory(UserFactory)

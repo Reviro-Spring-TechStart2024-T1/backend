@@ -3,8 +3,6 @@ import json
 import pytest
 from rest_framework.reverse import reverse
 
-# from rest_framework_simplejwt.tokens import AccessToken
-
 
 @pytest.mark.django_db
 def test_post_menu_as_customer(
