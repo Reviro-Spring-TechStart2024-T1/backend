@@ -17,6 +17,7 @@ from tests.factories import (
     EstablishmentFactory,
     KyrgyzPhoneNumberProvider,
     MenuFactory,
+    OrderFactory,
     UserFactory,
 )
 
@@ -26,6 +27,7 @@ register(EstablishmentFactory)
 register(MenuFactory)
 register(BeverageFactory)
 register(EstablishmentBannerFactory)
+register(OrderFactory)
 
 
 fake = Faker()
@@ -72,6 +74,24 @@ def jwt_auth_api_client(
         client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh.access_token}')
 
         return client
+    return make_role_user
+
+
+@pytest.fixture
+def jwt_auth_api_client_and_user(
+    create_user_from_factory
+) -> APIClient:
+    """
+    Fixture authenticates created user that is created using fixture above.
+    Returns authorized APIClient and User instance as tuple.
+    """
+    def make_role_user(role: str = 'customer'):
+        user = create_user_from_factory(role=role)
+        client = APIClient()
+        refresh = RefreshToken.for_user(user)
+        client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh.access_token}')
+
+        return user, client
     return make_role_user
 
 
@@ -199,3 +219,15 @@ def create_num_of_beverages_in_one_menu_from_outside_factory(db):
     def make_num_of_beverages(menu: Menu, num: int = 1) -> list:
         return BeverageFactory.create_batch(size=num, menu=menu)
     return make_num_of_beverages
+
+
+@pytest.fixture
+def create_order_from_factory(db):
+    return OrderFactory()
+
+
+@pytest.fixture
+def create_num_of_orders_for_one_user_from_factory(db):
+    def make_num_of_orders(user: User, num: int = 1) -> list:
+        return OrderFactory.create_batch(user=user, size=num)
+    return make_num_of_orders
