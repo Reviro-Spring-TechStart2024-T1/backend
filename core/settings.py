@@ -14,7 +14,6 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
-import dj_database_url
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -26,21 +25,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get(
-    'SECRET_KEY',
-    'django-insecure-=!naodx94arlq%f_70%12d%g=@-qgu@po)8ae!e&b&*15vs93n'
-)
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', True)  # config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = [
-    'backend-gvhy.onrender.com',
-    '127.0.0.1',
-    'localhost'
-]
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(',')
 
-CSRF_TRUSTED_ORIGINS = ['https://backend-gvhy.onrender.com']
+CSRF_TRUSTED_ORIGINS = ['https://kunasyl-backender.org.kg']
 
 # Application definition
 
@@ -59,7 +51,7 @@ MY_APPS = [
     'establishments',
     'menu',
     'orders',
-    'support',
+    'support'
 ]
 
 THIRD_PARTY_APPS = [
@@ -123,8 +115,6 @@ DATABASES = {
     }
 }
 
-db_from_env = dj_database_url.config(env='DATABASE_URL', conn_max_age=600)
-DATABASES['default'].update(db_from_env)
 
 AUTH_USER_MODEL = 'accounts.User'
 
@@ -152,7 +142,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Bishkek'
 
 USE_I18N = True
 
@@ -162,7 +152,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # Default primary key field type
@@ -201,10 +191,10 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 PROJECT_DESCRIPTION = (
-    f'## To access DrinkJoy API endpoints:\n'
-    f'1. **Obtain a Bearer Token:** Send a `POST` request to `/users/token/` with your credentials. The server responds with an **access** and **refresh** tokens.\n'
-    f'2. **Use the Bearer Token:** Include the access token in the Authorization header of your requests to protected endpoints: `Authorization: Bearer <access_token>`.\n'
-    f'3. **Handle Unauthorized Access:** If the token is invalid or expired, the server responds with `401 Unauthorized`. Obtain a new token by repeating step 1.'
+    f'## To access DrinkJoy API endpoints: \n'
+    f'1. **Obtain a Bearer Token: ** Send a `POST` request to `/users/token/` with your credentials. The server responds with an **access** and **refresh** tokens.\n'
+    f'2. **Use the Bearer Token: ** Include the access token in the Authorization header of your requests to protected endpoints: `Authorization: Bearer <access_token>`.\n'
+    f'3. **Handle Unauthorized Access: ** If the token is invalid or expired, the server responds with `401 Unauthorized`. Obtain a new token by repeating step 1.'
 )
 
 
