@@ -17,7 +17,7 @@ def test_history_customer_orders(
     orders = create_num_of_orders_for_one_user_from_factory(user=user, num=7)
 
     # when:
-    url = reverse('users-order-list-create')
+    url = reverse('customers-order-list-create')
     response = client.get(url)
 
     # then:
@@ -41,7 +41,7 @@ def test_create_order_during_happy_hours_as_customer(
 
     order_data = {'beverage_id': beverage.id}
     # when:
-    url = reverse('users-order-list-create')
+    url = reverse('customers-order-list-create')
     response = client.post(
         url,
         data=json.dumps(order_data),
@@ -69,7 +69,7 @@ def test_create_order_outside_happy_hours_as_customer(
 
     order_data = {'beverage_id': beverage.id}
     # when:
-    url = reverse('users-order-list-create')
+    url = reverse('customers-order-list-create')
     response = client.post(
         url,
         data=json.dumps(order_data),

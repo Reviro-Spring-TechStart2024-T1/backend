@@ -7,7 +7,7 @@ from menu.models import Beverage, Menu
 from .models import Order
 
 
-class UsersOrderSerializer(serializers.ModelSerializer):
+class CustomerOrderSerializer(serializers.ModelSerializer):
     '''
     For customers to create and view their orders
     '''
@@ -173,3 +173,47 @@ class PartnersDetailOrderSerializer(serializers.ModelSerializer):
             'quantity',
             'last_updated'
         ]
+
+
+class CustomerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'email', 'sex', 'date_of_birth', ]
+
+
+class FindCustomerByEmailSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+
+class OrderHistorySerializer(serializers.ModelSerializer):
+    beverage_name = serializers.CharField(source='beverage.name', read_only=True)
+    price = serializers.DecimalField(source='beverage.price', max_digits=10, decimal_places=2, read_only=True)
+
+    class Meta:
+        model = Order
+        fields = ['id', 'order_date', 'beverage_name', 'price']
+
+
+class DetailedCustomerProfileSerializer(serializers.ModelSerializer):
+    '''
+    This serializer nests the OrderHistorySerializer to include order details specific to the partner’s establishment.
+    '''
+    orders = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'first_name',
+            'last_name',
+            'email',
+            'sex',
+            'date_of_birth',
+            'orders'
+        ]
+
+    def get_orders(self, obj):
+        request = self.context.get('request')
+        user = request.user
+        orders = Order.objects.filter(beverage__menu__establishment__owner=user, user=obj)
+        return OrderHistorySerializer(orders, many=True).data
