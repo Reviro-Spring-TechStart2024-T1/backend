@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import filters, generics
 
 from establishments.permissions import IsPartnerOrReadOnly
 
@@ -24,20 +24,42 @@ class MenuListCreateView(generics.ListCreateAPIView):
     serializer_class = MenuSerializer
     permission_classes = [IsPartnerOrReadOnly]
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        beverage_name = self.request.query_params.get('beverage_name', None)
+        if beverage_name:
+            queryset = queryset.filter(
+                beverages__name__icontains=beverage_name
+            ).distinct()
+        return queryset
+
 
 class MenuDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Menu.objects.all()
     serializer_class = MenuSerializer
     permission_classes = [IsPartnerOrReadOnly]
 
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        beverage_name = self.request.query_params.get('beverage_name', None)
+        if beverage_name:
+            queryset = queryset.filter(
+                beverages__name__icontains=beverage_name
+            ).distinct()
+        return queryset
+
 
 class BeverageListCreateView(generics.ListCreateAPIView):
     queryset = Beverage.objects.all()
     serializer_class = BeverageSerializer
     permission_classes = [IsPartnerOrReadOnly]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['name', 'price', 'category__name']
 
 
 class BeverageDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Beverage.objects.all()
     serializer_class = BeverageSerializer
     permission_classes = [IsPartnerOrReadOnly]
+    # filter_backends = [filters.SearchFilter]
+    # search_fields = ['name', 'price']

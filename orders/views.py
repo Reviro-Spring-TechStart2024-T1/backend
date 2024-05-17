@@ -1,7 +1,9 @@
-from drf_spectacular.utils import extend_schema
+from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import generics, status
 from rest_framework.response import Response
 
+from .filters import PartnersOrdersListCustomFilter, UsersOrderListCustomFilter
 from .models import Order
 from .permissions import IsCustomerOnly, IsPartnerOnly
 from .serializers import (
@@ -18,15 +20,63 @@ class PartnersOrderListView(generics.ListAPIView):
     queryset = Order.objects.all()
     serializer_class = PartnersDetailOrderSerializer
     permission_classes = [IsPartnerOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = PartnersOrdersListCustomFilter
 
     @extend_schema(
         summary='Get partners\' orders list',
         description=(
-            f'Retrieve a list of orders for all the establishments of partner.\n'
-            f'- Requires authentication.\n'
-            f'- Permission: Partners only.'
-        )
-
+            'Retrieve a list of orders for all the establishments of partner.\n'
+            '- Requires authentication.\n'
+            '- Permission: Partners only.'
+        ),
+        parameters=[
+            OpenApiParameter(
+                name='order_date',
+                description='Filter orders by exact order date in YYYY-MM-DD format.',
+                required=False,
+                type=str
+            ),
+            OpenApiParameter(
+                name='id',
+                description='Filter orders by their unique identifier.',
+                required=False,
+                type=int
+            ),
+            OpenApiParameter(
+                name='status',
+                description=(
+                    'Filter orders by their status\n'
+                    '- `pending` - Pending\n'
+                    '- `completed` - Completed\n'
+                    '- `cancelled` - Cancelled\n'
+                ),
+                required=False,
+                enum=['pending', 'completed', 'cancelled'],
+                default='pending'
+            ),
+            OpenApiParameter(
+                name='beverage__name',
+                description='Filter orders by the name of the associated beverage.',
+                required=False,
+                type=str
+            ),
+            OpenApiParameter(
+                name='time',
+                description=(
+                    'Filter orders by predefined time ranges. Possible values are:\n'
+                    '- `today`: Orders made today\n'
+                    '- `yesterday`: Orders made yesterday\n'
+                    '- `this_month`: Orders made this month\n'
+                    '- `last_month`: Orders made last month\n'
+                    '- `last_6_months`: Orders made in the last 6 months\n'
+                    '- `this_year`: Orders made this year\n'
+                    '- `last_year`: Orders made last year'
+                ),
+                required=False,
+                type=str
+            )
+        ]
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
@@ -39,7 +89,7 @@ class PartnersOrderListView(generics.ListAPIView):
 
         partner = self.request.user
 
-        queryset = Order.objects.filter(beverage__menu__establishment__owner=partner)
+        queryset = Order.objects.filter(beverage__menu__establishment__owner=partner).order_by('-order_date')
 
         return queryset
 
@@ -146,6 +196,8 @@ class UsersOrderListCreateView(generics.ListCreateAPIView):
 
     serializer_class = UsersOrderSerializer
     permission_classes = [IsCustomerOnly]
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = UsersOrderListCustomFilter
 
     @extend_schema(
         summary='Get customers\' orders list',
@@ -154,7 +206,36 @@ class UsersOrderListCreateView(generics.ListCreateAPIView):
             f'- Requires authentication.\n'
             f'- Each customer gets only their own list of made orders.\n'
             f'- Permission: Customers only.'
-        )
+        ),
+        parameters=[
+            OpenApiParameter(
+                name='time',
+                description=(
+                    'Filter orders by predefined time ranges. Possible values are:\n'
+                    '- `today`: Orders made today\n'
+                    '- `yesterday`: Orders made yesterday\n'
+                    '- `this_month`: Orders made this month\n'
+                    '- `last_month`: Orders made last month\n'
+                    '- `last_6_months`: Orders made in the last 6 months\n'
+                    '- `this_year`: Orders made this year\n'
+                    '- `last_year`: Orders made last year'
+                ),
+                required=False,
+                type=str
+            ),
+            OpenApiParameter(
+                name='status',
+                description=(
+                    'Filter orders by their status\n'
+                    '- `pending` - Pending\n'
+                    '- `completed` - Completed\n'
+                    '- `cancelled` - Cancelled\n'
+                ),
+                required=False,
+                enum=['pending', 'completed', 'cancelled'],
+                default='pending'
+            )
+        ]
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
@@ -190,5 +271,5 @@ class UsersOrderListCreateView(generics.ListCreateAPIView):
         Filter the queryset to show only the orders belonging to the authenticated user
         '''
         customer = self.request.user
-        queryset = Order.objects.filter(user=customer)
+        queryset = Order.objects.filter(user=customer).order_by('-order_date')
         return queryset
