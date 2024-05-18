@@ -179,6 +179,6 @@ def test_detailed_customer_profile(
         assert 'price' in order
 
     print(f"Total orders of customer1: {Order.objects.filter(user=customer1).count()}")
-    print(f"Total orders of customer2 associated to a partner: {Order.objects.filter(
-        user=customer2, beverage__menu__establishment__owner=partner).count()}")
+    print(f"Total orders of customer2 associated with the partner: "
+          f"{Order.objects.filter(user=customer2, beverage__menu__establishment__owner=partner).count()}")
     print(response.data)
