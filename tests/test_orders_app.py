@@ -5,6 +5,8 @@ import pytest
 from django.utils import timezone
 from rest_framework.reverse import reverse
 
+from orders.models import Order
+
 
 @pytest.mark.django_db
 def test_history_customer_orders(
@@ -127,3 +129,56 @@ def test_update_order_status_as_partner(
     print(response.json())
     assert response.status_code == 200
     assert response.json()['status'] == 'cancelled'
+
+
+@pytest.mark.django_db
+def test_partner_customers_list(
+    jwt_auth_api_client,
+    setup_partner_with_orders
+):
+    partner, customer1, customer2 = setup_partner_with_orders
+    client = jwt_auth_api_client(role='partner')
+    client.force_authenticate(user=partner)
+    url = reverse('partner-customers-list')
+    response = client.get(url)
+
+    print(response.data)
+    assert response.status_code == 200
+    assert len(response.data['results']) == 2  # for partner to see all his customers
+
+    # Test searching by email
+    response = client.get(url, {'search': customer1.email})
+    print(response.data['results'])
+    assert response.status_code == 200
+    assert len(response.data['results']) == 1
+    assert response.data['results'][0]['email'] == customer1.email
+
+
+@pytest.mark.django_db
+def test_detailed_customer_profile(
+    setup_partner_with_orders,
+    jwt_auth_api_client
+):
+    partner, customer1, customer2 = setup_partner_with_orders
+    client = jwt_auth_api_client(role='partner')
+    client.force_authenticate(user=partner)
+    url = reverse('detailed-customer-profile', args=[customer1.id])
+    response = client.get(url)
+
+    # Assert the status code and response data
+    assert response.status_code == 200
+    assert response.data['email'] == customer1.email
+    assert 'orders' in response.data
+    assert len(response.data['orders']) == 3  # 3 orders were created for customer1
+
+    # Check details of orders
+    for order in response.data['orders']:
+        assert 'id' in order
+        assert 'order_date' in order
+        assert 'beverage_name' in order
+        assert 'price' in order
+
+    print(f"Total orders of customer1: {Order.objects.filter(user=customer1).count()}")
+    print(f"Total orders of customer2 associated to a partner: {Order.objects.filter(
+        user=customer2, beverage__menu__establishment__owner=partner).count()}")
+    print(response.data)
