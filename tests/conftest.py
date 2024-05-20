@@ -239,6 +239,30 @@ def create_num_of_orders_for_one_user_from_factory(db):
 
 
 @pytest.fixture
+def setup_partner_with_orders(db, create_user_from_factory, create_num_of_orders_for_one_user_from_factory):
+    partner = create_user_from_factory(role='partner')
+    customer1 = create_user_from_factory(role='customer')
+    customer2 = create_user_from_factory(role='customer')
+
+    # Create orders for customer1 and associate with the partner's establishment
+    orders_customer1 = [
+        OrderFactory.create(user=customer1, beverage__menu__establishment__owner=partner) for _ in range(3)
+    ]
+
+    # Create orders for customer2 and associate with the partner's establishment
+    orders_customer2 = [
+        OrderFactory.create(user=customer2, beverage__menu__establishment__owner=partner) for _ in range(2)
+    ]
+
+    print(f"first order id of the customer1: {orders_customer1[0].id}, "
+          f"partner id: {orders_customer1[0].beverage.menu.establishment.owner.id}")
+    print(f"first order id of the customer2: {orders_customer2[0].id}, "
+          f"partner id: {orders_customer2[0].beverage.menu.establishment.owner.id}")
+
+    return partner, customer1, customer2
+
+
+@pytest.fixture
 def create_post_from_factory(db):
     return PostFactory()
 
