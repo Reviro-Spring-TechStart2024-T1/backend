@@ -1,13 +1,19 @@
 from drf_spectacular.utils import extend_schema
-from rest_framework import generics, status
+from rest_framework import filters, generics, status
 from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from accounts.models import User
 
 from .models import Order
 from .permissions import IsCustomerOnly, IsPartnerOnly
 from .serializers import (
+    CustomerOrderSerializer,
+    CustomerSerializer,
+    DetailedCustomerProfileSerializer,
+    FindCustomerByEmailSerializer,
     PartnersCreateOrderSerializer,
     PartnersDetailOrderSerializer,
-    UsersOrderSerializer,
 )
 
 
@@ -124,7 +130,62 @@ class PartnersOrderCreateView(generics.CreateAPIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UsersOrderListCreateView(generics.ListCreateAPIView):
+class PartnerCustomersListView(generics.ListAPIView):
+    '''
+    Retrieve a list of customers who have made orders at the partner's establishments.
+    Supports search by first name, last name, or email.
+    '''
+    serializer_class = CustomerSerializer
+    permission_classes = [IsPartnerOnly]
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['first_name', 'last_name', 'email']
+
+    def get_queryset(self):
+        '''
+        Filter orders to get those related to the establishments owned by the partner
+        '''
+        partner = self.request.user
+        partner_orders = Order.objects.filter(beverage__menu__establishment__owner=partner)
+        customer_ids = partner_orders.values_list('user', flat=True).distinct()
+        queryset = User.objects.filter(id__in=customer_ids)
+        return queryset
+
+
+class DetailedCustomerProfileView(generics.RetrieveAPIView):
+    '''
+    Retrieve a detailed profile of a customer, including personal information and
+    order history for the partner's establishments.
+    '''
+    serializer_class = DetailedCustomerProfileSerializer
+    permission_classes = [IsPartnerOnly]
+    lookup_field = 'id'
+    queryset = User.objects.all()
+
+    def get_queryset(self):
+        return super().get_queryset()
+
+
+class FindCustomerByEmailView(APIView):
+    '''
+    Find any existing customer by email address.
+    '''
+    permission_classes = [IsPartnerOnly]
+
+    def get(self, request):
+        serializer = FindCustomerByEmailSerializer(data=request.query_params)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            try:
+                customer = User.objects.get(email=email, role='customer')
+                customer_serializer = CustomerSerializer(customer)
+                return Response(customer_serializer.data, status=status.HTTP_200_OK)
+            except User.DoesNotExist:
+                return Response({'message': 'Customer does not exist'}, status=status.HTTP_404_NOT_FOUND)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class CustomersOrderListCreateView(generics.ListCreateAPIView):
     '''
     Allows customer users to view a list of their orders and create new orders.
 
@@ -144,7 +205,7 @@ class UsersOrderListCreateView(generics.ListCreateAPIView):
     - Other user roles do not have access to these endpoints.
     '''
 
-    serializer_class = UsersOrderSerializer
+    serializer_class = CustomerOrderSerializer
     permission_classes = [IsCustomerOnly]
 
     @extend_schema(
