@@ -170,3 +170,4 @@ cython_debug/
 .DS_Store/
 
 test_content.txt
+drinkjoy_creds.txt

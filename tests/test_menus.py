@@ -95,15 +95,31 @@ def test_get_menu_with_beverages_as_partner(
     # given:
     client = jwt_auth_api_client(role='partner')
     menu = create_menu_from_factory
-    create_num_of_beverages_in_one_menu_from_outside_factory(menu, 3)
+    beverages = create_num_of_beverages_in_one_menu_from_outside_factory(menu, 3)
     # when:
     url = reverse('menu-detail', args=[menu.id])
-    print(url)
-    response = client.get(
-        url
-    )
-    print(response.content.decode('utf-8'))
+    response = client.get(url)
     # then:
     assert response.status_code == 200
-    # assert response.data['id'] == menu.id
-    # assert response.data['beverages'] == []
+    assert response.data['id'] == menu.id
+    assert response.data['beverages'] != []
+    assert len(response.data['beverages']) == len(beverages)
+
+
+@pytest.mark.django_db
+def test_get_menu_with_beverages_as_customer_filter_by_beverage_name(
+    create_partner_establishment_menu_and_num_of_beverages_as_dict,
+    jwt_auth_api_client
+):
+    # given: auth customer and menu with num of beverages
+    client = jwt_auth_api_client('customer')
+    data_dict = create_partner_establishment_menu_and_num_of_beverages_as_dict(15)
+    menu = data_dict['menu']
+    beverages = data_dict['beverages']
+    last_bev = beverages[-1]
+    # when: customer filters menu by the name of beverage
+    url = reverse('menu-detail', args=[menu.id])
+    response = client.get(url, {'beverage__name': last_bev.name})
+    # then: expecting the result to contain/filter beverages
+    assert response.status_code == 200
+    assert response.data['beverages'][0]['name'] == last_bev.name
