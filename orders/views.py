@@ -95,7 +95,12 @@ class PartnersOrderListView(generics.ListAPIView):
 
         partner = self.request.user
 
-        queryset = Order.objects.filter(beverage__menu__establishment__owner=partner).order_by('-order_date')
+        queryset = Order.objects.filter(beverage__menu__establishment__owner=partner).select_related(
+            'beverage',
+            'menu',
+            'menu__establishment',
+            'user'
+        ).order_by('-order_date')
 
         return queryset
 
@@ -332,5 +337,10 @@ class CustomersOrderListCreateView(generics.ListCreateAPIView):
         Filter the queryset to show only the orders belonging to the authenticated user
         '''
         customer = self.request.user
-        queryset = Order.objects.filter(user=customer).order_by('-order_date')
+        queryset = Order.objects.filter(user=customer).select_related(
+            'beverage',
+            'menu',
+            'menu__establishment',
+            'user'
+        ).order_by('-order_date')
         return queryset

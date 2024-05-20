@@ -2,6 +2,8 @@ import json
 import re
 
 import pytest
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from django.utils import timezone
 from rest_framework.reverse import reverse
 
@@ -12,7 +14,6 @@ from orders.models import Order
 def test_history_customer_orders(
     jwt_auth_api_user_and_client,
     create_num_of_orders_for_one_user_from_factory,
-    create_user_from_factory
 ):
     # given: authenticated customer and existing orders
     user, client = jwt_auth_api_user_and_client(role='customer')
@@ -58,7 +59,6 @@ def test_create_order_during_happy_hours_as_customer(
 @pytest.mark.django_db
 def test_create_order_outside_happy_hours_as_customer(
     jwt_auth_api_client,
-    create_user_from_factory,
     create_beverage_from_factory
 ):
     # given: authenticated customer and a beverage outside happy hours
@@ -109,7 +109,6 @@ def test_retrieve_order_as_partner(
 @pytest.mark.django_db
 def test_update_order_status_as_partner(
     jwt_auth_api_user_and_client,
-    create_user_from_factory,
     create_order_from_factory
 ):
     # given: authenticated partner and an existing order
@@ -178,7 +177,53 @@ def test_detailed_customer_profile(
         assert 'beverage_name' in order
         assert 'price' in order
 
-    print(f"Total orders of customer1: {Order.objects.filter(user=customer1).count()}")
-    print(f"Total orders of customer2 associated with the partner: "
-          f"{Order.objects.filter(user=customer2, beverage__menu__establishment__owner=partner).count()}")
+    print(f'Total orders of customer1: {Order.objects.filter(user=customer1).count()}')
+    print(f'Total orders of customer2 associated with the partner: '
+          f'{Order.objects.filter(user=customer2, beverage__menu__establishment__owner=partner).count()}')
     print(response.data)
+
+
+@pytest.mark.djnago_db
+def test_num_of_queries_sent_to_db_to_get_list_of_orders_as_customer(
+    create_num_of_orders_for_one_user_from_factory,
+    jwt_auth_api_user_and_client
+):
+    # given: authenticated user who is accessing their order history
+    user, client = jwt_auth_api_user_and_client('customer')
+    create_num_of_orders_for_one_user_from_factory(user, 20)
+    query_get_users_from_jwt = 1
+    query_get_count_for_paginated_result = 1
+    query_to_get_all_orders_of_the_user_for_orders_history = 1
+    sum_of_queries = sum((query_get_count_for_paginated_result, query_get_users_from_jwt,
+                         query_to_get_all_orders_of_the_user_for_orders_history))
+    # when:
+    with CaptureQueriesContext(connection) as ctx:
+        url = reverse('customers-order-list-create')
+        response = client.get(url)
+        # then:
+        assert response.status_code == 200
+        print(ctx.captured_queries)
+        assert len(ctx) == sum_of_queries
+
+# @pytest.mark.djnago_db
+# def test_num_of_queries_sent_to_db_to_get_list_of_orders_as_partner(
+#     create_num_of_orders_for_one_user_from_factory,
+#     jwt_auth_api_user_and_client,
+#     create_user_from_factory
+# ):
+#     # given: authenticated user who is accessing their order history
+#     user, client = jwt_auth_api_user_and_client('partner')
+#     customer = create_user_from_factory
+#     create_num_of_orders_for_one_user_from_factory(customer, 5)
+#     query_get_users_from_jwt = 1
+#     query_get_count_for_paginated_result = 1
+#     query_to_get_all_orders_of_the_user_for_orders_history = 1
+#     sum_of_queries = sum((query_get_count_for_paginated_result, query_get_users_from_jwt, query_to_get_all_orders_of_the_user_for_orders_history))
+#     # when:
+#     with CaptureQueriesContext(connection) as ctx:
+#         url = reverse('partners-order-list')
+#         response = client.get(url)
+#         # then:
+#         assert response.status_code == 200
+#         print(ctx.captured_queries)
+#         assert len(ctx) == sum_of_queries
