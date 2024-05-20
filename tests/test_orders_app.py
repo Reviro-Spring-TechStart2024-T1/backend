@@ -182,3 +182,33 @@ def test_detailed_customer_profile(
     print(f"Total orders of customer2 associated with the partner: "
           f"{Order.objects.filter(user=customer2, beverage__menu__establishment__owner=partner).count()}")
     print(response.data)
+
+
+@pytest.mark.django_db
+def test_find_customer_by_email(
+    setup_partner_with_orders,
+    jwt_auth_api_client
+):
+    partner, customer1, customer2 = setup_partner_with_orders
+    client = jwt_auth_api_client(role='partner')
+    url = reverse('find-customer')
+
+    response = client.get(url, {'email': customer1.email})
+
+    assert response.status_code == 200
+    assert response.data['email'] == customer1.email
+    assert response.data['first_name'] == customer1.first_name
+    assert response.data['last_name'] == customer1.last_name
+    print(response.data)
+
+    # test for non-existent email
+    response = client.get(url, {'email': 'nonexistent@example.com'})
+    assert response.status_code == 404   # not found error
+    assert response.data['message'] == 'Customer does not exist'
+    print(response.data)
+
+    # test with an invalid email format
+    response = client.get(url, {'email': 'invalid-email'})
+    assert response.status_code == 400  # bad request error
+    assert 'email' in response.data
+    print(response.data)
