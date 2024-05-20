@@ -197,11 +197,11 @@ def test_num_of_queries_sent_to_db_to_get_list_of_orders_as_customer(
     query_to_get_all_orders_of_the_user_for_orders_history = 1
     sum_of_queries = sum((query_get_count_for_paginated_result, query_get_users_from_jwt,
                          query_to_get_all_orders_of_the_user_for_orders_history))
-    # when:
+    # when: trying to understand how many queries are sent to db
     with CaptureQueriesContext(connection) as ctx:
         url = reverse('customers-order-list-create')
         response = client.get(url)
-        # then:
+        # then: expecting to get queries for pagination, jwtauth and the main orders'info
         assert response.status_code == 200
         print(ctx.captured_queries)
         assert len(ctx) == sum_of_queries
@@ -297,7 +297,7 @@ def test_get_partners_orders_lists_status_filter_as_partner(
     bev1 = beverages[0]
     client = jwt_auth_api_client_pass_user(partner)
     ord1 = create_order_for_specific_beverage_from_factory(bev1)
-    # when: partner is using filter by order_date
+    # when: partner is using filter by status
     url = reverse('partners-order-list')
     response = client.get(url, {'status': ord1.status})
     # then: expecting to get only first order in the answer
@@ -318,9 +318,55 @@ def test_get_partners_orders_lists_beverage_name_filter_as_partner(
     bev1 = beverages[0]
     client = jwt_auth_api_client_pass_user(partner)
     ord1 = create_order_for_specific_beverage_from_factory(bev1)
-    # when: partner is using filter by order_date
+    # when: partner is using filter by beverage__name
     url = reverse('partners-order-list')
     response = client.get(url, {'beverage__name': ord1.beverage.name})
-    # then: expecting to get only first order in the answer
+    # then: expecting to get only one order with beverages name in the answer
     assert response.status_code == 200
     assert response.data['results'][0]['beverage_name'] == ord1.beverage.name
+
+
+@pytest.mark.django_db
+def test_get_orders_list_of_customer_using_filter_by_status(
+    create_user_from_factory,
+    jwt_auth_api_client_pass_user,
+    create_num_of_orders_for_one_user_from_factory
+):
+    # given: auth customer and a list of their orders
+    customer = create_user_from_factory('customer')
+    client = jwt_auth_api_client_pass_user(customer)
+    orders = create_num_of_orders_for_one_user_from_factory(customer, 5)
+    ord1 = orders[0]
+    status1 = ord1.status
+    # when: customer is using filter by status option
+    url = reverse('customers-order-list-create')
+    response = client.get(url, {'status': status1})
+    # then: expecting to get not empty answers in results array
+    assert response.status_code == 200
+    assert response.data['results'] is not None
+    for items in response.json()['results']:
+        if items['id'] == ord1.id:
+            assert items['status'] == ord1.status
+
+
+@pytest.mark.django_db
+def test_get_orders_list_of_customer_using_filter_by_time(
+    create_user_from_factory,
+    jwt_auth_api_client_pass_user,
+    create_num_of_orders_for_one_user_from_factory
+):
+    # given: auth customer and a list of their orders
+    customer = create_user_from_factory('customer')
+    client = jwt_auth_api_client_pass_user(customer)
+    orders = create_num_of_orders_for_one_user_from_factory(customer, 5)
+    ord1 = orders[0]
+    status1 = ord1.status
+    # when: customer is using filter by status option
+    url = reverse('customers-order-list-create')
+    response = client.get(url, {'status': status1})
+    # then: expecting to get not empty answers in results array
+    assert response.status_code == 200
+    assert response.data['results'] is not None
+    for items in response.json()['results']:
+        if items['id'] == ord1.id:
+            assert items['status'] == ord1.status
