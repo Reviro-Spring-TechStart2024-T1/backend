@@ -2,6 +2,7 @@ import json
 import re
 
 import pytest
+import pytz
 from django.db import connection
 from django.test.utils import CaptureQueriesContext
 from django.utils import timezone
@@ -227,3 +228,99 @@ def test_num_of_queries_sent_to_db_to_get_list_of_orders_as_customer(
 #         assert response.status_code == 200
 #         print(ctx.captured_queries)
 #         assert len(ctx) == sum_of_queries
+
+
+@pytest.mark.django_db
+def test_get_partners_orders_lists_id_filter_as_partner(
+    create_order_for_specific_beverage_from_factory,
+    create_partner_establishment_menu_and_num_of_beverages_as_dict,
+    jwt_auth_api_client_pass_user
+):
+    # given: authenticated partner with establishment menu and some beverages of that menu
+    dict_data = create_partner_establishment_menu_and_num_of_beverages_as_dict(5)
+    partner = dict_data['partner']
+    beverages = dict_data['beverages']
+    bev1, bev2, bev3, bev4, bev5 = beverages
+    client = jwt_auth_api_client_pass_user(partner)
+    ord1 = create_order_for_specific_beverage_from_factory(bev1)
+    create_order_for_specific_beverage_from_factory(bev2)
+    create_order_for_specific_beverage_from_factory(bev3)
+    create_order_for_specific_beverage_from_factory(bev4)
+    ord5 = create_order_for_specific_beverage_from_factory(bev5)
+    # when: partner is using filter by id
+    url = reverse('partners-order-list')
+    response = client.get(url, {'id': ord1.id})
+    # then: expecting to get only that one order
+    assert response.status_code == 200
+    assert response.data['results'][0]['id'] == ord1.id
+    url = reverse('partners-order-list')
+    # when: partner is using filter for other order by id
+    response = client.get(url, {'id': ord5.id})
+    # then: expecting to get only that one order
+    assert response.status_code == 200
+    assert response.data['results'][0]['id'] == ord5.id
+
+
+@pytest.mark.django_db
+def test_get_partners_orders_lists_order_date_filter_as_partner(
+    create_order_for_specific_beverage_from_factory,
+    create_partner_establishment_menu_and_num_of_beverages_as_dict,
+    jwt_auth_api_client_pass_user
+):
+    # given: authenticated partner with establishment menu and some beverages of that menu
+    dict_data = create_partner_establishment_menu_and_num_of_beverages_as_dict(5)
+    partner = dict_data['partner']
+    beverages = dict_data['beverages']
+    bev1 = beverages[0]
+    client = jwt_auth_api_client_pass_user(partner)
+    ord1 = create_order_for_specific_beverage_from_factory(bev1)
+    tz_bishkek = pytz.timezone('Asia/Bishkek')
+    aware_datetime = tz_bishkek.localize(ord1.order_date)
+    # when: partner is using filter by order_date
+    url = reverse('partners-order-list')
+    response = client.get(url, {'order_date': str(ord1.order_date)[:10]})
+    # then: expecting to get only first order in the answer
+    assert response.status_code == 200
+    assert response.data['results'][0]['order_date'] == str(aware_datetime.isoformat())
+
+
+@pytest.mark.django_db
+def test_get_partners_orders_lists_status_filter_as_partner(
+    create_order_for_specific_beverage_from_factory,
+    create_partner_establishment_menu_and_num_of_beverages_as_dict,
+    jwt_auth_api_client_pass_user
+):
+    # given: authenticated partner with establishment menu and some beverages of that menu
+    dict_data = create_partner_establishment_menu_and_num_of_beverages_as_dict(5)
+    partner = dict_data['partner']
+    beverages = dict_data['beverages']
+    bev1 = beverages[0]
+    client = jwt_auth_api_client_pass_user(partner)
+    ord1 = create_order_for_specific_beverage_from_factory(bev1)
+    # when: partner is using filter by order_date
+    url = reverse('partners-order-list')
+    response = client.get(url, {'status': ord1.status})
+    # then: expecting to get only first order in the answer
+    assert response.status_code == 200
+    assert response.data['results'][0]['status'] == ord1.status
+
+
+@pytest.mark.django_db
+def test_get_partners_orders_lists_beverage_name_filter_as_partner(
+    create_order_for_specific_beverage_from_factory,
+    create_partner_establishment_menu_and_num_of_beverages_as_dict,
+    jwt_auth_api_client_pass_user
+):
+    # given: authenticated partner with establishment menu and some beverages of that menu
+    dict_data = create_partner_establishment_menu_and_num_of_beverages_as_dict(5)
+    partner = dict_data['partner']
+    beverages = dict_data['beverages']
+    bev1 = beverages[0]
+    client = jwt_auth_api_client_pass_user(partner)
+    ord1 = create_order_for_specific_beverage_from_factory(bev1)
+    # when: partner is using filter by order_date
+    url = reverse('partners-order-list')
+    response = client.get(url, {'beverage__name': ord1.beverage.name})
+    # then: expecting to get only first order in the answer
+    assert response.status_code == 200
+    assert response.data['results'][0]['beverage_name'] == ord1.beverage.name
