@@ -155,6 +155,17 @@ def test_partner_customers_list(
 
 
 @pytest.mark.django_db
+def test_partner_customers_list_unauthorized(jwt_auth_api_client):
+    client = jwt_auth_api_client(role='customer')
+
+    url = reverse('partner-customers-list')
+    response = client.get(url)
+
+    assert response.status_code == 403
+    assert response.data['detail'] == 'You do not have permission to perform this action.'
+
+
+@pytest.mark.django_db
 def test_detailed_customer_profile(
     setup_partner_with_orders,
     jwt_auth_api_client
@@ -185,6 +196,40 @@ def test_detailed_customer_profile(
 
 
 @pytest.mark.django_db
+def test_detailed_customer_profile_non_existent(
+    setup_partner_with_orders,
+    jwt_auth_api_client
+):
+    partner, customer1, customer2 = setup_partner_with_orders
+    client = jwt_auth_api_client(role='partner')
+    client.force_authenticate(user=partner)
+    # URL for the detailed customer profile endpoint with a non-existent customer ID
+    url = reverse('detailed-customer-profile', args=[9999])
+    response = client.get(url)
+
+    # Assert the status code and response data
+    assert response.status_code == 404   # not found error
+    assert response.data['detail'] == 'No User matches the given query.'
+
+
+@pytest.mark.django_db
+def test_detailed_customer_profile_unauthorized(
+    setup_partner_with_orders,
+    jwt_auth_api_client
+):
+    partner, customer1, customer2 = setup_partner_with_orders
+    client = jwt_auth_api_client(role='customer')
+
+    # URL for the detailed customer profile endpoint
+    url = reverse('detailed-customer-profile', args=[customer1.id])
+    response = client.get(url)
+
+    # Assert the status code and response data
+    assert response.status_code == 403   # forbidden error
+    assert response.data['detail'] == 'You do not have permission to perform this action.'
+
+
+@pytest.mark.django_db
 def test_find_customer_by_email(
     setup_partner_with_orders,
     jwt_auth_api_client
@@ -212,3 +257,16 @@ def test_find_customer_by_email(
     assert response.status_code == 400  # bad request error
     assert 'email' in response.data
     print(response.data)
+
+
+@pytest.mark.django_db
+def test_find_customer_by_email_unauthorized(
+    setup_partner_with_orders,
+    jwt_auth_api_client
+):
+    partner, customer1, customer2 = setup_partner_with_orders
+    client = jwt_auth_api_client(role='costumer')
+    url = reverse('find-customer')
+    response = client.get(url, {'email': customer1.email})
+    assert response.status_code == 403
+    assert response.data['detail'] == 'You do not have permission to perform this action.'
