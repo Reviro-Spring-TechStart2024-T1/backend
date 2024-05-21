@@ -190,7 +190,8 @@ class PartnerUserRegisterSerializer(serializers.ModelSerializer):
             'role',
             'date_of_birth',
             'email',
-            'sex'
+            'sex',
+            'is_blocked',
         ]
         read_only_fields = [
             'id',
@@ -198,7 +199,8 @@ class PartnerUserRegisterSerializer(serializers.ModelSerializer):
             'last_name',
             'role',
             'date_of_birth',
-            'sex'
+            'sex',
+            'is_blocked',
         ]
 
     def create(self, validated_data):
@@ -245,3 +247,29 @@ class CustomObtainTokenPairSerializer(TokenObtainPairSerializer):
         user = self.user
         data['role'] = user.role
         return data
+
+
+class PartnerBlockUnblockSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'email',
+            'first_name',
+            'last_name',
+            'is_blocked',
+            'date_of_birth',
+            'avatar',
+            'role',
+            'sex',
+        ]
+        read_only_fields = [
+            'id',
+            'first_name',
+            'last_name',
+            'is_blocked',
+            'date_of_birth',
+            'avatar',
+            'role',
+            'sex',
+        ]
