@@ -12,7 +12,6 @@ from orders.models import Order
 def test_history_customer_orders(
     jwt_auth_api_user_and_client,
     create_num_of_orders_for_one_user_from_factory,
-    create_user_from_factory
 ):
     # given: authenticated customer and existing orders
     user, client = jwt_auth_api_user_and_client(role='customer')
@@ -58,7 +57,6 @@ def test_create_order_during_happy_hours_as_customer(
 @pytest.mark.django_db
 def test_create_order_outside_happy_hours_as_customer(
     jwt_auth_api_client,
-    create_user_from_factory,
     create_beverage_from_factory
 ):
     # given: authenticated customer and a beverage outside happy hours
