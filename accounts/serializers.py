@@ -217,11 +217,11 @@ class PartnerUserRegisterSerializer(serializers.ModelSerializer):
         login_url = settings.ALLOWED_HOSTS[0] + reverse('token_obtain_pair')
         subject = 'Your DrinkJoy Account Information'
         message = (f'Your account with the role \'partner\' has been created.\n\n'
-                   f'Email: {validated_data["email"]}\n'
+                   f'Email: {validated_data['email']}\n'
                    f'Password: {random_password}\n\n'
                    f'Please make sure to update your password after first login.\n'
-                   f'Login URL: https://{login_url}\n\n'
-                   f'Best regards,\n'
+                   f'Login URL: https://{login_url}\n\n'  # noqa: E231
+                   f'Best regards,\n'   # noqa: E231
                    f'Your DrinkJoy Team\n\n'
                    f'If you received this email by mistake please ignore it.')
         from_email = settings.EMAIL_HOST_USER
@@ -245,3 +245,10 @@ class CustomObtainTokenPairSerializer(TokenObtainPairSerializer):
         user = self.user
         data['role'] = user.role
         return data
+
+
+class BlockPartnerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['is_blocked']
+        read_only_fields = ['is_blocked']

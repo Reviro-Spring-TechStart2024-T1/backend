@@ -22,6 +22,7 @@ class Establishment(BaseModel):
     logo = models.ImageField(upload_to='establishments/logos/', null=True, blank=True)
     happy_hour_start = models.TimeField(null=True, blank=True)
     happy_hour_end = models.TimeField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = 'Establishment'

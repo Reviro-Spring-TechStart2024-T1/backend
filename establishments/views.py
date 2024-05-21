@@ -8,7 +8,7 @@ from .serializers import EstablishmentBannerSerializer, EstablishmentSerializer
 
 
 class EstablishmentListCreateView(generics.ListCreateAPIView):
-    queryset = Establishment.objects.all()
+    queryset = Establishment.objects.filter(is_active=True)
     serializer_class = EstablishmentSerializer
     permission_classes = [IsPartnerOrReadOnly]
     filter_backends = [filters.SearchFilter]
@@ -19,7 +19,7 @@ class EstablishmentListCreateView(generics.ListCreateAPIView):
 
 
 class EstablishmentDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Establishment.objects.all()
+    queryset = Establishment.objects.filter(is_active=True)
     serializer_class = EstablishmentSerializer
     permission_classes = [IsPartnerOrReadOnly]
 

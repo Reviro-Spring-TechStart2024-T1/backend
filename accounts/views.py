@@ -2,10 +2,12 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 
+from establishments.models import Establishment
 from menu.permissions import IsAdminUser
 
 from .models import User
 from .serializers import (
+    BlockPartnerSerializer,
     ChangePasswordSerializer,
     LogoutSerializer,
     PartnerUserRegisterSerializer,
@@ -122,3 +124,57 @@ class PartnerListCreateView(generics.ListCreateAPIView):
     )
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
+
+
+class BlockPartnerView(generics.UpdateAPIView):
+    queryset = User.objects.filter(role='partner')
+    serializer_class = BlockPartnerSerializer
+    permission_classes = [IsAdminUser]
+    lookup_field = 'id'
+
+    @extend_schema(
+        summary='Block a partner.',
+        description=(
+            'Block a partner by setting the is_blocked field to True.\n'
+            '- All related establishments will be marked as inactive.\n'
+            '- Permissions: Admin only.'
+        )
+    )
+    def update(self, request, *args, **kwargs):
+        partner = self.get_object()
+        partner.is_blocked = True
+        partner.save()
+
+        # Make all establishments of this partner as inactive
+        Establishment.objects.filter(owner=partner).update(is_active=False)
+
+        return Response(
+            {'message': 'Partner has been blocked and establishments disabled'}, status=status.HTTP_200_OK
+        )
+
+
+class UnblockPartnerView(generics.UpdateAPIView):
+    queryset = User.objects.filter(role='partner')
+    serializer_class = BlockPartnerSerializer
+    permission_classes = [IsAdminUser]
+    lookup_field = 'id'
+
+    @extend_schema(
+        summary='Unblock a partner.',
+        description=(
+            'Unblock a partner by setting the is_blocked field to False.\n'
+            '- All related establishments will be marked as active.\n'
+            '- Permissions: Admin only.'
+        )
+    )
+    def update(self, request, *args, **kwargs):
+        partner = self.get_object()
+        partner.is_blocked = False
+        partner.save()
+
+        # Make all establishments of this partner as active
+        Establishment.objects.filter(owner=partner).update(is_active=True)
+
+        return Response(
+            {'message': 'Partner has been unblocked and establishments enabled'}, status=status.HTTP_200_OK
+        )

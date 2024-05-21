@@ -61,6 +61,7 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
     sex = models.CharField(max_length=18, choices=SEX_CHOICES, default='not_say')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    is_blocked = models.BooleanField(default=False)
 
     objects = UserManager()
 
