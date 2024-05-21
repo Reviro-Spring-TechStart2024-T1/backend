@@ -6,7 +6,7 @@ repos:
     -   id: check-added-large-files  # проверяет тяжелые файлы на изменения
     -   id: check-yaml  # проверяет синтаксис .yaml файлов
     -   id: check-toml
-    -   id: double-quote-string-fixer  # заменяет " на '
+#    -   id: double-quote-string-fixer  # заменяет " на '
     -   id: end-of-file-fixer  # добавляет пустую строку в конце файла
 
 # Отсортировывает импорты в проекте
