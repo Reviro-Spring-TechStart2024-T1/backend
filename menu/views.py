@@ -21,7 +21,7 @@ class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class MenuListCreateView(generics.ListCreateAPIView):
-    queryset = Menu.objects.all()
+    queryset = Menu.objects.filter(establishment__is_active=True)
     serializer_class = MenuSerializer
     permission_classes = [IsPartnerOrReadOnly]
 
@@ -64,7 +64,7 @@ class MenuListCreateView(generics.ListCreateAPIView):
 
 
 class MenuDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Menu.objects.all()
+    queryset = Menu.objects.filter(establishment__is_active=True)
     serializer_class = MenuSerializer
     permission_classes = [IsPartnerOrReadOnly]
 
