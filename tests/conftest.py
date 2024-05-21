@@ -86,15 +86,15 @@ def jwt_auth_api_client(
 @pytest.fixture
 def jwt_auth_api_client_pass_user() -> APIClient:
     """
-    Fixture authenticates created user that is created using fixture above.
-    Returns authorized APIClient instance.
+    Fixture authenticates passed user that is created outside of fixture.
+    Returns authorized APIClient instance of passed user.
     """
-    def make_role_user(user: User, ):
+    def make_user(user: User):
         client = APIClient()
         refresh = RefreshToken.for_user(user)
         client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh.access_token}')
         return client
-    return make_role_user
+    return make_user
 
 
 @pytest.fixture
