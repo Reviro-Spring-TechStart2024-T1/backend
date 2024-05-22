@@ -109,7 +109,10 @@ def test_put_admins_comment_as_admin(
     assert response.status_code == 200
     assert response.data['message'] == put_data['message']
     assert response.data['id'] == comment.id
-    assert response.data['author'] == user.id
+    assert response.data['author']['id'] == user.id
+    assert response.data['author']['first_name'] == user.first_name
+    assert response.data['author']['last_name'] == user.last_name
+    assert response.data['author']['avatar'] == user.avatar
 
 
 @pytest.mark.django_db
@@ -144,7 +147,7 @@ def test_patch_admins_comment_as_admin(
     user, client = jwt_auth_api_user_and_client('admin')
     comment = create_comment_as_specific_user_from_factory(user)
     patch_data = {
-        'message': 'patially_updated_message'
+        'message': 'partially_updated_message'
     }
     # when:
     url = reverse('comment_details', args=[comment.id])
@@ -157,7 +160,10 @@ def test_patch_admins_comment_as_admin(
     assert response.status_code == 200
     assert response.data['message'] == patch_data['message']
     assert response.data['id'] == comment.id
-    assert response.data['author'] == user.id
+    assert response.data['author']['id'] == user.id
+    assert response.data['author']['first_name'] == user.first_name
+    assert response.data['author']['last_name'] == user.last_name
+    assert response.data['author']['avatar'] == user.avatar
 
 
 @pytest.mark.django_db
@@ -297,7 +303,10 @@ def test_put_customers_comment_as_customer(
     assert response.status_code == 200
     assert response.data['message'] == put_data['message']
     assert response.data['id'] == comment.id
-    assert response.data['author'] == user.id
+    assert response.data['author']['id'] == user.id
+    assert response.data['author']['first_name'] == user.first_name
+    assert response.data['author']['last_name'] == user.last_name
+    assert response.data['author']['avatar'] == user.avatar
 
 
 @pytest.mark.django_db
@@ -345,7 +354,7 @@ def test_patch_customers_comment_as_customer(
     assert response.status_code == 200
     assert response.data['message'] == patch_data['message']
     assert response.data['id'] == comment.id
-    assert response.data['author'] == user.id
+    assert response.data['author']['id'] == user.id
 
 
 @pytest.mark.django_db
@@ -485,7 +494,10 @@ def test_put_partners_comment_as_partner(
     assert response.status_code == 200
     assert response.data['message'] == put_data['message']
     assert response.data['id'] == comment.id
-    assert response.data['author'] == user.id
+    assert response.data['author']['id'] == user.id
+    assert response.data['author']['first_name'] == user.first_name
+    assert response.data['author']['last_name'] == user.last_name
+    assert response.data['author']['avatar'] == user.avatar
 
 
 @pytest.mark.django_db
@@ -533,7 +545,10 @@ def test_patch_partners_comment_as_partner(
     assert response.status_code == 200
     assert response.data['message'] == patch_data['message']
     assert response.data['id'] == comment.id
-    assert response.data['author'] == user.id
+    assert response.data['author']['id'] == user.id
+    assert response.data['author']['first_name'] == user.first_name
+    assert response.data['author']['last_name'] == user.last_name
+    assert response.data['author']['avatar'] == user.avatar
 
 
 @pytest.mark.django_db

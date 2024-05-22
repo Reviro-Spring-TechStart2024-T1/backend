@@ -226,8 +226,8 @@ class FindCustomerByEmailView(APIView):
     '''
     permission_classes = [IsPartnerOnly]
 
-    def get(self, request):
-        serializer = FindCustomerByEmailSerializer(data=request.query_params)
+    def post(self, request):
+        serializer = FindCustomerByEmailSerializer(data=request.data)
         if serializer.is_valid():
             email = serializer.validated_data['email']
             try:
