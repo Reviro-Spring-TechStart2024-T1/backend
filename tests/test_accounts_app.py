@@ -410,3 +410,405 @@ def test_get_list_of_all_partners_by_admin(
     assert response.status_code == 200
     assert len(response.data['results']) == 1
     assert response.data['results'][0]['id'] == partner.id
+
+
+@pytest.mark.django_db
+def test_patch_partners_block_as_admin(
+    create_user_from_factory,
+    jwt_auth_api_client_pass_user
+):
+    # given: auth admin user blocking a partner by their email
+    admin = create_user_from_factory('admin')
+    partner = create_user_from_factory('partner')
+    admin_client = jwt_auth_api_client_pass_user(admin)
+    email = partner.email
+    patch_data = {
+        'email': email
+    }
+    # when: admin is passing partners email to patch endpoint
+    url = reverse('block-partner')
+    response = admin_client.patch(
+        url,
+        data=json.dumps(patch_data),
+        content_type='application/json'
+    )
+    print(response.data)
+    # then: expecting to showcase all info on partner and its is_blocked status
+    assert response.status_code == 200
+    assert response.data['email'] == email
+    assert response.data['is_blocked'] is True
+
+
+@pytest.mark.django_db
+def test_patch_partners_unblock_as_admin(
+    create_user_from_factory,
+    jwt_auth_api_client_pass_user
+):
+    # given: auth admin user unblocking a partner by their email
+    admin = create_user_from_factory('admin')
+    partner = create_user_from_factory('partner')
+    partner.is_blocked = True
+    partner.save()
+    admin_client = jwt_auth_api_client_pass_user(admin)
+    email = partner.email
+    patch_data = {
+        'email': email
+    }
+    # when: admin is passing partners email to patch endpoint
+    url = reverse('unblock-partner')
+    response = admin_client.patch(
+        url,
+        data=json.dumps(patch_data),
+        content_type='application/json'
+    )
+    print(response.data)
+    # then: expecting to showcase all info on partner and its is_blocked status
+    assert response.status_code == 200
+    assert response.data['email'] == email
+    assert response.data['is_blocked'] is False
+
+
+@pytest.mark.django_db
+def test_get_responses_of_blocked_partners_as_admin(
+    create_user_from_factory,
+    jwt_auth_api_client_pass_user,
+    create_partner_establishment_menu_and_num_of_beverages_as_dict
+):
+    # given: auth admin who blocks partner
+    dict_data = create_partner_establishment_menu_and_num_of_beverages_as_dict(3)
+    partner = dict_data['partner']
+    establishment = dict_data['establishment']
+    menu = dict_data['menu']
+    beverages = dict_data['beverages']
+    admin = create_user_from_factory('admin')
+    client = jwt_auth_api_client_pass_user(admin)
+    block_url = reverse('block-partner')
+    block_response = client.patch(
+        block_url,
+        data=json.dumps({'email': partner.email}),
+        content_type='application/json'
+    )
+    assert block_response.data['is_blocked'] is True
+    # when: checking if blocked partners establishment, menu and beverages are not found in other urls
+    establishment_detail_url = reverse('establishment-detail', args=[establishment.id])
+    menu_detail_url = reverse('menu-detail', args=[menu.id])
+    beverage1_detail_url = reverse('beverage-detail', args=[beverages[0].id])
+    beverage2_detail_url = reverse('beverage-detail', args=[beverages[1].id])
+    beverage3_detail_url = reverse('beverage-detail', args=[beverages[2].id])
+    establishment_detail_response = client.get(establishment_detail_url)
+    menu_detail_response = client.get(menu_detail_url)
+    beverage1_detail_response = client.get(beverage1_detail_url)
+    beverage2_detail_response = client.get(beverage2_detail_url)
+    beverage3_detail_response = client.get(beverage3_detail_url)
+    # then: expecting to get on all related urls 404
+    assert establishment_detail_response.status_code == 404
+    assert establishment_detail_response.data['detail'] == 'No Establishment matches the given query.'
+    assert menu_detail_response.status_code == 404
+    assert menu_detail_response.data['detail'] == 'No Menu matches the given query.'
+    assert beverage1_detail_response.status_code == 404
+    assert beverage1_detail_response.data['detail'] == 'No Beverage matches the given query.'
+    assert beverage2_detail_response.status_code == 404
+    assert beverage2_detail_response.data['detail'] == 'No Beverage matches the given query.'
+    assert beverage3_detail_response.status_code == 404
+    assert beverage3_detail_response.data['detail'] == 'No Beverage matches the given query.'
+
+
+@pytest.mark.django_db
+def test_get_responses_of_blocked_partners_as_partner(
+    create_user_from_factory,
+    jwt_auth_api_client_pass_user,
+    create_partner_establishment_menu_and_num_of_beverages_as_dict
+):
+    # given: auth admin who blocks partner and "auth" partner
+    dict_data = create_partner_establishment_menu_and_num_of_beverages_as_dict(3)
+    partner = dict_data['partner']
+    establishment = dict_data['establishment']
+    menu = dict_data['menu']
+    beverages = dict_data['beverages']
+    admin = create_user_from_factory('admin')
+    admin_client = jwt_auth_api_client_pass_user(admin)
+    partner_client = jwt_auth_api_client_pass_user(partner)
+    block_url = reverse('block-partner')
+    block_response = admin_client.patch(
+        block_url,
+        data=json.dumps({'email': partner.email}),
+        content_type='application/json'
+    )
+    assert block_response.data['is_blocked'] is True
+    # when: checking if blocked partners establishment, menu and beverages are not found in other urls
+    establishment_detail_url = reverse('establishment-detail', args=[establishment.id])
+    menu_detail_url = reverse('menu-detail', args=[menu.id])
+    beverage1_detail_url = reverse('beverage-detail', args=[beverages[0].id])
+    beverage2_detail_url = reverse('beverage-detail', args=[beverages[1].id])
+    beverage3_detail_url = reverse('beverage-detail', args=[beverages[2].id])
+    establishment_detail_response = partner_client.get(establishment_detail_url)
+    menu_detail_response = partner_client.get(menu_detail_url)
+    beverage1_detail_response = partner_client.get(beverage1_detail_url)
+    beverage2_detail_response = partner_client.get(beverage2_detail_url)
+    beverage3_detail_response = partner_client.get(beverage3_detail_url)
+    # then: expecting to get on all related urls 404
+    assert establishment_detail_response.status_code == 404
+    assert establishment_detail_response.data['detail'] == 'No Establishment matches the given query.'
+    assert menu_detail_response.status_code == 404
+    assert menu_detail_response.data['detail'] == 'No Menu matches the given query.'
+    assert beverage1_detail_response.status_code == 404
+    assert beverage1_detail_response.data['detail'] == 'No Beverage matches the given query.'
+    assert beverage2_detail_response.status_code == 404
+    assert beverage2_detail_response.data['detail'] == 'No Beverage matches the given query.'
+    assert beverage3_detail_response.status_code == 404
+    assert beverage3_detail_response.data['detail'] == 'No Beverage matches the given query.'
+
+
+@pytest.mark.django_db
+def test_get_responses_of_blocked_partners_as_customer(
+    create_user_from_factory,
+    jwt_auth_api_client_pass_user,
+    create_partner_establishment_menu_and_num_of_beverages_as_dict
+):
+    # given: auth admin who blocks partner and auth customer
+    dict_data = create_partner_establishment_menu_and_num_of_beverages_as_dict(3)
+    partner = dict_data['partner']
+    establishment = dict_data['establishment']
+    menu = dict_data['menu']
+    beverages = dict_data['beverages']
+    admin = create_user_from_factory('admin')
+    customer = create_user_from_factory('customer')
+    admin_client = jwt_auth_api_client_pass_user(admin)
+    customer_client = jwt_auth_api_client_pass_user(customer)
+    block_url = reverse('block-partner')
+    block_response = admin_client.patch(
+        block_url,
+        data=json.dumps({'email': partner.email}),
+        content_type='application/json'
+    )
+    assert block_response.data['is_blocked'] is True
+    # when: checking if blocked partners establishment, menu and beverages are not found in other urls
+    establishment_detail_url = reverse('establishment-detail', args=[establishment.id])
+    menu_detail_url = reverse('menu-detail', args=[menu.id])
+    beverage1_detail_url = reverse('beverage-detail', args=[beverages[0].id])
+    beverage2_detail_url = reverse('beverage-detail', args=[beverages[1].id])
+    beverage3_detail_url = reverse('beverage-detail', args=[beverages[2].id])
+    establishment_detail_response = customer_client.get(establishment_detail_url)
+    menu_detail_response = customer_client.get(menu_detail_url)
+    beverage1_detail_response = customer_client.get(beverage1_detail_url)
+    beverage2_detail_response = customer_client.get(beverage2_detail_url)
+    beverage3_detail_response = customer_client.get(beverage3_detail_url)
+    # then: expecting to get on all related urls 404
+    assert establishment_detail_response.status_code == 404
+    assert establishment_detail_response.data['detail'] == 'No Establishment matches the given query.'
+    assert menu_detail_response.status_code == 404
+    assert menu_detail_response.data['detail'] == 'No Menu matches the given query.'
+    assert beverage1_detail_response.status_code == 404
+    assert beverage1_detail_response.data['detail'] == 'No Beverage matches the given query.'
+    assert beverage2_detail_response.status_code == 404
+    assert beverage2_detail_response.data['detail'] == 'No Beverage matches the given query.'
+    assert beverage3_detail_response.status_code == 404
+    assert beverage3_detail_response.data['detail'] == 'No Beverage matches the given query.'
+
+
+@pytest.mark.django_db
+def test_get_responses_for_absence_in_lists_of_blocked_partners_as_admin(
+    create_user_from_factory,
+    jwt_auth_api_client_pass_user,
+    create_partner_establishment_menu_and_num_of_beverages_as_dict
+):
+    # given: auth admin blocks one partner out of num_of_partners
+    bevs_in_dict = 3
+    num_of_partners = 4
+    num_of_bevs = num_of_partners * bevs_in_dict
+    partners_dicts = [
+        create_partner_establishment_menu_and_num_of_beverages_as_dict(bevs_in_dict)
+        for _ in range(num_of_partners)
+    ]
+    last_dict_data = partners_dicts[-1]
+    partner = last_dict_data['partner']
+    beverages = last_dict_data['beverages']
+    admin = create_user_from_factory('admin')
+    client = jwt_auth_api_client_pass_user(admin)
+    block_url = reverse('block-partner')
+    block_response = client.patch(
+        block_url,
+        data=json.dumps({'email': partner.email}),
+        content_type='application/json'
+    )
+    assert block_response.data['is_blocked'] is True
+    # when: admin tries to access the related entites' list endpoints
+    establishments_list_url = reverse('establishment-list')
+    menus_list_url = reverse('menu-list')
+    beverages_list_url = reverse('beverage-list')
+    establishments_list_response = client.get(establishments_list_url)
+    menus_list_response = client.get(menus_list_url)
+    beverages_list_response = client.get(beverages_list_url)
+    # then: expects to get the length of results being not num_of_partners but less by one
+    assert establishments_list_response.status_code == 200
+    assert len(establishments_list_response.data['results']) == num_of_partners - 1
+    assert menus_list_response.status_code == 200
+    assert len(menus_list_response.data['results']) == 0
+    assert beverages_list_response.status_code == 200
+    assert len(beverages_list_response.data['results']) == num_of_bevs - len(beverages)
+
+
+@pytest.mark.django_db
+def test_get_responses_for_absence_in_lists_of_blocked_partners_as_partner(
+    create_user_from_factory,
+    jwt_auth_api_client_pass_user,
+    create_partner_establishment_menu_and_num_of_beverages_as_dict
+):
+    # given: auth admin blocks one partner out of num_of_partners and "auth" partner
+    bevs_in_dict = 3
+    num_of_partners = 4
+    num_of_bevs = num_of_partners * bevs_in_dict
+    partners_dicts = [
+        create_partner_establishment_menu_and_num_of_beverages_as_dict(bevs_in_dict)
+        for _ in range(num_of_partners)
+    ]
+    last_dict_data = partners_dicts[-1]
+    partner = last_dict_data['partner']
+    beverages = last_dict_data['beverages']
+    admin = create_user_from_factory('admin')
+    admin_client = jwt_auth_api_client_pass_user(admin)
+    partner_client = jwt_auth_api_client_pass_user(partner)
+    block_url = reverse('block-partner')
+    block_response = admin_client.patch(
+        block_url,
+        data=json.dumps({'email': partner.email}),
+        content_type='application/json'
+    )
+    assert block_response.data['is_blocked'] is True
+    # when: admin tries to access the related entites' list endpoints
+    establishments_list_url = reverse('establishment-list')
+    menus_list_url = reverse('menu-list')
+    beverages_list_url = reverse('beverage-list')
+    establishments_list_response = partner_client.get(establishments_list_url)
+    menus_list_response = partner_client.get(menus_list_url)
+    beverages_list_response = partner_client.get(beverages_list_url)
+    # then: expects to get the length of results being not num_of_partners but less by one
+    assert establishments_list_response.status_code == 200
+    assert len(establishments_list_response.data['results']) == num_of_partners - 1
+    assert menus_list_response.status_code == 200
+    assert len(menus_list_response.data['results']) == 0
+    assert beverages_list_response.status_code == 200
+    assert len(beverages_list_response.data['results']) == num_of_bevs - len(beverages)
+
+
+@pytest.mark.django_db
+def test_get_responses_for_absence_in_lists_of_blocked_partners_as_customer(
+    create_user_from_factory,
+    jwt_auth_api_client_pass_user,
+    create_partner_establishment_menu_and_num_of_beverages_as_dict
+):
+    # given: auth admin blocks one partner out of num_of_partners and "auth" partner
+    bevs_in_dict = 3
+    num_of_partners = 4
+    num_of_bevs = num_of_partners * bevs_in_dict
+    partners_dicts = [
+        create_partner_establishment_menu_and_num_of_beverages_as_dict(bevs_in_dict)
+        for _ in range(num_of_partners)
+    ]
+    last_dict_data = partners_dicts[-1]
+    partner = last_dict_data['partner']
+    beverages = last_dict_data['beverages']
+    admin = create_user_from_factory('admin')
+    customer = create_user_from_factory('customer')
+    admin_client = jwt_auth_api_client_pass_user(admin)
+    customer_client = jwt_auth_api_client_pass_user(customer)
+    block_url = reverse('block-partner')
+    block_response = admin_client.patch(
+        block_url,
+        data=json.dumps({'email': partner.email}),
+        content_type='application/json'
+    )
+    assert block_response.data['is_blocked'] is True
+    # when: admin tries to access the related entites' list endpoints
+    establishments_list_url = reverse('establishment-list')
+    menus_list_url = reverse('menu-list')
+    beverages_list_url = reverse('beverage-list')
+    establishments_list_response = customer_client.get(establishments_list_url)
+    menus_list_response = customer_client.get(menus_list_url)
+    beverages_list_response = customer_client.get(beverages_list_url)
+    # then: expects to get the length of results being not num_of_partners but less by one
+    assert establishments_list_response.status_code == 200
+    assert len(establishments_list_response.data['results']) == num_of_partners - 1
+    assert menus_list_response.status_code == 200
+    assert len(menus_list_response.data['results']) == 0
+    assert beverages_list_response.status_code == 200
+    assert len(beverages_list_response.data['results']) == num_of_bevs - len(beverages)
+
+
+@pytest.mark.django_db
+def test_post_token_api_for_blocked_partner(
+    create_user_from_factory,
+    jwt_auth_api_client_pass_user
+):
+    # given: auth admin blocks partner
+    admin = create_user_from_factory('admin')
+    partner = create_user_from_factory('partner')
+    admin_client = jwt_auth_api_client_pass_user(admin)
+    partner_client = jwt_auth_api_client_pass_user(partner)
+    block_url = reverse('block-partner')
+    block_response = admin_client.patch(
+        block_url,
+        data=json.dumps({'email': partner.email}),
+        content_type='application/json'
+    )
+    assert block_response.data['is_blocked'] is True
+    # when: blocked partner is trying to login
+    login_url = reverse('token_obtain_pair')
+    login_response = partner_client.post(
+        login_url,
+        data=json.dumps(
+            {
+                'email': partner.email,
+                'password': 'VeryStrongP@$$123'
+            }
+        ),
+        content_type='application/json'
+    )
+    print(login_response.data)
+    # then: expects to see message of their account being blocked
+    assert login_response.status_code == 403
+    assert login_response.data['detail'] == ('Your account is blocked, please '
+                                             'refer to the administrator for further assistance.')
+
+
+@pytest.mark.django_db
+def test_post_token_api_for_unblocked_partner(
+    create_user_from_factory,
+    jwt_auth_api_client_pass_user
+):
+    # given: auth admin blocks partner and then unblocks
+    admin = create_user_from_factory('admin')
+    partner = create_user_from_factory('partner')
+    admin_client = jwt_auth_api_client_pass_user(admin)
+    partner_client = jwt_auth_api_client_pass_user(partner)
+    block_url = reverse('block-partner')
+    block_response = admin_client.patch(
+        block_url,
+        data=json.dumps({'email': partner.email}),
+        content_type='application/json'
+    )
+    assert block_response.data['is_blocked'] is True
+    unblock_url = reverse('unblock-partner')
+    unblock_response = admin_client.patch(
+        unblock_url,
+        data=json.dumps({'email': partner.email}),
+        content_type='application/json'
+    )
+    assert unblock_response.data['is_blocked'] is False
+    # when: blocked partner is trying to login
+    login_url = reverse('token_obtain_pair')
+    login_response = partner_client.post(
+        login_url,
+        data=json.dumps(
+            {
+                'email': partner.email,
+                'password': 'VeryStrongP@$$123'
+            }
+        ),
+        content_type='application/json'
+    )
+    print(login_response.data)
+    # then: expects to be able to get into their account
+    assert login_response.status_code == 200
+    assert login_response.data['access'] is not None
+    assert login_response.data['refresh'] is not None
