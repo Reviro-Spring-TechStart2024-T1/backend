@@ -34,7 +34,7 @@ def test_get_list_of_one_post_as_admin(
     assert len(response.data['results']) == 1
     assert response.data['results'][0]['title'] == post.title
     assert response.data['results'][0]['content'] == post.content
-    assert response.data['results'][0]['author'] == post.author.id
+    assert response.data['results'][0]['author']['id'] == post.author.id
 
 
 @pytest.mark.django_db
@@ -73,7 +73,7 @@ def test_get_list_of_one_post_with_comments_as_admin(
     assert len(response.data['results']) == 1
     assert response.data['results'][0]['title'] == post.title
     assert response.data['results'][0]['content'] == post.content
-    assert response.data['results'][0]['author'] == post.author.id
+    assert response.data['results'][0]['author']['id'] == post.author.id
     assert len(response.data['results'][0]['comments']) == num_of_comments
 
 
@@ -175,7 +175,7 @@ def test_put_admins_post_as_admin(
     assert response.status_code == 200
     assert response.data['title'] == put_data['title']
     assert response.data['content'] == put_data['content']
-    assert response.data['author'] == user.id
+    assert response.data['author']['id'] == user.id
 
 
 @pytest.mark.django_db
@@ -202,7 +202,7 @@ def test_patch_admins_post_as_admin(
     assert response.status_code == 200
     assert response.data['title'] == patch_data['title']
     assert response.data['content'] == patch_data['content']
-    assert response.data['author'] == user.id
+    assert response.data['author']['id'] == user.id
 
 
 @pytest.mark.django_db
@@ -268,7 +268,7 @@ def test_get_list_of_one_post_as_customer(
     assert len(response.data['results']) == 1
     assert response.data['results'][0]['title'] == post.title
     assert response.data['results'][0]['content'] == post.content
-    assert response.data['results'][0]['author'] == post.author.id
+    assert response.data['results'][0]['author']['id'] == post.author.id
 
 
 @pytest.mark.django_db
@@ -307,7 +307,7 @@ def test_get_list_of_one_post_with_comments_as_customer(
     assert len(response.data['results']) == 1
     assert response.data['results'][0]['title'] == post.title
     assert response.data['results'][0]['content'] == post.content
-    assert response.data['results'][0]['author'] == post.author.id
+    assert response.data['results'][0]['author']['id'] == post.author.id
     assert len(response.data['results'][0]['comments']) == num_of_comments
 
 
@@ -409,7 +409,7 @@ def test_put_customers_post_as_customer(
     assert response.status_code == 200
     assert response.data['title'] == put_data['title']
     assert response.data['content'] == put_data['content']
-    assert response.data['author'] == user.id
+    assert response.data['author']['id'] == user.id
 
 
 @pytest.mark.django_db
@@ -436,7 +436,7 @@ def test_patch_customers_post_as_customer(
     assert response.status_code == 200
     assert response.data['title'] == patch_data['title']
     assert response.data['content'] == patch_data['content']
-    assert response.data['author'] == user.id
+    assert response.data['author']['id'] == user.id
 
 
 @pytest.mark.django_db
@@ -502,7 +502,7 @@ def test_get_list_of_one_post_as_partner(
     assert len(response.data['results']) == 1
     assert response.data['results'][0]['title'] == post.title
     assert response.data['results'][0]['content'] == post.content
-    assert response.data['results'][0]['author'] == post.author.id
+    assert response.data['results'][0]['author']['id'] == post.author.id
 
 
 @pytest.mark.django_db
@@ -541,7 +541,7 @@ def test_get_list_of_one_post_with_comments_as_partner(
     assert len(response.data['results']) == 1
     assert response.data['results'][0]['title'] == post.title
     assert response.data['results'][0]['content'] == post.content
-    assert response.data['results'][0]['author'] == post.author.id
+    assert response.data['results'][0]['author']['id'] == post.author.id
     assert len(response.data['results'][0]['comments']) == num_of_comments
 
 
@@ -643,7 +643,7 @@ def test_put_partners_post_as_partner(
     assert response.status_code == 200
     assert response.data['title'] == put_data['title']
     assert response.data['content'] == put_data['content']
-    assert response.data['author'] == user.id
+    assert response.data['author']['id'] == user.id
 
 
 @pytest.mark.django_db
@@ -670,7 +670,7 @@ def test_patch_partners_post_as_partner(
     assert response.status_code == 200
     assert response.data['title'] == patch_data['title']
     assert response.data['content'] == patch_data['content']
-    assert response.data['author'] == user.id
+    assert response.data['author']['id'] == user.id
 
 
 @pytest.mark.django_db
