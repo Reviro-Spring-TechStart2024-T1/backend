@@ -355,6 +355,13 @@ def create_num_of_posts_as_specific_user(db):
 
 
 @pytest.fixture
+def create_post_as_specific_user(db):
+    def make_posts(user: User) -> list:
+        return PostFactory.create(author=user)
+    return make_posts
+
+
+@pytest.fixture
 def create_comment_from_factory(db):
     return CommentFactory()
 
@@ -370,6 +377,20 @@ def create_comment_as_specific_user_from_factory(db):
 def create_num_of_comments_from_factory(db):
     def make_comments(num: int = 1) -> list:
         return CommentFactory.create_batch(size=num)
+    return make_comments
+
+
+@pytest.fixture
+def create_comment_as_specific_user_for_specific_post_from_factory(db):
+    def make_comment(user: User, post: Post):
+        return CommentFactory.create(author=user, post=post)
+    return make_comment
+
+
+@pytest.fixture
+def create_num_of_comments_for_specific_post_from_factory(db):
+    def make_comments(post: Post, num: int = 1) -> list:
+        return CommentFactory.create_batch(post=post, size=num)
     return make_comments
 
 

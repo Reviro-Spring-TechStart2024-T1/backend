@@ -91,3 +91,12 @@ class PostSerializer(serializers.ModelSerializer):
             author=self.context['request'].user
         )
         return post
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        comments = instance.comments.filter(is_deleted=False)
+        comments_serializer = CommentSerializer(comments, many=True, context=self.context)
+        representation['comments'] = comments_serializer.data
+
+        return representation
