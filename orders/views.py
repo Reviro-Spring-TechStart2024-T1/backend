@@ -224,6 +224,7 @@ class FindCustomerByEmailView(APIView):
     '''
     Find any existing customer by email address.
     '''
+    serializer_class = FindCustomerByEmailSerializer
     permission_classes = [IsPartnerOnly]
 
     def post(self, request):
@@ -336,6 +337,10 @@ class CustomersOrderListCreateView(generics.ListCreateAPIView):
         Get the authenticated user
         Filter the queryset to show only the orders belonging to the authenticated user
         '''
+        if getattr(self, 'swagger_fake_view', False):
+            # Returning an empty queryset to avoid errors during schema generation
+            return Order.objects.none()
+
         customer = self.request.user
         queryset = Order.objects.filter(user=customer).select_related(
             'beverage',

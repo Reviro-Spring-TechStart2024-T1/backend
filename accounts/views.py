@@ -1,5 +1,5 @@
 from drf_spectacular.utils import extend_schema
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, status, views
 from rest_framework.response import Response
 
 from menu.permissions import IsAdminUser
@@ -8,6 +8,7 @@ from .models import User
 from .serializers import (
     ChangePasswordSerializer,
     LogoutSerializer,
+    PartnerBlockUnblockSerializer,
     PartnerUserRegisterSerializer,
     UserProfileSerializer,
     UserRegisterSerializer,
@@ -122,3 +123,53 @@ class PartnerListCreateView(generics.ListCreateAPIView):
     )
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
+
+
+class BlockPartnerView(views.APIView):
+    serializer_class = PartnerBlockUnblockSerializer
+    permission_classes = [IsAdminUser]
+
+    def patch(self, request, format=None):
+        return self.update_block_status(request, True)
+
+    def update_block_status(self, request, is_blocked=True):
+        email = request.data.get('email')
+        if not email:
+            return Response({'error': 'Email is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            partner = User.objects.get(email=email)
+            if partner.role == 'partner':
+                partner.is_blocked = is_blocked
+                partner.save()
+                serializer = PartnerBlockUnblockSerializer(partner)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'Given user is not of role partner.'})
+        except User.DoesNotExist:
+            return Response({'error': 'Partner not found'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class UnblockPartnerView(views.APIView):
+    serializer_class = PartnerBlockUnblockSerializer
+    permission_classes = [IsAdminUser]
+
+    def patch(self, request, format=None):
+        return self.update_block_status(request, False)
+
+    def update_block_status(self, request, is_unblocked=False):
+        email = request.data.get('email')
+        if not email:
+            return Response({'error': 'Email is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            partner = User.objects.get(email=email)
+            if partner.role == 'partner':
+                partner.is_blocked = is_unblocked
+                partner.save()
+                serializer = PartnerBlockUnblockSerializer(partner)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'Given user is not of role partner.'})
+        except User.DoesNotExist:
+            return Response({'error': 'Partner not found'}, status=status.HTTP_404_NOT_FOUND)

@@ -61,6 +61,7 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
     sex = models.CharField(max_length=18, choices=SEX_CHOICES, default='not_say')
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    is_blocked = models.BooleanField(default=False)
 
     objects = UserManager()
 
@@ -77,3 +78,23 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
             'refresh': str(refresh),
             'access': str(access)
         }
+
+    def soft_delete_related_objects(self):
+        for establishment in self.establishments.all():
+            establishment.soft_delete()
+            establishment.menus.soft_delete()
+            for beverage in establishment.menus.beverages.all():
+                beverage.soft_delete()
+
+    def restore_related_objects(self):
+        from django.apps import apps  # was necessary to avoid circular import problems
+        Establishment = apps.get_model('establishments', 'Establishment')
+        Beverage = apps.get_model('menu', 'Beverage')
+
+        for establishment in Establishment.everything.filter(owner=self, is_deleted=True):
+            establishment.restore()
+            if hasattr(establishment, 'menu'):
+                menu = establishment.menu
+                menu.restore()
+                for beverage in Beverage.everything.filter(menu=menu, is_deleted=True):
+                    beverage.restore()

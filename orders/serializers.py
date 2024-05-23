@@ -1,4 +1,5 @@
 from django.utils import timezone
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from accounts.models import User
@@ -212,6 +213,7 @@ class DetailedCustomerProfileSerializer(serializers.ModelSerializer):
             'orders'
         ]
 
+    @extend_schema_field(OrderHistorySerializer(many=True))
     def get_orders(self, obj):
         request = self.context.get('request')
         user = request.user
