@@ -219,3 +219,39 @@ class DetailedCustomerProfileSerializer(serializers.ModelSerializer):
         user = request.user
         orders = Order.objects.filter(beverage__menu__establishment__owner=user, user=obj)
         return OrderHistorySerializer(orders, many=True).data
+
+
+class DayStatisticsSerializer(serializers.Serializer):
+    count = serializers.IntegerField()
+    sum = serializers.IntegerField()
+
+
+class WeekStatisticsSerializer(serializers.Serializer):
+    count = serializers.IntegerField()
+    sum = serializers.IntegerField()
+
+
+class MonthStatisticsSerializer(serializers.Serializer):
+    count = serializers.IntegerField()
+    sum = serializers.IntegerField()
+
+
+class QuarterStatisticsSerializer(serializers.Serializer):
+    count = serializers.IntegerField()
+    sum = serializers.IntegerField()
+
+
+class YearStatisticsSerializer(serializers.Serializer):
+    count = serializers.IntegerField()
+    sum = serializers.IntegerField()
+
+
+class OrderStatisticsSerializer(serializers.Serializer):
+    this_week = serializers.DictField(child=DayStatisticsSerializer())
+    last_week = serializers.DictField(child=DayStatisticsSerializer())
+    this_month = serializers.DictField(child=WeekStatisticsSerializer())
+    last_month = serializers.DictField(child=WeekStatisticsSerializer())
+    this_quarter = serializers.DictField(child=MonthStatisticsSerializer())
+    last_quarter = serializers.DictField(child=MonthStatisticsSerializer())
+    this_year = serializers.DictField(child=QuarterStatisticsSerializer())
+    last_year = serializers.DictField(child=QuarterStatisticsSerializer())

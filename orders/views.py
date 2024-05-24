@@ -19,6 +19,7 @@ from .serializers import (
     CustomerSerializer,
     DetailedCustomerProfileSerializer,
     FindCustomerByEmailSerializer,
+    OrderStatisticsSerializer,
     PartnersCreateOrderSerializer,
     PartnersDetailOrderSerializer,
 )
@@ -315,11 +316,11 @@ class CustomersOrderListCreateView(generics.ListCreateAPIView):
     @extend_schema(
         summary='Create order',
         description=(
-            f'Create a new order for the authenticated customer user.\n'
-            f'- Requires authentication.\n'
-            f'- To create new order pass beverages id to the field "beverage_id".\n'
-            f'- Returns the newly created order.\n'
-            f'- Permission: Customers only.'
+            'Create a new order for the authenticated customer user.\n'
+            '- Requires authentication.\n'
+            '- To create new order pass beverages id to the field "beverage_id".\n'
+            '- Returns the newly created order.\n'
+            '- Permission: Customers only.'
         )
     )
     def post(self, request, *args, **kwargs):
@@ -357,6 +358,7 @@ class CustomersOrderListCreateView(generics.ListCreateAPIView):
 
 
 class OrderStatisticsView(generics.GenericAPIView):
+    serializer_class = OrderStatisticsSerializer
     queryset = Order.objects.all()
     permission_classes = [IsPartnerOnly]
 
@@ -480,6 +482,20 @@ class OrderStatisticsView(generics.GenericAPIView):
     def get_end_of_year(self, date):
         return datetime(date.year, 12, 31, 23, 59, 59, tzinfo=date.tzinfo)
 
+    @extend_schema(
+        summary='Get partners stats',
+        description=(
+            'Returns all timeframes for statistics with counts of orders made in an all establishments'
+            ' as well as beverage price sums. Filtering for the partner and its establishments\' orders are present.\n'
+            '- Requires authentication.\n'
+            '- Permission: Partner only.\n\n'
+            'Predefined available time frames:\n'
+            '- `this_week` and `last_week` - daily stats\n'
+            '- `this_month` and `last_month` - weekly stats\n'
+            '- `this_quarter` and `last_quarter` - monthly stats\n'
+            '- `this_year` and `last_year` - quarterly stats'
+        )
+    )
     def get(self, request, *args, **kwargs):
         today = timezone.now()
         this_week_start = self.get_start_of_week(today)
