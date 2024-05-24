@@ -375,7 +375,7 @@ class OrderStatisticsView(generics.GenericAPIView):
             orders = self.get_queryset().filter(order_date__date=current_day)
             orders_total_count = orders.count()
             orders_total_sum = orders.aggregate(total_sum=Sum('beverage__price'))['total_sum'] or 0
-            orders_by_day[current_day.strftime('%Y-%m-%d')] = {
+            orders_by_day[current_day.strftime('%a-%Y-%m-%d')] = {
                 'count': orders_total_count,
                 'sum': orders_total_sum
             }
@@ -395,8 +395,8 @@ class OrderStatisticsView(generics.GenericAPIView):
             week_orders_count = week_orders.count()
             week_orders_sum = week_orders.aggregate(total_sum=Sum('beverage__price'))['total_sum'] or 0
             orders_by_week[
-                (str(current_week_start.strftime('%Y-%m-%d')) + ' - ' +  # noqa: W504
-                 str(current_week_end.strftime('%Y-%m-%d')))
+                (str(current_week_start.strftime('%a-%Y-%m-%d')) + ' - ' +  # noqa: W504
+                 str(current_week_end.strftime('%a-%Y-%m-%d')))
             ] = {
                 'count': week_orders_count,
                 'sum': week_orders_sum
@@ -411,7 +411,7 @@ class OrderStatisticsView(generics.GenericAPIView):
         current_month_start = start_date
 
         while current_month_start <= end_date:
-            current_month_end = current_month_start + relativedelta(months=1, days=-1)
+            current_month_end = (current_month_start + relativedelta(months=1)).replace(day=1) - timedelta(days=1)
             if current_month_end > end_date:
                 current_month_end = end_date
             month_data = self.get_orders_by_week(current_month_start, current_month_end)
@@ -471,7 +471,8 @@ class OrderStatisticsView(generics.GenericAPIView):
     def get_start_of_month(self, date):
         # Calculate the start of the month
         start_of_month = date.replace(day=1)
-        return start_of_month
+        start_of_week_including_month_start = start_of_month - timedelta(days=start_of_month.weekday())
+        return start_of_week_including_month_start
 
     def get_start_of_year(self, date):
         return datetime(date.year, 1, 1, tzinfo=date.tzinfo)
