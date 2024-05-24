@@ -9,7 +9,8 @@ from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from accounts.models import User
-from menu.models import Menu
+from establishments.models import Establishment
+from menu.models import Beverage, Menu
 from support.models import Post
 from tests.factories import (
     BeverageFactory,
@@ -83,6 +84,20 @@ def jwt_auth_api_client(
 
 
 @pytest.fixture
+def jwt_auth_api_client_pass_user() -> APIClient:
+    """
+    Fixture authenticates passed user that is created outside of fixture.
+    Returns authorized APIClient instance of passed user.
+    """
+    def make_user(user: User):
+        client = APIClient()
+        refresh = RefreshToken.for_user(user)
+        client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh.access_token}')
+        return client
+    return make_user
+
+
+@pytest.fixture
 def jwt_auth_api_user_and_client(
     create_user_from_factory
 ) -> APIClient:
@@ -141,6 +156,13 @@ def create_establishment_from_factory(db):
 
 
 @pytest.fixture
+def create_establishment_passing_partner_as_owner_from_factory(db):
+    def make_est_with_partner(partner: User):
+        return EstablishmentFactory.create(owner=partner)
+    return make_est_with_partner
+
+
+@pytest.fixture
 def create_num_of_establishments_from_factory(db):
     def make_num_establishments(num: int = 1) -> list:
         return EstablishmentFactory.create_batch(size=num)
@@ -192,6 +214,13 @@ def create_menu_from_factory(db):
 
 
 @pytest.fixture
+def create_menu_of_specific_establishment_from_factory(db):
+    def make_menu_of_spec_est(establishment: Establishment):
+        return MenuFactory.create(establishment=establishment)
+    return make_menu_of_spec_est
+
+
+@pytest.fixture
 def create_num_of_menus_from_factory(db):
     def make_num_of_menus(num: int = 1) -> list:
         return MenuFactory.create_batch(size=num)
@@ -220,6 +249,13 @@ def create_num_of_beverages_in_one_menu_from_factories(db, create_menu_from_fact
 
 
 @pytest.fixture
+def create_num_of_beverages_in_one_specific_menu_from_factories(db):
+    def make_num_beverages(menu: Menu, num: int = 1) -> list:
+        return BeverageFactory.create_batch(size=num, menu=menu)
+    return make_num_beverages
+
+
+@pytest.fixture
 def create_num_of_beverages_in_one_menu_from_outside_factory(db):
     def make_num_of_beverages(menu: Menu, num: int = 1) -> list:
         return BeverageFactory.create_batch(size=num, menu=menu)
@@ -232,10 +268,47 @@ def create_order_from_factory(db):
 
 
 @pytest.fixture
+def create_order_for_specific_beverage_from_factory(db):
+    def make_spc_ord(beverage: Beverage):
+        return OrderFactory.create(beverage=beverage)
+    return make_spc_ord
+
+
+@pytest.fixture
 def create_num_of_orders_for_one_user_from_factory(db):
     def make_num_of_orders(user: User, num: int = 1) -> list:
         return OrderFactory.create_batch(user=user, size=num)
     return make_num_of_orders
+
+
+@pytest.fixture
+def create_num_of_orders_for_diff_users_for_one_establishment_from_factory(db):
+    def make_num_or_orders(beverage: Beverage, num: int = 1) -> list:
+        return OrderFactory.create_batch(beverage=beverage, size=num)
+    return make_num_or_orders
+
+
+@pytest.fixture
+def create_partner_establishment_menu_and_num_of_beverages_as_dict(
+    db,
+    create_user_from_factory,
+    create_establishment_passing_partner_as_owner_from_factory,
+    create_menu_of_specific_establishment_from_factory,
+    create_num_of_beverages_in_one_specific_menu_from_factories
+) -> dict:
+    def make_logical_links(num: int = 1):
+        partner = create_user_from_factory('partner')
+        est = create_establishment_passing_partner_as_owner_from_factory(partner)
+        menu = create_menu_of_specific_establishment_from_factory(est)
+        beverages = create_num_of_beverages_in_one_specific_menu_from_factories(menu, num)
+        data = {
+            'partner': partner,
+            'establishment': est,
+            'menu': menu,
+            'beverages': beverages
+        }
+        return data
+    return make_logical_links
 
 
 @pytest.fixture
@@ -254,10 +327,10 @@ def setup_partner_with_orders(db, create_user_from_factory, create_num_of_orders
         OrderFactory.create(user=customer2, beverage__menu__establishment__owner=partner) for _ in range(2)
     ]
 
-    print(f"first order id of the customer1: {orders_customer1[0].id}, "
-          f"partner id: {orders_customer1[0].beverage.menu.establishment.owner.id}")
-    print(f"first order id of the customer2: {orders_customer2[0].id}, "
-          f"partner id: {orders_customer2[0].beverage.menu.establishment.owner.id}")
+    print(f'first order id of the customer1: {orders_customer1[0].id}, '
+          f'partner id: {orders_customer1[0].beverage.menu.establishment.owner.id}')
+    print(f'first order id of the customer2: {orders_customer2[0].id}, '
+          f'partner id: {orders_customer2[0].beverage.menu.establishment.owner.id}')
 
     return partner, customer1, customer2
 
@@ -282,6 +355,13 @@ def create_num_of_posts_as_specific_user(db):
 
 
 @pytest.fixture
+def create_post_as_specific_user(db):
+    def make_posts(user: User) -> list:
+        return PostFactory.create(author=user)
+    return make_posts
+
+
+@pytest.fixture
 def create_comment_from_factory(db):
     return CommentFactory()
 
@@ -297,6 +377,20 @@ def create_comment_as_specific_user_from_factory(db):
 def create_num_of_comments_from_factory(db):
     def make_comments(num: int = 1) -> list:
         return CommentFactory.create_batch(size=num)
+    return make_comments
+
+
+@pytest.fixture
+def create_comment_as_specific_user_for_specific_post_from_factory(db):
+    def make_comment(user: User, post: Post):
+        return CommentFactory.create(author=user, post=post)
+    return make_comment
+
+
+@pytest.fixture
+def create_num_of_comments_for_specific_post_from_factory(db):
+    def make_comments(post: Post, num: int = 1) -> list:
+        return CommentFactory.create_batch(post=post, size=num)
     return make_comments
 
 

@@ -25,10 +25,16 @@ class KyrgyzPhoneNumberProvider(BaseProvider):
         )
 
 
+class StatusProvider(BaseProvider):
+    def order_status(self):
+        return self.random_element(elements=('pending', 'completed', 'cancelled'))
+
+
 fake = Faker()
 
 
 fake.add_provider(KyrgyzPhoneNumberProvider)
+fake.add_provider(StatusProvider)
 
 
 class UserFactory(DjangoModelFactory):
@@ -125,7 +131,8 @@ class OrderFactory(DjangoModelFactory):
     beverage = SubFactory(BeverageFactory)
     user = SubFactory(UserFactory)
     menu = SubFactory(MenuFactory)
-    status = 'completed'
+    status = LazyFunction(fake.order_status)
+    order_date = LazyFunction(fake.date_time)
 
 
 class PostFactory(DjangoModelFactory):

@@ -29,3 +29,18 @@ class MenuSerializer(serializers.ModelSerializer):
     class Meta:
         model = Menu
         fields = ['id', 'establishment', 'created_at', 'updated_at', 'beverages']
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        request = self.context.get('request')
+
+        beverages = instance.beverages.filter(is_deleted=False)
+
+        if request:
+            beverage_name = request.query_params.get('beverage__name')
+            if beverage_name:
+                beverages = instance.beverages.filter(name__icontains=beverage_name)
+        beverage_serializer = BeverageSerializer(beverages, many=True, context=self.context)
+        representation['beverages'] = beverage_serializer.data
+
+        return representation

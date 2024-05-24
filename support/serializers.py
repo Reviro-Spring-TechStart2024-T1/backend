@@ -1,9 +1,24 @@
 from rest_framework import serializers
 
+from accounts.models import User
+
 from .models import Comment, Post
 
 
+class AuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = [
+            'id',
+            'first_name',
+            'last_name',
+            'avatar'
+        ]
+
+
 class CommentDetailsSerializer(serializers.ModelSerializer):
+    author = AuthorSerializer(read_only=True)
+
     class Meta:
         model = Comment
         fields = [
@@ -23,6 +38,8 @@ class CommentDetailsSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    author = AuthorSerializer(read_only=True)
+
     class Meta:
         model = Comment
         fields = [
@@ -49,6 +66,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class PostSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)
+    author = AuthorSerializer(read_only=True)
 
     class Meta:
         model = Post
@@ -73,3 +91,12 @@ class PostSerializer(serializers.ModelSerializer):
             author=self.context['request'].user
         )
         return post
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+
+        comments = instance.comments.filter(is_deleted=False)
+        comments_serializer = CommentSerializer(comments, many=True, context=self.context)
+        representation['comments'] = comments_serializer.data
+
+        return representation

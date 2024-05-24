@@ -16,7 +16,7 @@ class Category(BaseModel):
 
 
 class Menu(BaseModel):
-    establishment = models.OneToOneField(Establishment, on_delete=models.CASCADE, related_name='menu')
+    establishment = models.OneToOneField(Establishment, on_delete=models.CASCADE, related_name='menus')
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
 

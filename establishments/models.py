@@ -6,7 +6,10 @@ from core.models import BaseModel
 
 
 class Establishment(BaseModel):
-    owner = models.ForeignKey(User, on_delete=models.CASCADE, limit_choices_to={'role': 'partner'})
+    owner = models.ForeignKey(
+        User, on_delete=models.CASCADE,
+        limit_choices_to={'role': 'partner'}, related_name='establishments'
+    )
     name = models.CharField(max_length=255)
     email = models.EmailField()
     street_name = models.CharField(max_length=255, null=True, blank=True)
