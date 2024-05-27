@@ -105,7 +105,7 @@ class PartnersOrderListView(generics.ListAPIView):
             'beverage',
             'menu',
             'menu__establishment',
-            'user'
+            # 'user'
         ).order_by('-order_date')
 
         return queryset
