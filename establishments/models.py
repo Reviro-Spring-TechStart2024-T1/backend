@@ -1,5 +1,5 @@
+from django.contrib.gis.db import models
 from django.core.validators import RegexValidator
-from django.db import models
 
 from accounts.models import User
 from core.models import BaseModel
@@ -12,10 +12,8 @@ class Establishment(BaseModel):
     )
     name = models.CharField(max_length=255)
     email = models.EmailField()
-    street_name = models.CharField(max_length=255, null=True, blank=True)
-    street_number = models.CharField(max_length=10, null=True, blank=True)
-    latitude = models.DecimalField(max_digits=10, decimal_places=8)
-    longitude = models.DecimalField(max_digits=11, decimal_places=8)
+    address = models.CharField(max_length=255, null=True, blank=True)
+    location = models.PointField(blank=True, null=True)
     description = models.TextField(blank=True)
     phone_regex = RegexValidator(
         regex=r'^\+996-[0-9]{3}-[0-9]{6}$',

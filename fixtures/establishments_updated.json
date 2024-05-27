@@ -1,0 +1,488 @@
+[
+  {
+    "model": "establishments.establishment",
+    "pk": 1,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 5,
+      "name": "Bublik",
+      "email": "partner.est@drinkjoy.kg",
+      "description": "Bublik description",
+      "phone_number": "+996-551-155555",
+      "logo": "",
+      "happy_hour_start": "12:00:00",
+      "happy_hour_end": "15:00:00",
+      "address": "Bublik Togolok Moldo 1 Bishkek",
+      "location": "SRID=4326;POINT (74.595984 42.8734086)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 2,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 6,
+      "name": "КОРЕАНА family",
+      "address": "КОРЕАНА family Yunusalieva 29 Bishkek",
+      "location": "SRID=4326;POINT (74.6232654 42.85343779999999)",
+      "email": "partner1.est@drinkjoy.kg",
+      "description": "КОРЕАНА family description",
+      "phone_number": "+996-559-300200",
+      "logo": "",
+      "happy_hour_start": "18:00:00",
+      "happy_hour_end": "21:00:00"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 3,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "Ресторан ''Барашек''",
+      "email": "partner2.est@drinkjoy.kg",
+      "description": "Barashek Description",
+      "phone_number": "+996-556-521111",
+      "logo": "",
+      "happy_hour_start": "11:00:00",
+      "happy_hour_end": "14:00:00",
+      "address": "Ресторан ''Барашек'' Aaly Tokombaev 78b Bishkek",
+      "location": "SRID=4326;POINT (74.6244169 42.8180449)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 4,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 11,
+      "name": "Bellagio Coffee",
+      "email": "bublik@test.com",
+      "description": "",
+      "phone_number": "+996-707-128888",
+      "logo": "",
+      "happy_hour_start": "10:30:00",
+      "happy_hour_end": "13:30:00",
+      "address": "Bellagio Coffee Manas 49 Bishkek",
+      "location": "SRID=4326;POINT (74.5882084 42.8737395)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 5,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "Traveler's coffee ",
+      "email": "aktan@gmail.com",
+      "description": "",
+      "phone_number": "+996-704-107107",
+      "logo": "",
+      "happy_hour_start": "11:00:00",
+      "happy_hour_end": "14:00:00",
+      "address": "Traveler's coffee  Toktogul 107 Bishkek",
+      "location": "SRID=4326;POINT (74.6022461 42.8723949)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 6,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "Times Bar",
+      "email": "aktan@gmail.com",
+      "description": "",
+      "phone_number": "+996-770-031855",
+      "logo": "",
+      "happy_hour_start": "08:00:00",
+      "happy_hour_end": "11:00:00",
+      "address": "Times Bar Orozbekov 32 Bishkek",
+      "location": "SRID=4326;POINT (74.60205619999999 42.8691638)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 7,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "ВиноТека",
+      "email": "aktan@gmail.com",
+      "description": "",
+      "phone_number": "+996-770-004503",
+      "logo": "",
+      "happy_hour_start": "13:00:00",
+      "happy_hour_end": "16:00:00",
+      "address": "ВиноТека Chuy 140a Bishkek",
+      "location": "SRID=4326;POINT (74.594498 42.875879)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 8,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "Aldo Coffee",
+      "email": "aktan@gmail.com",
+      "description": "",
+      "phone_number": "+996-500-222777",
+      "logo": "",
+      "happy_hour_start": "14:00:00",
+      "happy_hour_end": "17:00:00",
+      "address": "Aldo Coffee Gorkii 19 Bishkek",
+      "location": "SRID=4326;POINT (74.6122152 42.8571509)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 9,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "Император",
+      "email": "aktan@gmail.com",
+      "description": "",
+      "phone_number": "+996-558-399472",
+      "logo": "",
+      "happy_hour_start": "15:00:00",
+      "happy_hour_end": "18:00:00",
+      "address": "Император Ibraimov 146a Bishkek",
+      "location": "SRID=4326;POINT (74.6164876 42.8834829)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 10,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "LiveBar",
+      "email": "aktan@gmail.com",
+      "description": "",
+      "phone_number": "+996-558-611100",
+      "logo": "",
+      "happy_hour_start": "16:00:00",
+      "happy_hour_end": "19:00:00",
+      "address": "LiveBar Chuy 158 Bishkek",
+      "location": "SRID=4326;POINT (74.5907059 42.8761558)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 11,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "Iwa",
+      "email": "aktan@gmail.com",
+      "description": "",
+      "phone_number": "+996-999-535353",
+      "logo": "",
+      "happy_hour_start": "17:00:00",
+      "happy_hour_end": "20:00:00",
+      "address": "Iwa Kiev 148 Bishkek",
+      "location": "SRID=4326;POINT (74.5903464 42.8747348)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 12,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "3 комнаты",
+      "email": "aktan@gmail.com",
+      "description": "",
+      "phone_number": "+996-220-808888",
+      "logo": "",
+      "happy_hour_start": "18:00:00",
+      "happy_hour_end": "21:00:00",
+      "address": "3 комнаты Erkindik 27 Bishkek",
+      "location": "SRID=4326;POINT (74.60695369999999 42.87036459999999)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 13,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "Coffee Arte Gallery",
+      "email": "TEST1@gmail.com",
+      "description": "",
+      "phone_number": "+996-557-115770",
+      "logo": "",
+      "happy_hour_start": "19:00:00",
+      "happy_hour_end": "22:00:00",
+      "address": "Coffee Arte Gallery Aitmatov 93/1 Bishkek",
+      "location": "SRID=4326;POINT (74.5845753 42.8363695)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 14,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "Coffee Boom",
+      "email": "aktan@gmail.com",
+      "description": "",
+      "phone_number": "+996-998-939939",
+      "logo": "",
+      "happy_hour_start": "20:00:00",
+      "happy_hour_end": "23:00:00",
+      "address": "Coffee Boom Aitmatov 93/1 Bishkek",
+      "location": "SRID=4326;POINT (74.6276531 42.880132)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 15,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "Циклон",
+      "email": "aktan@gmail.com",
+      "description": "",
+      "phone_number": "+996-700-533633",
+      "logo": "",
+      "happy_hour_start": "21:00:00",
+      "happy_hour_end": "00:00:00",
+      "address": "Циклон Chuy 136 Bishkek",
+      "location": "SRID=4326;POINT (74.59564019999999 42.8759294)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 16,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "Дольче Вита",
+      "email": "aktan@gmail.com",
+      "description": "",
+      "phone_number": "+996-770-543985",
+      "logo": "",
+      "happy_hour_start": "22:00:00",
+      "happy_hour_end": "01:00:00",
+      "address": "Дольче Вита Abdyrakhmanov 137 Bishkek",
+      "location": "SRID=4326;POINT (74.5697617 42.8746212)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 17,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "Furusato",
+      "email": "TEST2@gmail.com",
+      "description": "",
+      "phone_number": "+996-554-400633",
+      "logo": "",
+      "happy_hour_start": "23:00:00",
+      "happy_hour_end": "02:00:00",
+      "address": "Furusato Bokonbaev 132 Bishkek",
+      "location": "SRID=4326;POINT (74.6217875 42.8662953)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 18,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "Chiсken Star",
+      "email": "TEST2@gmail.com",
+      "description": "",
+      "phone_number": "+996-558-041111",
+      "logo": "",
+      "happy_hour_start": "00:00:00",
+      "happy_hour_end": "03:00:00",
+      "address": "Chiсken Star Erkindik 36 Bishkek",
+      "location": "SRID=4326;POINT (74.6057108 42.8729213)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 19,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "Облако 53",
+      "email": "TEST4@gmail.com",
+      "description": "",
+      "phone_number": "+996-505-000053",
+      "logo": "",
+      "happy_hour_start": "01:00:00",
+      "happy_hour_end": "04:00:00",
+      "address": "Облако 53 Razzakov 19 Bishkek",
+      "location": "SRID=4326;POINT (74.60446999999999 42.8684114)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 20,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "SB Bar",
+      "email": "TEST5@gmail.com",
+      "description": "",
+      "phone_number": "+996-558-399051",
+      "logo": "",
+      "happy_hour_start": "02:00:00",
+      "happy_hour_end": "05:00:00",
+      "address": "SB Bar Mederov 50/2 Bishkek",
+      "location": "SRID=4326;POINT (74.6112895 42.85193930000001)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 21,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "Arirang",
+      "email": "TEST6@gmail.com",
+      "description": "",
+      "phone_number": "+996-998-464945",
+      "logo": "",
+      "happy_hour_start": "03:00:00",
+      "happy_hour_end": "06:00:00",
+      "address": "Arirang Zhukeeva-Pudovkina 52 Bishkek",
+      "location": "SRID=4326;POINT (74.5697617 42.8746212)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 22,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "Alligator Green",
+      "email": "TEST7@gmail.com",
+      "description": "",
+      "phone_number": "+996-550-512260",
+      "logo": "",
+      "happy_hour_start": "04:00:00",
+      "happy_hour_end": "07:00:00",
+      "address": "Alligator Green Zhukeeva-Pudovkina 75/1 Bishkek",
+      "location": "SRID=4326;POINT (74.5697617 42.8746212)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 23,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "Dodo Pizza",
+      "email": "TEST9@gmail.com",
+      "description": "",
+      "phone_number": "+996-551-550550",
+      "logo": "",
+      "happy_hour_start": "05:00:00",
+      "happy_hour_end": "08:00:00",
+      "address": "Dodo Pizza Yunusalieva 179/2 Bishkek",
+      "location": "SRID=4326;POINT (74.5697617 42.8746212)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 24,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "Центр плова",
+      "email": "TEST10@gmail.com",
+      "description": "",
+      "phone_number": "+996-556-777779",
+      "logo": "",
+      "happy_hour_start": "06:00:00",
+      "happy_hour_end": "09:00:00",
+      "address": "Центр плова 5th microdistrict 66B Bishkek",
+      "location": "SRID=4326;POINT (74.62279749999999 42.8305064)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 25,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "Фаиза",
+      "email": "faisa@gmail.com",
+      "description": "",
+      "phone_number": "+996-555-324922",
+      "logo": "",
+      "happy_hour_start": "07:00:00",
+      "happy_hour_end": "10:00:00",
+      "address": "Фаиза Mederov 157 Bishkek",
+      "location": "SRID=4326;POINT (74.6077949 42.8525641)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 26,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "GreenChicken",
+      "email": "faisa@gmail.com",
+      "description": "",
+      "phone_number": "+996-702-800505",
+      "logo": "",
+      "happy_hour_start": "08:00:00",
+      "happy_hour_end": "11:00:00",
+      "address": "GreenChicken Aitmatov 20 Bishkek",
+      "location": "SRID=4326;POINT (74.5697617 42.8746212)"
+    }
+  },
+  {
+    "model": "establishments.establishment",
+    "pk": 27,
+    "fields": {
+      "is_deleted": false,
+      "deleted_at": null,
+      "owner": 7,
+      "name": "Cooksoo",
+      "email": "faisa@gmail.com",
+      "description": "",
+      "phone_number": "+996-770-684483",
+      "logo": "",
+      "happy_hour_start": "09:00:00",
+      "happy_hour_end": "12:00:00",
+      "address": "Cooksoo Akhunbaev 175 Bishkek",
+      "location": "SRID=4326;POINT (74.6216554 42.8182706)"
+    }
+  }
+]

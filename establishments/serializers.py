@@ -1,9 +1,15 @@
+import os
+
+import geocoder
+from dotenv import load_dotenv
 from rest_framework import serializers
 
 from accounts.models import User
 from menu.models import Menu
 
 from .models import Establishment, EstablishmentBanner
+
+load_dotenv()
 
 
 class EstablishmentBannerSerializer(serializers.ModelSerializer):
@@ -35,10 +41,8 @@ class EstablishmentSerializer(serializers.ModelSerializer):
             'owner',
             'name',
             'email',
-            'street_name',
-            'street_number',
-            'latitude',
-            'longitude',
+            'address',
+            'location',
             'description',
             'phone_number',
             'logo',
@@ -47,3 +51,21 @@ class EstablishmentSerializer(serializers.ModelSerializer):
             'happy_hour_end',
             'menu'
         ]
+        read_only_fields = [
+            'location',
+        ]
+
+    def update(self, instance, validated_data):
+        address_data = validated_data.pop('address', None)
+        g = geocoder.google(address_data, key=os.environ.get('GOOGLE_MAPS_KEY'))
+        latitude = g.latlng[0]
+        longitude = g.latlng[1]
+        point = 'POINT(' + str(longitude) + ' ' + str(latitude) + ')'
+        instance.location = point
+
+        for field, value in validated_data.items():
+            setattr(instance, field, value)
+
+        instance.save()
+
+        return instance
