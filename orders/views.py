@@ -1,7 +1,5 @@
 from datetime import datetime, timedelta
 
-from dateutil.relativedelta import relativedelta
-from django.db.models import Sum
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiParameter, extend_schema
@@ -362,107 +360,21 @@ class OrderStatisticsView(generics.GenericAPIView):
     queryset = Order.objects.all()
     permission_classes = [IsPartnerOnly]
 
-    def get_queryset(self):
-        partner = self.request.user
-        qs = Order.objects.filter(
-            menu__establishment__owner=partner
-        ).select_related('beverage')
-        return qs
-
-    def get_orders_by_day(self, start_date, end_date):
-        orders_by_day = {}
-        current_day = start_date
-
-        while current_day <= end_date:
-            orders = self.get_queryset().filter(order_date__date=current_day)
-            orders_total_count = orders.count()
-            orders_total_sum = orders.aggregate(total_sum=Sum('beverage__price'))['total_sum'] or 0
-            orders_by_day[current_day.strftime('%a-%Y-%m-%d')] = {
-                'count': orders_total_count,
-                'sum': orders_total_sum
-            }
-            current_day += timedelta(days=1)
-
-        return orders_by_day
-
-    def get_orders_by_week(self, start_date, end_date):
-        orders_by_week = {}
-        current_week_start = start_date
-
-        while current_week_start <= end_date:
-            current_week_end = current_week_start + timedelta(days=6)
-            if current_week_end > end_date:
-                current_week_end = end_date
-            week_orders = self.get_queryset().filter(order_date__date__range=[current_week_start, current_week_end])
-            week_orders_count = week_orders.count()
-            week_orders_sum = week_orders.aggregate(total_sum=Sum('beverage__price'))['total_sum'] or 0
-            orders_by_week[
-                (str(current_week_start.strftime('%a-%Y-%m-%d')) + ' - ' +  # noqa: W504
-                 str(current_week_end.strftime('%a-%Y-%m-%d')))
-            ] = {
-                'count': week_orders_count,
-                'sum': week_orders_sum
-            }
-
-            current_week_start += timedelta(days=7)
-
-        return orders_by_week
-
-    def get_orders_by_month(self, start_date, end_date):
-        orders_by_month = {}
-        current_month_start = start_date
-
-        while current_month_start <= end_date:
-            current_month_end = (current_month_start + relativedelta(months=1)).replace(day=1) - timedelta(days=1)
-            if current_month_end > end_date:
-                current_month_end = end_date
-            month_data = self.get_orders_by_week(current_month_start, current_month_end)
-            month_count = sum(week_data['count'] for week_data in month_data.values())
-            month_sum = sum(week_data['sum'] for week_data in month_data.values())
-            orders_by_month[current_month_start.strftime('%Y-%m')] = {
-                'count': month_count,
-                'sum': month_sum
-            }
-            current_month_start += relativedelta(months=1)
-
-        return orders_by_month
-
-    def get_orders_by_quarter(self, start_date, end_date):
-        orders_by_quarter = {}
-        current_quarter_start = self.get_start_of_quarter(start_date)
-
-        while current_quarter_start <= end_date:
-            current_quarter_end = current_quarter_start + relativedelta(months=3, days=-1)
-            if current_quarter_end > end_date:
-                current_quarter_end = end_date
-            quarter_data = self.get_orders_by_month(current_quarter_start, current_quarter_end)
-            quarter_count = sum(month_data['count'] for month_data in quarter_data.values())
-            quarter_sum = sum(month_data['sum'] for month_data in quarter_data.values())
-            quarter_label = f'Q{(current_quarter_start.month - 1) // 3 + 1}_{current_quarter_start.year}'
-            orders_by_quarter[quarter_label] = {
-                'count': quarter_count,
-                'sum': quarter_sum
-            }
-            current_quarter_start += relativedelta(months=3)
-
-        return orders_by_quarter
-
-    def get_start_of_quarter(self, date):
-        quarter_month = (date.month - 1) // 3 * 3 + 1
-        return datetime(date.year, quarter_month, 1, tzinfo=date.tzinfo)
-
     def get_end_of_quarter(self, date):
-        # Calculate the start month of the next quarter
+        '''
+        Calculate the start month of the next quarter
+        If next quarter's month is greater than 12, set it to 12
+        Calculate the last day of the quarter
+        Return the end of the quarter
+        '''
+
         next_quarter_month = (date.month - 1) // 3 * 3 + 1 + 3
 
-        # If next quarter's month is greater than 12, set it to 12
         if next_quarter_month > 12:
             next_quarter_month = 12
 
-        # Calculate the last day of the quarter
         last_day_of_quarter = (datetime(date.year, next_quarter_month, 1) - timedelta(days=1)).day
 
-        # Return the end of the quarter
         return datetime(date.year, next_quarter_month - 1, last_day_of_quarter, tzinfo=date.tzinfo)
 
     def get_start_of_week(self, date):
@@ -498,6 +410,8 @@ class OrderStatisticsView(generics.GenericAPIView):
     )
     def get(self, request, *args, **kwargs):
         today = timezone.now()
+        partner = self.request.user
+
         this_week_start = self.get_start_of_week(today)
         last_week_end = this_week_start - timedelta(days=1)
         last_week_start = last_week_end - timedelta(days=6)
@@ -506,8 +420,8 @@ class OrderStatisticsView(generics.GenericAPIView):
         last_month_end = this_month_start - timedelta(days=1)
         last_month_start = self.get_start_of_month(last_month_end)
 
-        this_quarter_start = self.get_start_of_quarter(today)
-        last_quarter_start = self.get_start_of_quarter(this_quarter_start - timedelta(days=60))
+        this_quarter_start = Order.statistics.get_start_of_quarter(today)
+        last_quarter_start = Order.statistics.get_start_of_quarter(this_quarter_start - timedelta(days=60))
         last_quarter_end = self.get_end_of_quarter(this_quarter_start - timedelta(days=30))
 
         this_year_start = self.get_start_of_year(today)
@@ -515,14 +429,14 @@ class OrderStatisticsView(generics.GenericAPIView):
         last_year_end = self.get_end_of_year(today - timedelta(days=360))
 
         response_data = {
-            'this_week': self.get_orders_by_day(this_week_start, today),
-            'last_week': self.get_orders_by_day(last_week_start, last_week_end),
-            'this_month': self.get_orders_by_week(this_month_start, today),
-            'last_month': self.get_orders_by_week(last_month_start, last_month_end),
-            'this_quarter': self.get_orders_by_month(this_quarter_start, today),
-            'last_quarter': self.get_orders_by_month(last_quarter_start, last_quarter_end),
-            'this_year': self.get_orders_by_quarter(this_year_start, today),
-            'last_year': self.get_orders_by_quarter(last_year_start, last_year_end),
+            'this_week': Order.statistics.get_stats_by_day(partner, this_week_start, today),
+            'last_week': Order.statistics.get_stats_by_day(partner, last_week_start, last_week_end),
+            'this_month': Order.statistics.get_stats_by_week(partner, this_month_start, today),
+            'last_month': Order.statistics.get_stats_by_week(partner, last_month_start, last_month_end),
+            'this_quarter': Order.statistics.get_stats_by_month(partner, this_quarter_start, today),
+            'last_quarter': Order.statistics.get_stats_by_month(partner, last_quarter_start, last_quarter_end),
+            'this_year': Order.statistics.get_stats_by_quarter(partner, this_year_start, today),
+            'last_year': Order.statistics.get_stats_by_quarter(partner, last_year_start, last_year_end),
         }
 
         return Response(response_data)
