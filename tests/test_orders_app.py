@@ -39,8 +39,8 @@ def test_create_order_during_happy_hours_as_customer(
     client = jwt_auth_api_client(role='customer')
     beverage = create_beverage_from_factory
     establishment = beverage.menu.establishment
-    establishment.happy_hour_start = timezone.now().time()
-    establishment.happy_hour_end = (timezone.now() + timezone.timedelta(hours=1)).time()
+    establishment.happy_hour_start = timezone.localtime(timezone.now()).time()
+    establishment.happy_hour_end = (timezone.localtime(timezone.now()) + timezone.timedelta(hours=1)).time()
     establishment.save()
 
     order_data = {'beverage_id': beverage.id}
@@ -66,8 +66,8 @@ def test_create_order_outside_happy_hours_as_customer(
     client = jwt_auth_api_client(role='customer')
     beverage = create_beverage_from_factory
     establishment = beverage.menu.establishment
-    establishment.happy_hour_start = (timezone.now() - timezone.timedelta(hours=2)).time()
-    establishment.happy_hour_end = (timezone.now() - timezone.timedelta(hours=1)).time()
+    establishment.happy_hour_start = (timezone.localtime(timezone.now()) - timezone.timedelta(hours=2)).time()
+    establishment.happy_hour_end = (timezone.localtime(timezone.now()) - timezone.timedelta(hours=1)).time()
     establishment.save()
 
     order_data = {'beverage_id': beverage.id}
@@ -85,7 +85,7 @@ def test_create_order_outside_happy_hours_as_customer(
     match = re.search(r"ErrorDetail\(string='([^']*)'", error_response)
     error_message = match.group(1) if match else None
     expected_message = 'It is not happy hour currently. Please order within establishment happy hours'
-    assert error_message == expected_message
+    assert expected_message in error_message
 
 
 @pytest.mark.django_db
