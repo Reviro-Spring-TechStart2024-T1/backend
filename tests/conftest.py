@@ -1,7 +1,9 @@
 import io
+from datetime import datetime
 
 import pytest
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.utils import timezone
 from faker import Faker
 from PIL import Image
 from pytest_factoryboy import register
@@ -265,6 +267,23 @@ def create_num_of_beverages_in_one_menu_from_outside_factory(db):
 @pytest.fixture
 def create_order_from_factory(db):
     return OrderFactory()
+
+
+@pytest.fixture
+def create_order_passing_bev_menu_user_at_specific_date(db):
+    def make_order_with_the_details(
+        beverage: Beverage,
+        menu: Menu,
+        user: User,
+        order_date: datetime = timezone.now()
+    ):
+        return OrderFactory.create(
+            beverage=beverage,
+            menu=menu,
+            user=user,
+            order_date=order_date,
+        )
+    return make_order_with_the_details
 
 
 @pytest.fixture
