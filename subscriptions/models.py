@@ -1,6 +1,9 @@
 from datetime import timedelta
 
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.utils import timezone
 
 from accounts.models import User
@@ -10,13 +13,12 @@ class SubscriptionPlan(models.Model):
     DURATION_CHOICES = [
         (30, '1 Month'),
         (90, '3 Months'),
-        (180, '6 Months'),
         (365, '1 Year')
     ]
 
     name = models.CharField(max_length=50)
     description = models.TextField(blank=True)
-    duration = models.IntegerField(choices=DURATION_CHOICES)
+    duration = models.PositiveIntegerField(choices=DURATION_CHOICES)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     free_trial_days = models.PositiveIntegerField(default=0)
 
@@ -35,6 +37,13 @@ class UserSubscription(models.Model):
     end_date = models.DateTimeField(blank=True, null=True)
     is_active = models.BooleanField(default=True)
     is_trial = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = 'User Subscription'
+        verbose_name_plural = 'User Subscriptions'
+
+    def __str__(self):
+        return f'{self.user.email} - {self.plan.name}'
 
     def save(self, *args, **kwargs):
         if not self.end_date:
@@ -55,9 +64,13 @@ class UserSubscription(models.Model):
             return (self.end_date - timezone.now()).days
         return 0
 
-    class Meta:
-        verbose_name = 'User Subscription'
-        verbose_name_plural = 'User Subscriptions'
+    def clean(self):
+        if self.end_date and self.end_date <= self.start_date:
+            raise ValidationError('End date must be after start date.')
 
-    def __str__(self):
-        return f'{self.user.email} - {self.plan.name}'
+
+@receiver(post_save, sender=UserSubscription)
+def update_subscription_status(sender, instance, **kwargs):
+    if instance.end_date and instance.end_date <= timezone.now() and instance.is_active:
+        instance.is_active = False
+        instance.save()
