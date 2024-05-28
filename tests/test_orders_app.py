@@ -478,7 +478,6 @@ def test_get_stats_for_partner_for_one_day_as_partner(
     menu = dict_data['menu']
     bev1, bev2 = dict_data['beverages']
     today = timezone.now()
-    this_week_start = today - timedelta(days=today.weekday())
     create_order_passing_bev_menu_user_at_specific_date(
         beverage=bev1,
         menu=menu,
@@ -498,8 +497,8 @@ def test_get_stats_for_partner_for_one_day_as_partner(
     total = bev1.price + bev2.price
     # then: gets a result
     assert response.status_code == 200
-    assert response.data['this_week'][this_week_start.strftime('%a-%Y-%m-%d')]['count'] == 2
-    assert response.data['this_week'][this_week_start.strftime('%a-%Y-%m-%d')]['sum'] == total
+    assert response.data['this_week'][today.strftime('%a-%Y-%m-%d')]['count'] == 2
+    assert response.data['this_week'][today.strftime('%a-%Y-%m-%d')]['sum'] == total
 
 
 @pytest.mark.django_db
@@ -530,7 +529,6 @@ def test_get_stats_for_partner_for_this_months_one_week_as_partner(
     # when: partner is accessing stats enpoint
     url = reverse('partner-stats')
     response = client.get(url)
-    print(response.data)
     # then: gets a result
     assert response.status_code == 200
     assert response.data['this_month'][
@@ -542,7 +540,7 @@ def test_get_stats_for_partner_for_this_months_one_week_as_partner(
 
 
 @pytest.mark.django_db
-def test_get_stats_for_partner_for_quarters_one_month_as_partner(
+def test_get_stats_for_partner_for_last_quarters_last_month_as_partner(
     create_num_of_users_from_factory,
     jwt_auth_api_client_pass_user,
     create_order_passing_bev_menu_user_at_specific_date,
@@ -554,17 +552,18 @@ def test_get_stats_for_partner_for_quarters_one_month_as_partner(
     partner = dict_data['partner']
     menu = dict_data['menu']
     beverages = dict_data['beverages']
-    today = timezone.now() if timezone.now().day > 7 else timezone.now() + timedelta(days=7)
-    this_month_start = today.replace(day=1)
-    last_month_end = this_month_start - timedelta(days=1)
-    last_month_start = last_month_end.replace(day=1)
-    _, last_months_days_range = calendar.monthrange(last_month_end.year, last_month_end.month)
+    today = timezone.now() + timedelta(days=7) if timezone.now().day < 7 else timezone.now()
+    this_quarter_start_month = (today.month - 1) // 3 * 3 + 1
+    previous_quarter_end_month = (today.year - 1, 12, 1) if this_quarter_start_month == 1 else (
+        datetime(today.year, this_quarter_start_month, 1, tzinfo=today.tzinfo) - timedelta(days=1)).replace(day=1)
+    _, prev_quarter_end_month_days_range = calendar.monthrange(
+        previous_quarter_end_month.year, previous_quarter_end_month.month)
     orders = [create_order_passing_bev_menu_user_at_specific_date(
         beverage=choice(beverages),
         menu=menu,
         user=choice(customers),
-        order_date=last_month_start + timedelta(days=i)
-    ) for i in range(last_months_days_range)]
+        order_date=previous_quarter_end_month + timedelta(days=i)
+    ) for i in range(prev_quarter_end_month_days_range)]
     total = sum(i.beverage.price for i in orders)
     client = jwt_auth_api_client_pass_user(partner)
     # when: partner is accessing stats enpoint
@@ -572,8 +571,9 @@ def test_get_stats_for_partner_for_quarters_one_month_as_partner(
     response = client.get(url)
     # then: gets a result
     assert response.status_code == 200
-    assert response.data['this_quarter'][last_month_start.strftime('%Y-%m')]['count'] == last_months_days_range
-    assert response.data['this_quarter'][last_month_start.strftime('%Y-%m')]['sum'] == total
+    assert response.data['last_quarter'][previous_quarter_end_month.strftime(
+        '%Y-%m')]['count'] == prev_quarter_end_month_days_range
+    assert response.data['last_quarter'][previous_quarter_end_month.strftime('%Y-%m')]['sum'] == total
 
 
 @pytest.mark.django_db
