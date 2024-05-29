@@ -47,6 +47,7 @@ python manage.py dumpdata establishments.Establishment --indent 2 > fixtures/est
 python manage.py dumpdata menu.Menu --indent 2 > fixtures/menus.json
 python manage.py dumpdata menu.Beverage --indent 2 > fixtures/beverages.json
 python manage.py dumpdata establishments.EstablishmentBanner --indent 2 > fixtures/establishment_banners.json
+python manage.py dumpdata orders.Order --indent 2 > fixtures/orders.json
 ```
 
 to load:
@@ -57,6 +58,7 @@ python manage.py loaddata fixtures/establishments.json --app establishments.Esta
 python manage.py loaddata fixtures/menus.json --app menu.Menu
 python manage.py loaddata fixtures/beverages.json --app menu.Beverage
 python manage.py loaddata fixtures/establishment_banners.json --app establishments.EstablishmentBanner
+python manage.py loaddata fixtures/orders.json --app orders.Order
 ```
 
 
