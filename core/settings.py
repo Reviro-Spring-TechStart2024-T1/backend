@@ -47,11 +47,11 @@ INSTALLED_APPS = [
 
 MY_APPS = [
     'accounts',
-    'feedback',
     'establishments',
     'menu',
     'orders',
-    'support'
+    'support',
+    'subscriptions'
 ]
 
 THIRD_PARTY_APPS = [
@@ -192,9 +192,9 @@ DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 PROJECT_DESCRIPTION = (
     f'## To access DrinkJoy API endpoints: \n'
-    f'1. **Obtain a Bearer Token:** Send a `POST` request to `/users/token/` with your credentials. The server responds with an **access** and **refresh** tokens.\n'
-    f'2. **Use the Bearer Token:** Include the access token in the Authorization header of your requests to protected endpoints: `Authorization: Bearer <access_token>`.\n'
-    f'3. **Handle Unauthorized Access:** If the token is invalid or expired, the server responds with `401 Unauthorized`. Obtain a new token by repeating step 1.'
+    f'1. **Obtain a Bearer Token: ** Send a `POST` request to `/users/token/` with your credentials. The server responds with an **access** and **refresh** tokens.\n'
+    f'2. **Use the Bearer Token: ** Include the access token in the Authorization header of your requests to protected endpoints: `Authorization: Bearer <access_token>`.\n'
+    f'3. **Handle Unauthorized Access: ** If the token is invalid or expired, the server responds with `401 Unauthorized`. Obtain a new token by repeating step 1.'
 )
 
 
@@ -232,3 +232,7 @@ DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
         'max_length': 30
     }
 }
+
+PAYPAL_CLIENT_ID = os.environ.get('PAYPAL_CLIENT_ID')
+PAYPAL_CLIENT_SECRET = os.environ.get('PAYPAL_CLIENT_SECRET')
+PAYPAL_MODE = 'sandbox'  # or 'live' for production

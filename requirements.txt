@@ -57,3 +57,6 @@ tzdata==2024.1
 uritemplate==4.1.1
 urllib3==2.2.1
 virtualenv==20.25.1
+paypalrestsdk==1.13.3
+pyOpenSSL==24.1.0
+setuptools==69.5.1
