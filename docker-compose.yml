@@ -26,6 +26,7 @@ services:
       python manage.py loaddata fixtures/menus.json --app menu.Menu &&
       python manage.py loaddata fixtures/beverages.json --app menu.Beverage &&
       python manage.py loaddata fixtures/establishment_banners.json --app establishments.EstablishmentBanner &&
+      python manage.py loaddata fixtures/orders.json --app orders.Order &&
       gunicorn core.wsgi:application -w 4 -b 0.0.0.0:8000"
 
     env_file:

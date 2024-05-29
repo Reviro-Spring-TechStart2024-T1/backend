@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+
+from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import filters, generics, status
@@ -14,6 +17,7 @@ from .serializers import (
     CustomerSerializer,
     DetailedCustomerProfileSerializer,
     FindCustomerByEmailSerializer,
+    OrderStatisticsSerializer,
     PartnersCreateOrderSerializer,
     PartnersDetailOrderSerializer,
 )
@@ -99,7 +103,7 @@ class PartnersOrderListView(generics.ListAPIView):
             'beverage',
             'menu',
             'menu__establishment',
-            'user'
+            # 'user'
         ).order_by('-order_date')
 
         return queryset
@@ -310,11 +314,11 @@ class CustomersOrderListCreateView(generics.ListCreateAPIView):
     @extend_schema(
         summary='Create order',
         description=(
-            f'Create a new order for the authenticated customer user.\n'
-            f'- Requires authentication.\n'
-            f'- To create new order pass beverages id to the field "beverage_id".\n'
-            f'- Returns the newly created order.\n'
-            f'- Permission: Customers only.'
+            'Create a new order for the authenticated customer user.\n'
+            '- Requires authentication.\n'
+            '- To create new order pass beverages id to the field "beverage_id".\n'
+            '- Returns the newly created order.\n'
+            '- Permission: Customers only.'
         )
     )
     def post(self, request, *args, **kwargs):
@@ -349,3 +353,90 @@ class CustomersOrderListCreateView(generics.ListCreateAPIView):
             'user'
         ).order_by('-order_date')
         return queryset
+
+
+class OrderStatisticsView(generics.GenericAPIView):
+    serializer_class = OrderStatisticsSerializer
+    queryset = Order.objects.all()
+    permission_classes = [IsPartnerOnly]
+
+    def get_end_of_quarter(self, date):
+        '''
+        Calculate the start month of the next quarter
+        If next quarter's month is greater than 12, set it to 12
+        Calculate the last day of the quarter
+        Return the end of the quarter
+        '''
+
+        next_quarter_month = (date.month - 1) // 3 * 3 + 1 + 3
+
+        if next_quarter_month > 12:
+            next_quarter_month = 12
+
+        last_day_of_quarter = (datetime(date.year, next_quarter_month, 1) - timedelta(days=1)).day
+
+        return datetime(date.year, next_quarter_month - 1, last_day_of_quarter, tzinfo=date.tzinfo)
+
+    def get_start_of_week(self, date):
+        # Calculate the start of the week (Monday)
+        start_of_week = date - timedelta(days=date.weekday())
+        return start_of_week
+
+    def get_start_of_month(self, date):
+        # Calculate the start of the month
+        start_of_month = date.replace(day=1)
+        start_of_week_including_month_start = start_of_month - timedelta(days=start_of_month.weekday())
+        return start_of_week_including_month_start
+
+    def get_start_of_year(self, date):
+        return datetime(date.year, 1, 1, tzinfo=date.tzinfo)
+
+    def get_end_of_year(self, date):
+        return datetime(date.year, 12, 31, 23, 59, 59, tzinfo=date.tzinfo)
+
+    @extend_schema(
+        summary='Get partners stats',
+        description=(
+            'Returns all timeframes for statistics with counts of orders made in an all establishments'
+            ' as well as beverage price sums. Filtering for the partner and its establishments\' orders are present.\n'
+            '- Requires authentication.\n'
+            '- Permission: Partner only.\n\n'
+            'Predefined available time frames:\n'
+            '- `this_week` and `last_week` - daily stats\n'
+            '- `this_month` and `last_month` - weekly stats\n'
+            '- `this_quarter` and `last_quarter` - monthly stats\n'
+            '- `this_year` and `last_year` - quarterly stats'
+        )
+    )
+    def get(self, request, *args, **kwargs):
+        today = timezone.now()
+        partner = self.request.user
+
+        this_week_start = self.get_start_of_week(today)
+        last_week_end = this_week_start - timedelta(days=1)
+        last_week_start = last_week_end - timedelta(days=6)
+
+        this_month_start = self.get_start_of_month(today)
+        last_month_end = this_month_start - timedelta(days=1)
+        last_month_start = self.get_start_of_month(last_month_end)
+
+        this_quarter_start = Order.statistics.get_start_of_quarter(today)
+        last_quarter_start = Order.statistics.get_start_of_quarter(this_quarter_start - timedelta(days=60))
+        last_quarter_end = self.get_end_of_quarter(this_quarter_start - timedelta(days=30))
+
+        this_year_start = self.get_start_of_year(today)
+        last_year_start = self.get_start_of_year(today - timedelta(days=360))
+        last_year_end = self.get_end_of_year(today - timedelta(days=360))
+
+        response_data = {
+            'this_week': Order.statistics.get_stats_by_day(partner, this_week_start, today),
+            'last_week': Order.statistics.get_stats_by_day(partner, last_week_start, last_week_end),
+            'this_month': Order.statistics.get_stats_by_week(partner, this_month_start, today),
+            'last_month': Order.statistics.get_stats_by_week(partner, last_month_start, last_month_end),
+            'this_quarter': Order.statistics.get_stats_by_month(partner, this_quarter_start, today),
+            'last_quarter': Order.statistics.get_stats_by_month(partner, last_quarter_start, last_quarter_end),
+            'this_year': Order.statistics.get_stats_by_quarter(partner, this_year_start, today),
+            'last_year': Order.statistics.get_stats_by_quarter(partner, last_year_start, last_year_end),
+        }
+
+        return Response(response_data)

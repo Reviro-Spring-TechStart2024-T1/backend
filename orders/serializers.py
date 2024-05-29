@@ -38,10 +38,19 @@ class CustomerOrderSerializer(serializers.ModelSerializer):
             'quantity',  # default = 1
         ]
 
+    def is_within_happy_hour(self, happy_hour_start, happy_hour_end, current_time):
+        if happy_hour_start <= happy_hour_end:
+            # Happy hour within the same day
+            return happy_hour_start <= current_time <= happy_hour_end
+        else:
+            # Happy hour spanning across midnight
+            return current_time >= happy_hour_start or current_time <= happy_hour_end
+
     def create(self, validated_data):
         beverage_id = validated_data['beverage_id']
         user = self.context['request'].user
-        current_time = timezone.now()
+        current_time = timezone.localtime(timezone.now())
+        current_time_only = current_time.time()
 
         if beverage_id is None:
             raise serializers.ValidationError({'error': 'Beverage ID is required.'})
@@ -52,8 +61,13 @@ class CustomerOrderSerializer(serializers.ModelSerializer):
             establishment = menu.establishment
         except Beverage.DoesNotExist:
             raise serializers.ValidationError({'error': 'Beverage with given ID does not exist.'})
+        except Menu.DoesNotExist:
+            raise serializers.ValidationError({'error': 'Menu for the given beverage does not exist.'})
 
-        if establishment.happy_hour_start <= current_time.time() <= establishment.happy_hour_end:
+        happy_hour_start = establishment.happy_hour_start
+        happy_hour_end = establishment.happy_hour_end
+
+        if self.is_within_happy_hour(happy_hour_start, happy_hour_end, current_time_only):
             # Check if the user has already ordered a free beverage at this establishment during the day
             if Order.objects.filter(
                 user=user,
@@ -65,7 +79,8 @@ class CustomerOrderSerializer(serializers.ModelSerializer):
                 )
         else:
             raise serializers.ValidationError(
-                {'error': 'It is not happy hour currently. Please order within establishment happy hours'}
+                {'error': f'It is not happy hour currently. '
+                 f'Please order within establishment happy hours: {happy_hour_start} to {happy_hour_end}'}
             )
 
         order = Order.objects.create(
@@ -219,3 +234,39 @@ class DetailedCustomerProfileSerializer(serializers.ModelSerializer):
         user = request.user
         orders = Order.objects.filter(beverage__menu__establishment__owner=user, user=obj)
         return OrderHistorySerializer(orders, many=True).data
+
+
+class DayStatisticsSerializer(serializers.Serializer):
+    count = serializers.IntegerField()
+    sum = serializers.IntegerField()
+
+
+class WeekStatisticsSerializer(serializers.Serializer):
+    count = serializers.IntegerField()
+    sum = serializers.IntegerField()
+
+
+class MonthStatisticsSerializer(serializers.Serializer):
+    count = serializers.IntegerField()
+    sum = serializers.IntegerField()
+
+
+class QuarterStatisticsSerializer(serializers.Serializer):
+    count = serializers.IntegerField()
+    sum = serializers.IntegerField()
+
+
+class YearStatisticsSerializer(serializers.Serializer):
+    count = serializers.IntegerField()
+    sum = serializers.IntegerField()
+
+
+class OrderStatisticsSerializer(serializers.Serializer):
+    this_week = serializers.DictField(child=DayStatisticsSerializer())
+    last_week = serializers.DictField(child=DayStatisticsSerializer())
+    this_month = serializers.DictField(child=WeekStatisticsSerializer())
+    last_month = serializers.DictField(child=WeekStatisticsSerializer())
+    this_quarter = serializers.DictField(child=MonthStatisticsSerializer())
+    last_quarter = serializers.DictField(child=MonthStatisticsSerializer())
+    this_year = serializers.DictField(child=QuarterStatisticsSerializer())
+    last_year = serializers.DictField(child=QuarterStatisticsSerializer())
