@@ -1,23 +1,28 @@
+import json
+
+import requests
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import SubscriptionPlan, UserSubscription
 from .serializers import (
+    CreatePaymentSerializer,
     SubscriptionPlanSerializer,
     UserSubscriptionCreateSerializer,
     UserSubscriptionSerializer,
 )
-from .utils import create_payment, execute_payment
+from .utils import create_payment, execute_payment, paypal_token
 
 
 class CreatePaymentView(APIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = CreatePaymentSerializer
 
     @extend_schema(
         summary='Create PayPal Payment',
@@ -28,27 +33,22 @@ class CreatePaymentView(APIView):
             "2. A PayPal payment is created with the plan's price.\n"
             '3. The user is redirected to PayPal to approve the payment.'
         ),
-        request={
-            'application/json': OpenApiParameter(
-                name='plan_id',
-                type=int,
-                location=OpenApiParameter.QUERY,
-                description='ID of the subscription plan to purchase.'
-            ),
-        },
+        request=CreatePaymentSerializer,
     )
     def post(self, request):
-        plan_id = request.data.get('plan_id')
-        if not plan_id:
-            return Response({'error': 'plan_id is required'}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            plan = SubscriptionPlan.objects.get(id=plan_id)
-        except SubscriptionPlan.DoesNotExist:
-            return Response({'error': 'Invalid plan_id'}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = CreatePaymentSerializer(data=request.data)
+        if serializer.is_valid():
+            plan_id = serializer.validated_data['plan_id']
+            try:
+                plan = SubscriptionPlan.objects.get(id=plan_id)
+            except SubscriptionPlan.DoesNotExist:
+                return Response({'error': 'Invalid plan_id'}, status=status.HTTP_400_BAD_REQUEST)
 
         amount = plan.price
         return_url = request.build_absolute_uri(reverse('execute-payment'))
-        cancel_url = request.build_absolute_uri(reverse('cancel-payment'))
+        cancel_url = request.build_absolute_uri(reverse('user-subscription-cancel', kwargs={'pk': request.user.id}))
+        print('execute:', reverse('execute-payment'))
+        print('cancel:', reverse('user-subscription-cancel', kwargs={'pk': request.user.id}))
         payment = create_payment(amount, return_url, cancel_url)
         if payment:
             for link in payment['links']:
@@ -121,7 +121,7 @@ class SubscriptionPlanViewSet(viewsets.ReadOnlyModelViewSet):
     '''
     queryset = SubscriptionPlan.objects.all()
     serializer_class = SubscriptionPlanSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class UserSubscriptionViewSet(viewsets.ModelViewSet):
@@ -159,3 +159,70 @@ class UserSubscriptionViewSet(viewsets.ModelViewSet):
         subscription.cancel_subscription()
         resp_data = {'status': 'subscription canceled'}
         return Response(resp_data, status=status.HTTP_200_OK)
+
+
+class CreateOrderViewV2PayPAlAPI(APIView):
+    serializer_class = CreatePaymentSerializer
+
+    def post(self, request):
+        serializer = CreatePaymentSerializer(data=request.data)
+        if serializer.is_valid():
+            plan_id = serializer.validated_data['plan_id']
+            try:
+                plan = SubscriptionPlan.objects.get(id=plan_id)
+            except SubscriptionPlan.DoesNotExist:
+                return Response({'error': 'Invalid plan_id'}, status=status.HTTP_400_BAD_REQUEST)
+
+        return_url = request.build_absolute_uri(reverse('execute-payment'))
+        cancel_url = request.build_absolute_uri(reverse('user-subscription-cancel', kwargs={'pk': request.user.id}))
+
+        token = paypal_token()
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+        }
+
+        data = {
+            "intent": "CAPTURE",
+            "purchase_units": [
+                {
+                    "reference_id": str(plan.id),
+                    "amount": {
+                        "currency_code": "USD",
+                        "value": str(plan.price)
+                    }
+                }
+            ],
+            "payment_source": {
+                "paypal": {
+                    "experience_context": {
+                        "payment_method_preference": "IMMEDIATE_PAYMENT_REQUIRED",
+                        "brand_name": "EXAMPLE INC",
+                        "locale": "en-US",
+                        "landing_page": "LOGIN",
+                        # "shipping_preference": "New York, NY",
+                        "user_action": "PAY_NOW",
+                        "return_url": return_url,
+                        "cancel_url": cancel_url
+                    }
+                }
+            }
+        }
+        try:
+            response = requests.post(
+                'https://api-m.sandbox.paypal.com/v2/checkout/orders',
+                headers=headers,
+                data=json.dumps(data)
+            )
+            response_data = response.json()
+            if response.status_code == 200:
+                approval_url = next(link['href'] for link in response_data['links'] if link['rel'] == 'payer-action')
+                return Response(
+                    {'approval_url': approval_url}, status=status.HTTP_201_CREATED
+                )
+            else:
+                return Response(
+                    {'error': response_data}, status=response.status_code
+                )
+        except request.RequestException as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

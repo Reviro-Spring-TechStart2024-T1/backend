@@ -14,7 +14,7 @@ urlpatterns = [
     path('', include('menu.urls')),
     path('orders/', include('orders.urls')),
     path('support/', include('support.urls')),
-    path('', include('subscriptions.urls')),
+    path('subscriptions/', include('subscriptions.urls')),
 ]
 
 if settings.DEBUG:

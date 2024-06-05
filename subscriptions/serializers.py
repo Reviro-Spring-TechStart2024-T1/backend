@@ -71,3 +71,12 @@ class UserSubscriptionCreateSerializer(serializers.ModelSerializer):
         )
         subscription.save()
         return subscription
+
+
+class CreatePaymentSerializer(serializers.Serializer):
+    plan_id = serializers.IntegerField()
+
+    def validate_plan_id(self, value):
+        if not SubscriptionPlan.objects.filter(id=value).exists():
+            raise serializers.ValidationError("Invalid plan_id")
+        return value
