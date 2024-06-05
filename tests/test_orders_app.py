@@ -514,7 +514,7 @@ def test_get_stats_for_partner_for_this_months_one_week_as_partner(
     partner = dict_data['partner']
     menu = dict_data['menu']
     beverages = dict_data['beverages']
-    today = timezone.now() if timezone.now().day > 7 else timezone.now() + timedelta(days=7)
+    today = timezone.now()
     this_week_start = today - timedelta(days=today.weekday())
     last_week_end = this_week_start - timedelta(days=1)
     last_week_start = last_week_end - timedelta(days=6)
@@ -529,6 +529,7 @@ def test_get_stats_for_partner_for_this_months_one_week_as_partner(
     # when: partner is accessing stats enpoint
     url = reverse('partner-stats')
     response = client.get(url)
+    print(response.content.decode('utf-8'))
     # then: gets a result
     assert response.status_code == 200
     assert response.data['this_month'][

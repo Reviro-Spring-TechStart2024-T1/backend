@@ -2,10 +2,341 @@ openapi: 3.0.3
 info:
   title: DrinkJoy Project API
   version: 1.0.0
-  description: |-
-    DrinkJoy Project API предоставляет доступ к различным запросам, требующим аутентификации с помощью токена Bearer.
-    Для аутентификации в Header запросе в заголовке передавайте ключ:значение, где ключ 'Authorization' а значение 'Bearer {access_token}'.
+  description: "## To access DrinkJoy API endpoints: \n1. **Obtain a Bearer Token:\
+    \ ** Send a `POST` request to `/users/token/` with your credentials. The server\
+    \ responds with an **access** and **refresh** tokens.\n2. **Use the Bearer Token:\
+    \ ** Include the access token in the Authorization header of your requests to\
+    \ protected endpoints: `Authorization: Bearer <access_token>`.\n3. **Handle Unauthorized\
+    \ Access: ** If the token is invalid or expired, the server responds with `401\
+    \ Unauthorized`. Obtain a new token by repeating step 1."
 paths:
+  /beverages/:
+    get:
+      operationId: beverages_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - beverages
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBeverageList'
+          description: ''
+    post:
+      operationId: beverages_create
+      tags:
+      - beverages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Beverage'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Beverage'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Beverage'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Beverage'
+          description: ''
+  /beverages/{id}/:
+    get:
+      operationId: beverages_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - beverages
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Beverage'
+          description: ''
+    put:
+      operationId: beverages_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - beverages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Beverage'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Beverage'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Beverage'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Beverage'
+          description: ''
+    patch:
+      operationId: beverages_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - beverages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBeverage'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBeverage'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBeverage'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Beverage'
+          description: ''
+    delete:
+      operationId: beverages_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - beverages
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /categories/:
+    get:
+      operationId: categories_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - categories
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCategoryList'
+          description: ''
+    post:
+      operationId: categories_create
+      tags:
+      - categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Category'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Category'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+  /categories/{id}/:
+    get:
+      operationId: categories_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - categories
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    put:
+      operationId: categories_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Category'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Category'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    patch:
+      operationId: categories_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - categories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCategory'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCategory'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCategory'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    delete:
+      operationId: categories_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - categories
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /create-payment/:
+    post:
+      operationId: create_payment_create
+      description: |-
+        This view handles creating a PayPal payment.
+
+        Flow:
+        1. The user selects a subscription plan.
+        2. A PayPal payment is created with the plan's price.
+        3. The user is redirected to PayPal to approve the payment.
+      summary: Create PayPal Payment
+      tags:
+      - create-payment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: {}
+              description: Unspecified request body
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
   /establishments/:
     get:
       operationId: establishments_list
@@ -202,24 +533,30 @@ paths:
       responses:
         '204':
           description: No response body
-  /menus/beverages/:
+  /execute-payment/:
     get:
-      operationId: menus_beverages_list
+      operationId: execute_payment_retrieve
+      description: |-
+        This view handles executing the PayPal payment.
+
+        Flow:
+        1. After the user approves the payment on PayPal, they are redirected back to this view.
+        2. The payment details are verified.
+        3. A new subscription is created and associated with the user.
+      summary: Execute PayPal Payment
       parameters:
-      - name: limit
-        required: false
-        in: query
-        description: Number of results to return per page.
+      - in: query
+        name: PayerID
         schema:
-          type: integer
-      - name: offset
-        required: false
-        in: query
-        description: The initial index from which to return the results.
+          type: string
+        description: ID of the PayPal payer.
+      - in: query
+        name: paymentId
         schema:
-          type: integer
+          type: string
+        description: ID of the PayPal payment.
       tags:
-      - menus
+      - execute-payment
       security:
       - jwtAuth: []
       responses:
@@ -227,280 +564,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedBeverageList'
-          description: ''
-    post:
-      operationId: menus_beverages_create
-      tags:
-      - menus
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Beverage'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Beverage'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Beverage'
-        required: true
-      security:
-      - jwtAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Beverage'
-          description: ''
-  /menus/beverages/{id}/:
+                $ref: '#/components/schemas/UserSubscription'
+          description: Payment executed successfully and subscription created.
+        '400':
+          description: Payment execution failed
+        '500':
+          description: Internal server error
+  /menus/:
     get:
-      operationId: menus_beverages_retrieve
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - menus
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Beverage'
-          description: ''
-    put:
-      operationId: menus_beverages_update
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - menus
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Beverage'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Beverage'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Beverage'
-        required: true
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Beverage'
-          description: ''
-    patch:
-      operationId: menus_beverages_partial_update
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - menus
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedBeverage'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedBeverage'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedBeverage'
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Beverage'
-          description: ''
-    delete:
-      operationId: menus_beverages_destroy
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - menus
-      security:
-      - jwtAuth: []
-      responses:
-        '204':
-          description: No response body
-  /menus/categories/:
-    get:
-      operationId: menus_categories_list
-      parameters:
-      - name: limit
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: offset
-        required: false
-        in: query
-        description: The initial index from which to return the results.
-        schema:
-          type: integer
-      tags:
-      - menus
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedCategoryList'
-          description: ''
-    post:
-      operationId: menus_categories_create
-      tags:
-      - menus
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Category'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Category'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Category'
-        required: true
-      security:
-      - jwtAuth: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Category'
-          description: ''
-  /menus/categories/{id}/:
-    get:
-      operationId: menus_categories_retrieve
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - menus
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Category'
-          description: ''
-    put:
-      operationId: menus_categories_update
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - menus
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Category'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Category'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Category'
-        required: true
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Category'
-          description: ''
-    patch:
-      operationId: menus_categories_partial_update
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - menus
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedCategory'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedCategory'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedCategory'
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Category'
-          description: ''
-    delete:
-      operationId: menus_categories_destroy
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - menus
-      security:
-      - jwtAuth: []
-      responses:
-        '204':
-          description: No response body
-  /menus/menus/:
-    get:
-      operationId: menus_menus_list
+      operationId: menus_list
+      description: |-
+        Retrieves menus that belong to a partner. Although anyone can access this page, it is necessary only for frontend to see the list of menus, mobile department does not need to use it.
+        - Requires authentication.
+        - Permission: Authenticated only.
+      summary: Get menus
       parameters:
       - name: limit
         required: false
@@ -526,7 +603,12 @@ paths:
                 $ref: '#/components/schemas/PaginatedMenuList'
           description: ''
     post:
-      operationId: menus_menus_create
+      operationId: menus_create
+      description: |-
+        Creates menu, necessary to pass establishments id.
+        - Requires authentication.
+        - Permission: Partner only.
+      summary: Create menu
       tags:
       - menus
       requestBody:
@@ -550,10 +632,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/Menu'
           description: ''
-  /menus/menus/{id}/:
+  /menus/{id}/:
     get:
-      operationId: menus_menus_retrieve
+      operationId: menus_retrieve
+      description: |-
+        Retrieves specific menu.
+        - Requires authentication.
+        - Permission: Authenticated only.
+      summary: Get menu
       parameters:
+      - in: query
+        name: beverage__name
+        schema:
+          type: string
+        description: Case-insensitive filter that gets beverages matching specified
+          string.
       - in: path
         name: id
         schema:
@@ -571,7 +664,12 @@ paths:
                 $ref: '#/components/schemas/Menu'
           description: ''
     put:
-      operationId: menus_menus_update
+      operationId: menus_update
+      description: |-
+        Update sepcific menu
+        - Requires authentication.
+        - Permission: Partner only.
+      summary: Update menu
       parameters:
       - in: path
         name: id
@@ -602,7 +700,12 @@ paths:
                 $ref: '#/components/schemas/Menu'
           description: ''
     patch:
-      operationId: menus_menus_partial_update
+      operationId: menus_partial_update
+      description: |-
+        Partially update sepcific menu.
+        - Requires authentication.
+        - Permission: Partner only.
+      summary: Partially update menu
       parameters:
       - in: path
         name: id
@@ -632,7 +735,12 @@ paths:
                 $ref: '#/components/schemas/Menu'
           description: ''
     delete:
-      operationId: menus_menus_destroy
+      operationId: menus_destroy
+      description: |-
+        Delete sepcific menu.
+        - Requires authentication.
+        - Permission: Partner only.
+      summary: Delete menu
       parameters:
       - in: path
         name: id
@@ -646,13 +754,14 @@ paths:
       responses:
         '204':
           description: No response body
-  /orders/:
+  /orders/customers/:
     get:
-      operationId: orders_list
-      description: "\n        Retrieve a list of orders created by the authenticated\
-        \ customer user.\n        - Requires authentication.\n        - Each customer\
-        \ gets only their own list of made orders.\n        - Permission: Customers\
-        \ only.\n        "
+      operationId: orders_customers_list
+      description: |-
+        Retrieve a list of orders created by the authenticated customer user.
+        - Requires authentication.
+        - Each customer gets only their own list of made orders.
+        - Permission: Customers only.
       summary: Get customers' orders list
       parameters:
       - name: limit
@@ -667,6 +776,33 @@ paths:
         description: The initial index from which to return the results.
         schema:
           type: integer
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - cancelled
+          - completed
+          - pending
+          default: pending
+        description: |
+          Filter orders by their status
+          - `pending` - Pending
+          - `completed` - Completed
+          - `cancelled` - Cancelled
+      - in: query
+        name: time
+        schema:
+          type: string
+        description: |-
+          Filter orders by predefined time ranges. Possible values are:
+          - `today`: Orders made today
+          - `yesterday`: Orders made yesterday
+          - `this_month`: Orders made this month
+          - `last_month`: Orders made last month
+          - `last_6_months`: Orders made in the last 6 months
+          - `this_year`: Orders made this year
+          - `last_year`: Orders made last year
       tags:
       - orders
       security:
@@ -676,14 +812,16 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedUsersOrderList'
+                $ref: '#/components/schemas/PaginatedCustomerOrderList'
           description: ''
     post:
-      operationId: orders_create
-      description: "\n        Create a new order for the authenticated customer user.\n\
-        \        - Requires authentication.\n        - To create new order pass beverages\
-        \ id to the field \"beverage_id\".\n        - Returns the newly created order.\n\
-        \        - Permission: Customers only.\n        "
+      operationId: orders_customers_create
+      description: |-
+        Create a new order for the authenticated customer user.
+        - Requires authentication.
+        - To create new order pass beverages id to the field "beverage_id".
+        - Returns the newly created order.
+        - Permission: Customers only.
       summary: Create order
       tags:
       - orders
@@ -691,13 +829,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UsersOrder'
+              $ref: '#/components/schemas/CustomerOrder'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/UsersOrder'
+              $ref: '#/components/schemas/CustomerOrder'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/UsersOrder'
+              $ref: '#/components/schemas/CustomerOrder'
         required: true
       security:
       - jwtAuth: []
@@ -706,15 +844,41 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UsersOrder'
+                $ref: '#/components/schemas/CustomerOrder'
           description: ''
-  /orders/partners/:
+  /orders/find-customer/:
+    post:
+      operationId: orders_find_customer_create
+      description: Find any existing customer by email address.
+      tags:
+      - orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FindCustomerByEmail'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FindCustomerByEmail'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FindCustomerByEmail'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FindCustomerByEmail'
+          description: ''
+  /orders/partner-customers/:
     get:
-      operationId: orders_partners_list
-      description: "\n        Retrieve a list of orders for all the establishments\
-        \ of partner.\n        - Requires authentication.\n        - Permission: Partners\
-        \ only.\n        "
-      summary: Get partners' orders list
+      operationId: orders_partner_customers_list
+      description: |-
+        Retrieve a list of customers who have made orders at the partner's establishments.
+        Supports search by first name, last name, or email.
       parameters:
       - name: limit
         required: false
@@ -728,6 +892,12 @@ paths:
         description: The initial index from which to return the results.
         schema:
           type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
       tags:
       - orders
       security:
@@ -737,13 +907,112 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedPartnersOrderList'
+                $ref: '#/components/schemas/PaginatedCustomerList'
+          description: ''
+  /orders/partner-customers/{id}/:
+    get:
+      operationId: orders_partner_customers_retrieve
+      description: |-
+        Retrieve a detailed profile of a customer, including personal information and
+        order history for the partner's establishments.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - orders
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetailedCustomerProfile'
+          description: ''
+  /orders/partners/:
+    get:
+      operationId: orders_partners_list
+      description: |-
+        Retrieve a list of orders for all the establishments of partner.
+        - Requires authentication.
+        - Permission: Partners only.
+      summary: Get partners' orders list
+      parameters:
+      - in: query
+        name: beverage__name
+        schema:
+          type: string
+        description: Filter orders by the name of the associated beverage.
+      - in: query
+        name: id
+        schema:
+          type: integer
+        description: Filter orders by their unique identifier.
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - in: query
+        name: order_date
+        schema:
+          type: string
+        description: Filter orders by exact order date in YYYY-MM-DD format.
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - cancelled
+          - completed
+          - pending
+          default: pending
+        description: |
+          Filter orders by their status
+          - `pending` - Pending
+          - `completed` - Completed
+          - `cancelled` - Cancelled
+      - in: query
+        name: time
+        schema:
+          type: string
+        description: |-
+          Filter orders by predefined time ranges. Possible values are:
+          - `today`: Orders made today
+          - `yesterday`: Orders made yesterday
+          - `this_month`: Orders made this month
+          - `last_month`: Orders made last month
+          - `last_6_months`: Orders made in the last 6 months
+          - `this_year`: Orders made this year
+          - `last_year`: Orders made last year
+      tags:
+      - orders
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPartnersDetailOrderList'
           description: ''
   /orders/partners/{id}/:
     get:
       operationId: orders_partners_retrieve
-      description: "\n        Retrieve an order by its id.\n        - Requires authentication.\n\
-        \        - Permission: Partners only.\n        "
+      description: |
+        Retrieve an order by its id.
+        - Requires authentication.
+        - Permission: Partners only.
       summary: Get order
       parameters:
       - in: path
@@ -760,13 +1029,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PartnersOrder'
+                $ref: '#/components/schemas/PartnersDetailOrder'
           description: ''
     put:
       operationId: orders_partners_update
-      description: "\n        Partner can update only status of the order.\n     \
-        \   - Requires authentication.\n        - Permission: Partners only.\n   \
-        \     "
+      description: |-
+        Partner can update only status of the order.
+        - Requires authentication.
+        - Permission: Partners only.
       summary: Update order
       parameters:
       - in: path
@@ -780,13 +1050,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PartnersOrder'
+              $ref: '#/components/schemas/PartnersDetailOrder'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PartnersOrder'
+              $ref: '#/components/schemas/PartnersDetailOrder'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PartnersOrder'
+              $ref: '#/components/schemas/PartnersDetailOrder'
       security:
       - jwtAuth: []
       responses:
@@ -794,13 +1064,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PartnersOrder'
+                $ref: '#/components/schemas/PartnersDetailOrder'
           description: ''
     patch:
       operationId: orders_partners_partial_update
-      description: "\n        Partner can partially update only status of the order.\n\
-        \        - Requires authentication.\n        - Permission: Partners only.\n\
-        \        "
+      description: |-
+        Partner can partially update only status of the order.
+        - Requires authentication.
+        - Permission: Partners only.
       summary: Partially update order
       parameters:
       - in: path
@@ -814,13 +1085,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PatchedPartnersOrder'
+              $ref: '#/components/schemas/PatchedPartnersDetailOrder'
           application/x-www-form-urlencoded:
             schema:
-              $ref: '#/components/schemas/PatchedPartnersOrder'
+              $ref: '#/components/schemas/PatchedPartnersDetailOrder'
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/PatchedPartnersOrder'
+              $ref: '#/components/schemas/PatchedPartnersDetailOrder'
       security:
       - jwtAuth: []
       responses:
@@ -828,14 +1099,639 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PartnersOrder'
+                $ref: '#/components/schemas/PartnersDetailOrder'
+          description: ''
+  /orders/partners/create/:
+    post:
+      operationId: orders_partners_create_create
+      description: |-
+        Create a new order for a customer by the partner user.
+        - Requires authentication.
+        - To create a new order, pass the beverage id and customer id.
+        - Returns the newly created order.
+        - Permission: Partners only.
+      summary: Partner create order
+      tags:
+      - orders
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartnersCreateOrder'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PartnersCreateOrder'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PartnersCreateOrder'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnersCreateOrder'
+          description: ''
+  /orders/partners/stats/:
+    get:
+      operationId: orders_partners_stats_retrieve
+      description: |-
+        Returns all timeframes for statistics with counts of orders made in an all establishments as well as beverage price sums. Filtering for the partner and its establishments' orders are present.
+        - Requires authentication.
+        - Permission: Partner only.
+
+        Predefined available time frames:
+        - `this_week` and `last_week` - daily stats
+        - `this_month` and `last_month` - weekly stats
+        - `this_quarter` and `last_quarter` - monthly stats
+        - `this_year` and `last_year` - quarterly stats
+      summary: Get partners stats
+      tags:
+      - orders
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderStatistics'
+          description: ''
+  /subscription-plans/:
+    get:
+      operationId: subscription_plans_list
+      description: API for viewing subscription plans.
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - subscription-plans
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSubscriptionPlanList'
+          description: ''
+  /subscription-plans/{id}/:
+    get:
+      operationId: subscription_plans_retrieve
+      description: API for viewing subscription plans.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Subscription Plan.
+        required: true
+      tags:
+      - subscription-plans
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionPlan'
+          description: ''
+  /support/comments/:
+    get:
+      operationId: support_comments_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - support
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCommentList'
+          description: ''
+    post:
+      operationId: support_comments_create
+      tags:
+      - support
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Comment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Comment'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+          description: ''
+  /support/comments/{id}/:
+    get:
+      operationId: support_comments_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - support
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentDetails'
+          description: ''
+    put:
+      operationId: support_comments_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - support
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentDetails'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CommentDetails'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CommentDetails'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentDetails'
+          description: ''
+    patch:
+      operationId: support_comments_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - support
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCommentDetails'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCommentDetails'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCommentDetails'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CommentDetails'
+          description: ''
+    delete:
+      operationId: support_comments_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - support
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /support/posts/:
+    get:
+      operationId: support_posts_list
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - support
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPostList'
+          description: ''
+    post:
+      operationId: support_posts_create
+      tags:
+      - support
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Post'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Post'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+  /support/posts/{id}/:
+    get:
+      operationId: support_posts_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - support
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+    put:
+      operationId: support_posts_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - support
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Post'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Post'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+    patch:
+      operationId: support_posts_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - support
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPost'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPost'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPost'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+          description: ''
+    delete:
+      operationId: support_posts_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - support
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /user-subscriptions/:
+    get:
+      operationId: user_subscriptions_list
+      description: CRUD operations of the user subscriptions.
+      parameters:
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      tags:
+      - user-subscriptions
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserSubscriptionList'
+          description: ''
+    post:
+      operationId: user_subscriptions_create
+      description: CRUD operations of the user subscriptions.
+      tags:
+      - user-subscriptions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSubscriptionCreate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserSubscriptionCreate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserSubscriptionCreate'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSubscriptionCreate'
+          description: ''
+  /user-subscriptions/{id}/:
+    get:
+      operationId: user_subscriptions_retrieve
+      description: CRUD operations of the user subscriptions.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - user-subscriptions
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSubscription'
+          description: ''
+    put:
+      operationId: user_subscriptions_update
+      description: CRUD operations of the user subscriptions.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - user-subscriptions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSubscription'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserSubscription'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserSubscription'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSubscription'
+          description: ''
+    patch:
+      operationId: user_subscriptions_partial_update
+      description: CRUD operations of the user subscriptions.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - user-subscriptions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserSubscription'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserSubscription'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserSubscription'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSubscription'
+          description: ''
+    delete:
+      operationId: user_subscriptions_destroy
+      description: CRUD operations of the user subscriptions.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - user-subscriptions
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /user-subscriptions/{id}/cancel/:
+    post:
+      operationId: user_subscriptions_cancel_create
+      description: CRUD operations of the user subscriptions.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - user-subscriptions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSubscription'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserSubscription'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserSubscription'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSubscription'
+          description: ''
+  /user-subscriptions/{id}/extend/:
+    post:
+      operationId: user_subscriptions_extend_create
+      description: CRUD operations of the user subscriptions.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - user-subscriptions
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSubscription'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserSubscription'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserSubscription'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSubscription'
           description: ''
   /users/:
     get:
       operationId: users_list
-      description: "\n        Retrieve a paginated list of all users that are registered\
-        \ in the system.\n\n        - Default elements per page 10.\n\n        - Permissions:\
-        \ Admin only.\n        "
+      description: |-
+        Retrieve a paginated list of all users that are registered in the system.
+        - Default elements per page 10.
+        - Permissions: Admin only.
       summary: Retrieve a list of all users.
       parameters:
       - name: limit
@@ -1018,6 +1914,56 @@ paths:
               schema:
                 $ref: '#/components/schemas/Logout'
           description: ''
+  /users/partner/block/:
+    patch:
+      operationId: users_partner_block_partial_update
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnerBlockUnblock'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnerBlockUnblock'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnerBlockUnblock'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerBlockUnblock'
+          description: ''
+  /users/partner/unblock/:
+    patch:
+      operationId: users_partner_unblock_partial_update
+      tags:
+      - users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnerBlockUnblock'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnerBlockUnblock'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPartnerBlockUnblock'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerBlockUnblock'
+          description: ''
   /users/profile/:
     get:
       operationId: users_profile_retrieve
@@ -1111,9 +2057,10 @@ paths:
   /users/register/partner/:
     get:
       operationId: users_register_partner_list
-      description: "\n        Retrieve a paginated list of all partners that are registered\
-        \ in the system.\n\n        - Default elements per page 10.\n\n        - Permissions:\
-        \ Admin only.\n        "
+      description: |-
+        Retrieve a paginated list of all partners that are registered in the system.
+        - Default elements per page 10.
+        - Permissions: Admin only.
       summary: Retrieve a list of all partners.
       parameters:
       - name: limit
@@ -1141,11 +2088,11 @@ paths:
           description: ''
     post:
       operationId: users_register_partner_create
-      description: "\n        Create partner by passing only email of designated user.\n\
-        \n        - Uniqueness of passed email will be checked, if email is in the\
-        \ db error will be raised\n\n        - Secure password is generated on the\
-        \ backend and letter is sent to new partner.\n\n        - Permissions: Admin\
-        \ only.\n        "
+      description: |-
+        Create partner by passing only email of designated user.
+        - Uniqueness of passed email will be checked, if email is in the db error will be raised
+        - Secure password is generated on the backend and letter is sent to new partner.
+        - Permissions: Admin only.
       summary: Create partner.
       tags:
       - users
@@ -1226,6 +2173,26 @@ paths:
           description: ''
 components:
   schemas:
+    Author:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        first_name:
+          type: string
+          nullable: true
+          maxLength: 100
+        last_name:
+          type: string
+          nullable: true
+          maxLength: 100
+        avatar:
+          type: string
+          format: uri
+          nullable: true
+      required:
+      - id
     Beverage:
       type: object
       properties:
@@ -1284,6 +2251,65 @@ components:
       - confirm_password
       - old_password
       - password
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        message:
+          type: string
+        post:
+          type: integer
+        author:
+          allOf:
+          - $ref: '#/components/schemas/Author'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - author
+      - created_at
+      - id
+      - message
+      - post
+      - updated_at
+    CommentDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        message:
+          type: string
+        post:
+          type: integer
+          readOnly: true
+        author:
+          allOf:
+          - $ref: '#/components/schemas/Author'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - author
+      - created_at
+      - id
+      - message
+      - post
+      - updated_at
     CustomObtainTokenPair:
       type: object
       properties:
@@ -1296,6 +2322,128 @@ components:
       required:
       - email
       - password
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        first_name:
+          type: string
+          nullable: true
+          maxLength: 100
+        last_name:
+          type: string
+          nullable: true
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        sex:
+          $ref: '#/components/schemas/SexEnum'
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+      required:
+      - email
+      - id
+    CustomerOrder:
+      type: object
+      description: For customers to create and view their orders
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        establishment_name:
+          type: string
+          readOnly: true
+        beverage_id:
+          type: integer
+          writeOnly: true
+        beverage_name:
+          type: string
+          readOnly: true
+        order_date:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          readOnly: true
+        quantity:
+          type: integer
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - beverage_id
+      - beverage_name
+      - establishment_name
+      - id
+      - last_updated
+      - order_date
+      - quantity
+      - status
+    DayStatistics:
+      type: object
+      properties:
+        count:
+          type: integer
+        sum:
+          type: integer
+      required:
+      - count
+      - sum
+    DetailedCustomerProfile:
+      type: object
+      description: This serializer nests the OrderHistorySerializer to include order
+        details specific to the partner’s establishment.
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        first_name:
+          type: string
+          nullable: true
+          maxLength: 100
+        last_name:
+          type: string
+          nullable: true
+          maxLength: 100
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        sex:
+          $ref: '#/components/schemas/SexEnum'
+        date_of_birth:
+          type: string
+          format: date
+          nullable: true
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderHistory'
+          readOnly: true
+      required:
+      - email
+      - id
+      - orders
+    DurationEnum:
+      enum:
+      - 30
+      - 90
+      - 365
+      type: integer
+      description: |-
+        * `30` - 1 Month
+        * `90` - 3 Months
+        * `365` - 1 Year
     Email:
       type: object
       properties:
@@ -1358,6 +2506,8 @@ components:
           type: string
           format: time
           nullable: true
+        menu:
+          type: integer
       required:
       - banners
       - email
@@ -1382,6 +2532,14 @@ components:
       - establishment
       - id
       - url
+    FindCustomerByEmail:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+      required:
+      - email
     Logout:
       type: object
       description: |-
@@ -1425,6 +2583,81 @@ components:
       - establishment
       - id
       - updated_at
+    MonthStatistics:
+      type: object
+      properties:
+        count:
+          type: integer
+        sum:
+          type: integer
+      required:
+      - count
+      - sum
+    OrderHistory:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        order_date:
+          type: string
+          format: date-time
+        beverage_name:
+          type: string
+          readOnly: true
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+      required:
+      - beverage_name
+      - id
+      - price
+    OrderStatistics:
+      type: object
+      properties:
+        this_week:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/DayStatistics'
+        last_week:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/DayStatistics'
+        this_month:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/WeekStatistics'
+        last_month:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/WeekStatistics'
+        this_quarter:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/MonthStatistics'
+        last_quarter:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/MonthStatistics'
+        this_year:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/QuarterStatistics'
+        last_year:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/QuarterStatistics'
+      required:
+      - last_month
+      - last_quarter
+      - last_week
+      - last_year
+      - this_month
+      - this_quarter
+      - this_week
+      - this_year
     PaginatedBeverageList:
       type: object
       required:
@@ -1471,6 +2704,75 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Category'
+    PaginatedCommentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+    PaginatedCustomerList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Customer'
+    PaginatedCustomerOrderList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomerOrder'
     PaginatedEstablishmentList:
       type: object
       required:
@@ -1540,7 +2842,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PartnerUserRegister'
-    PaginatedPartnersOrderList:
+    PaginatedPartnersDetailOrderList:
       type: object
       required:
       - count
@@ -1562,7 +2864,53 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/PartnersOrder'
+            $ref: '#/components/schemas/PartnersDetailOrder'
+    PaginatedPostList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Post'
+    PaginatedSubscriptionPlanList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=400&limit=100
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?offset=200&limit=100
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriptionPlan'
     PaginatedUserList:
       type: object
       required:
@@ -1586,7 +2934,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/User'
-    PaginatedUsersOrderList:
+    PaginatedUserSubscriptionList:
       type: object
       required:
       - count
@@ -1608,7 +2956,56 @@ components:
         results:
           type: array
           items:
-            $ref: '#/components/schemas/UsersOrder'
+            $ref: '#/components/schemas/UserSubscription'
+    PartnerBlockUnblock:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        first_name:
+          type: string
+          readOnly: true
+          nullable: true
+        last_name:
+          type: string
+          readOnly: true
+          nullable: true
+        is_blocked:
+          type: boolean
+          readOnly: true
+        date_of_birth:
+          type: string
+          format: date
+          readOnly: true
+          nullable: true
+        avatar:
+          type: string
+          format: uri
+          readOnly: true
+          nullable: true
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          readOnly: true
+        sex:
+          allOf:
+          - $ref: '#/components/schemas/SexEnum'
+          readOnly: true
+      required:
+      - avatar
+      - date_of_birth
+      - email
+      - first_name
+      - id
+      - is_blocked
+      - last_name
+      - role
+      - sex
     PartnerUserRegister:
       type: object
       properties:
@@ -1639,16 +3036,66 @@ components:
           allOf:
           - $ref: '#/components/schemas/SexEnum'
           readOnly: true
+        is_blocked:
+          type: boolean
+          readOnly: true
       required:
       - date_of_birth
       - email
       - first_name
       - id
+      - is_blocked
       - last_name
       - role
       - sex
-    PartnersOrder:
+    PartnersCreateOrder:
       type: object
+      description: Allow partners to create orders for customers by posting beverage_id
+        and customer_id
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        establishment_name:
+          type: string
+          readOnly: true
+        beverage_id:
+          type: integer
+          writeOnly: true
+        customer_id:
+          type: integer
+          writeOnly: true
+        beverage_name:
+          type: string
+          readOnly: true
+        order_date:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/StatusEnum'
+          readOnly: true
+        quantity:
+          type: integer
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - beverage_id
+      - beverage_name
+      - customer_id
+      - establishment_name
+      - id
+      - last_updated
+      - order_date
+      - quantity
+      - status
+    PartnersDetailOrder:
+      type: object
+      description: Allow partners to view and update order details
       properties:
         id:
           type: integer
@@ -1753,6 +3200,29 @@ components:
         confirm_password:
           type: string
           writeOnly: true
+    PatchedCommentDetails:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        message:
+          type: string
+        post:
+          type: integer
+          readOnly: true
+        author:
+          allOf:
+          - $ref: '#/components/schemas/Author'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
     PatchedEstablishment:
       type: object
       properties:
@@ -1807,6 +3277,8 @@ components:
           type: string
           format: time
           nullable: true
+        menu:
+          type: integer
     PatchedMenu:
       type: object
       properties:
@@ -1828,8 +3300,48 @@ components:
           items:
             $ref: '#/components/schemas/Beverage'
           readOnly: true
-    PatchedPartnersOrder:
+    PatchedPartnerBlockUnblock:
       type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        first_name:
+          type: string
+          readOnly: true
+          nullable: true
+        last_name:
+          type: string
+          readOnly: true
+          nullable: true
+        is_blocked:
+          type: boolean
+          readOnly: true
+        date_of_birth:
+          type: string
+          format: date
+          readOnly: true
+          nullable: true
+        avatar:
+          type: string
+          format: uri
+          readOnly: true
+          nullable: true
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RoleEnum'
+          readOnly: true
+        sex:
+          allOf:
+          - $ref: '#/components/schemas/SexEnum'
+          readOnly: true
+    PatchedPartnersDetailOrder:
+      type: object
+      description: Allow partners to view and update order details
       properties:
         id:
           type: integer
@@ -1868,6 +3380,35 @@ components:
           type: string
           format: date-time
           readOnly: true
+    PatchedPost:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 500
+        content:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        author:
+          allOf:
+          - $ref: '#/components/schemas/Author'
+          readOnly: true
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+          readOnly: true
     PatchedUserProfile:
       type: object
       properties:
@@ -1893,6 +3434,78 @@ components:
           type: string
           format: date
           nullable: true
+    PatchedUserSubscription:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        user:
+          type: integer
+        plan:
+          allOf:
+          - $ref: '#/components/schemas/SubscriptionPlan'
+          readOnly: true
+        start_date:
+          type: string
+          format: date-time
+        end_date:
+          type: string
+          format: date-time
+          nullable: true
+        is_active:
+          type: boolean
+        is_trial:
+          type: boolean
+        remaining_days:
+          type: string
+          readOnly: true
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 500
+        content:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        author:
+          allOf:
+          - $ref: '#/components/schemas/Author'
+          readOnly: true
+        comments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+          readOnly: true
+      required:
+      - author
+      - comments
+      - created_at
+      - id
+      - title
+      - updated_at
+    QuarterStatistics:
+      type: object
+      properties:
+        count:
+          type: integer
+        sum:
+          type: integer
+      required:
+      - count
+      - sum
     ResetToken:
       type: object
       properties:
@@ -1924,12 +3537,41 @@ components:
       enum:
       - pending
       - completed
-      - canceled
+      - cancelled
       type: string
       description: |-
         * `pending` - Pending
         * `completed` - Completed
-        * `canceled` - Canceled
+        * `cancelled` - Cancelled
+    SubscriptionPlan:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+        description:
+          type: string
+        duration:
+          allOf:
+          - $ref: '#/components/schemas/DurationEnum'
+          minimum: 0
+          maximum: 2147483647
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        free_trial_days:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+      required:
+      - duration
+      - id
+      - name
+      - price
     TokenRefresh:
       type: object
       properties:
@@ -2012,51 +3654,56 @@ components:
           writeOnly: true
       required:
       - email
-    UsersOrder:
+    UserSubscription:
       type: object
       properties:
         id:
           type: integer
           readOnly: true
-        establishment_name:
-          type: string
-          readOnly: true
-        beverage_id:
+        user:
           type: integer
-          writeOnly: true
-        beverage_name:
-          type: string
-          readOnly: true
-        beverage_price:
-          type: string
-          format: decimal
-          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
-          readOnly: true
-        order_date:
-          type: string
-          format: date-time
-          readOnly: true
-        status:
+        plan:
           allOf:
-          - $ref: '#/components/schemas/StatusEnum'
+          - $ref: '#/components/schemas/SubscriptionPlan'
           readOnly: true
-        quantity:
-          type: integer
-          readOnly: true
-        last_updated:
+        start_date:
           type: string
           format: date-time
+        end_date:
+          type: string
+          format: date-time
+          nullable: true
+        is_active:
+          type: boolean
+        is_trial:
+          type: boolean
+        remaining_days:
+          type: string
           readOnly: true
       required:
-      - beverage_id
-      - beverage_name
-      - beverage_price
-      - establishment_name
       - id
-      - last_updated
-      - order_date
-      - quantity
-      - status
+      - plan
+      - remaining_days
+      - user
+    UserSubscriptionCreate:
+      type: object
+      properties:
+        plan:
+          type: integer
+        is_trial:
+          type: boolean
+      required:
+      - plan
+    WeekStatistics:
+      type: object
+      properties:
+        count:
+          type: integer
+        sum:
+          type: integer
+      required:
+      - count
+      - sum
   securitySchemes:
     jwtAuth:
       type: http
