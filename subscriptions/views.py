@@ -161,7 +161,7 @@ class UserSubscriptionViewSet(viewsets.ModelViewSet):
         return Response(resp_data, status=status.HTTP_200_OK)
 
 
-class CreateOrderViewV2PayPAlAPI(APIView):
+class CreateOrderViewV2PayPalAPI(APIView):
     serializer_class = CreatePaymentSerializer
 
     def post(self, request):
@@ -173,7 +173,7 @@ class CreateOrderViewV2PayPAlAPI(APIView):
             except SubscriptionPlan.DoesNotExist:
                 return Response({'error': 'Invalid plan_id'}, status=status.HTTP_400_BAD_REQUEST)
 
-        return_url = request.build_absolute_uri(reverse('execute-payment'))
+        return_url = request.build_absolute_uri(reverse('capture-order'))
         cancel_url = request.build_absolute_uri(reverse('user-subscription-cancel', kwargs={'pk': request.user.id}))
 
         token = paypal_token()
@@ -200,7 +200,7 @@ class CreateOrderViewV2PayPAlAPI(APIView):
                         "brand_name": "EXAMPLE INC",
                         "locale": "en-US",
                         "landing_page": "LOGIN",
-                        # "shipping_preference": "New York, NY",
+                        "shipping_preference": "NO_SHIPPING",
                         "user_action": "PAY_NOW",
                         "return_url": return_url,
                         "cancel_url": cancel_url
@@ -226,3 +226,16 @@ class CreateOrderViewV2PayPAlAPI(APIView):
                 )
         except request.RequestException as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class CaputeOrderViewV2PayPalAPI(APIView):
+    def get(self, request):
+        token = paypal_token()
+        order_id = request.query_params.get('token')
+        capture_url = f'https://api-m.sandbox.paypal.com/v2/checkout/orders/{order_id}/capture'
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token
+        }
+        response = requests.post(capture_url, headers=headers)
+        return Response(response.json())

@@ -2,7 +2,8 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
 from .views import (
-    CreateOrderViewV2PayPAlAPI,
+    CaputeOrderViewV2PayPalAPI,
+    CreateOrderViewV2PayPalAPI,
     CreatePaymentView,
     ExecutePaymentView,
     SubscriptionPlanViewSet,
@@ -18,5 +19,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('create-payment/', CreatePaymentView.as_view(), name='create-payment'),
     path('execute-payment/', ExecutePaymentView.as_view(), name='execute-payment'),
-    path('create-order', CreateOrderViewV2PayPAlAPI.as_view(), name='create-order'),
+    path('create-order', CreateOrderViewV2PayPalAPI.as_view(), name='create-order'),
+    path('capture-order', CaputeOrderViewV2PayPalAPI.as_view(), name='capture-order'),
 ]
