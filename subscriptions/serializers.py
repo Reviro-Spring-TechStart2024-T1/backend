@@ -1,6 +1,8 @@
 from rest_framework import serializers
 
-from .models import SubscriptionPlan, UserSubscription
+from subscriptions.choices import PayPalProductChoices
+
+from .models import PayPalProduct, SubscriptionPlan, UserSubscription
 
 
 class SubscriptionPlanSerializer(serializers.ModelSerializer):
@@ -80,3 +82,39 @@ class CreatePaymentSerializer(serializers.Serializer):
         if not SubscriptionPlan.objects.filter(id=value).exists():
             raise serializers.ValidationError("Invalid plan_id")
         return value
+
+
+class CreatePayPalProductSerializer(serializers.Serializer, PayPalProductChoices):
+
+    name = serializers.CharField(max_length=255, required=True, help_text="The name of the product.")
+    description = serializers.CharField(required=True, help_text="The description of the product.")
+    product_type = serializers.ChoiceField(
+        choices=PayPalProductChoices.PRODUCT_TYPE_CHOICES, default=PayPalProductChoices.SERVICE, required=False,
+        help_text="The type of the product. More info can be found here: https://developer.paypal.com/docs/api/catalog-products/v1/"
+    )
+    category = serializers.ChoiceField(
+        choices=PayPalProductChoices.PRODUCT_CATEGORY_CHOICES, default=PayPalProductChoices.SOFTWARE, required=False,
+        help_text="The category of the product. More info can be found here: https://developer.paypal.com/docs/api/catalog-products/v1/"
+    )
+    image_url = serializers.URLField(
+        required=False, default="https://res.cloudinary.com/dftbppd43/image/upload/v1/media/accounts/avatars/LOGO_DrinkJoy_lic32d", help_text="The URL of the product image.")
+    home_url = serializers.URLField(required=False, default="https://kunasyl-backender.org.kg/",
+                                    help_text="The home URL of the product.")
+
+
+class ProductsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PayPalProduct
+        fields = [
+            'id',
+            'product_id',
+            'name',
+            'description',
+            'create_time',
+            'links'
+        ]
+        read_only_fields = [
+            'product_id',
+            'create_time',
+            'links'
+        ]

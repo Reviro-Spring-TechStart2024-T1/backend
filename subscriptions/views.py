@@ -3,16 +3,25 @@ import json
 import requests
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
+from django.utils.dateparse import parse_datetime
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
-from rest_framework import status, viewsets
+from rest_framework import generics, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import (
+    AllowAny,
+    IsAuthenticated,
+    IsAuthenticatedOrReadOnly,
+)
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import SubscriptionPlan, UserSubscription
+from menu.permissions import IsAdminOrReadOnly
+
+from .models import PayPalProduct, SubscriptionPlan, UserSubscription
 from .serializers import (
     CreatePaymentSerializer,
+    CreatePayPalProductSerializer,
+    ProductsSerializer,
     SubscriptionPlanSerializer,
     UserSubscriptionCreateSerializer,
     UserSubscriptionSerializer,
@@ -239,3 +248,70 @@ class CaputeOrderViewV2PayPalAPI(APIView):
         }
         response = requests.post(capture_url, headers=headers)
         return Response(response.json())
+
+
+class CreateProductView(APIView):
+    serializer_class = CreatePayPalProductSerializer
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        serializer = CreatePayPalProductSerializer(data=request.data)
+        if serializer.is_valid():
+            validated_data = serializer.validated_data
+            name = validated_data['name']
+            description = validated_data['description']
+            type = validated_data.get('type', 'SERVICE')
+            category = validated_data.get('category', 'SOFTWARE')
+            image_url = validated_data.get(
+                'image_url', 'https://res.cloudinary.com/dftbppd43/image/upload/v1/media/accounts/avatars/LOGO_DrinkJoy_lic32d')
+            home_url = validated_data.get('home_url', 'https://kunasyl-backender.org.kg/')
+
+            token = paypal_token()  # Assuming this function is defined to get the PayPal token
+            url = "https://api-m.sandbox.paypal.com/v1/catalogs/products"
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {token}",
+            }
+            data = {
+                "name": name,
+                "description": description,
+                "type": type,
+                "category": category,
+                "image_url": image_url,
+                "home_url": home_url
+            }
+
+            response = requests.post(url, headers=headers, json=data)
+
+            if response.status_code == 201:
+                response_data = response.json()
+                product_id = response_data.get("id")
+                create_time = parse_datetime(response_data.get("create_time"))
+                links = response_data.get("links")
+
+                # Save to the database
+                PayPalProduct.objects.create(
+                    product_id=product_id,
+                    name=name,
+                    description=description,
+                    create_time=create_time,
+                    links=links
+                )
+
+                return Response(response_data, status=status.HTTP_201_CREATED)
+            else:
+                return Response(response.json(), status=response.status_code)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProductsListView(generics.ListAPIView):
+    serializer_class = ProductsSerializer
+    permission_classes = [IsAdminOrReadOnly]
+    queryset = PayPalProduct.objects.all()
+
+
+class ProductView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = ProductsSerializer
+    permission_classes = [IsAdminOrReadOnly]
+    queryset = PayPalProduct.objects.all()

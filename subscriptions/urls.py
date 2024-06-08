@@ -5,7 +5,10 @@ from .views import (
     CaputeOrderViewV2PayPalAPI,
     CreateOrderViewV2PayPalAPI,
     CreatePaymentView,
+    CreateProductView,
     ExecutePaymentView,
+    ProductsListView,
+    ProductView,
     SubscriptionPlanViewSet,
     UserSubscriptionViewSet,
 )
@@ -21,4 +24,7 @@ urlpatterns = [
     path('execute-payment/', ExecutePaymentView.as_view(), name='execute-payment'),
     path('create-order', CreateOrderViewV2PayPalAPI.as_view(), name='create-order'),
     path('capture-order', CaputeOrderViewV2PayPalAPI.as_view(), name='capture-order'),
+    path('create-product', CreateProductView.as_view(), name='create-product'),
+    path('products', ProductsListView.as_view(), name='subs-products'),
+    path('products/<int:pk>', ProductView.as_view(), name='subs-products'),
 ]

@@ -74,3 +74,14 @@ def update_subscription_status(sender, instance, **kwargs):
     if instance.end_date and instance.end_date <= timezone.now() and instance.is_active:
         instance.is_active = False
         instance.save()
+
+
+class PayPalProduct(models.Model):
+    product_id = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=255)
+    description = models.TextField()
+    create_time = models.DateTimeField()
+    links = models.JSONField()
+
+    def __str__(self):
+        return self.name
