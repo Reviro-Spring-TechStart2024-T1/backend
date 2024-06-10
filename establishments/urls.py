@@ -5,6 +5,7 @@ from .views import (
     EstablishmentBannerDeleteView,
     EstablishmentDetailView,
     EstablishmentListCreateView,
+    PartnerEstablishmentListView,
 )
 
 urlpatterns = [
@@ -12,4 +13,5 @@ urlpatterns = [
     path('<int:pk>/', EstablishmentDetailView.as_view(), name='establishment-detail'),
     path('banners/', EstablishmentBannerCreateView.as_view(), name='banner-create'),
     path('banners/<int:pk>/', EstablishmentBannerDeleteView.as_view(), name='banner-delete'),
+    path('partner/', PartnerEstablishmentListView.as_view(), name='partner-establishment-list')
 ]
