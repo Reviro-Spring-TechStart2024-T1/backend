@@ -17,10 +17,22 @@ from rest_framework.views import APIView
 
 from menu.permissions import IsAdminOrReadOnly
 
-from .models import PayPalProduct, SubscriptionPlan, UserSubscription
+from .models import (
+    BillingCycle,
+    FixedPrice,
+    Frequency,
+    PaymentPreferences,
+    PayPalProduct,
+    PayPalSubscriptionPlan,
+    PricingScheme,
+    SubscriptionPlan,
+    Taxes,
+    UserSubscription,
+)
 from .serializers import (
     CreatePaymentSerializer,
     CreatePayPalProductSerializer,
+    PayPalSubscriptionSerializer,
     ProductsSerializer,
     SubscriptionPlanSerializer,
     UserSubscriptionCreateSerializer,
@@ -315,3 +327,127 @@ class ProductView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProductsSerializer
     permission_classes = [IsAdminOrReadOnly]
     queryset = PayPalProduct.objects.all()
+
+
+class PayPalCreatePlanView(generics.ListCreateAPIView):
+    queryset = PayPalSubscriptionPlan.objects.all()
+    serializer_class = PayPalSubscriptionSerializer
+    permission_classes = [AllowAny]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        # Use validated data from the serializer
+        validated_data = serializer.validated_data
+        token = paypal_token()
+
+        # Prepare headers
+        headers = {
+            'Authorization': f'Bearer {token}',
+            'Content-Type': 'application/json',
+            'Prefer': 'return=representation',
+        }
+
+        # Prepare data for the PayPal API request
+        data = {
+            "product_id": validated_data.get('product_id'),
+            "name": validated_data.get('name'),
+            "description": validated_data.get('description'),
+            "status": validated_data.get('status'),
+            "billing_cycles": [
+                {
+                    "frequency": {
+                        "interval_unit": bc['frequency']['interval_unit'],
+                        "interval_count": bc['frequency']['interval_count']
+                    },
+                    "tenure_type": bc['tenure_type'],
+                    "sequence": bc['sequence'],
+                    "total_cycles": bc['total_cycles'],
+                    "pricing_scheme": {
+                        "fixed_price": {
+                            "value": bc['pricing_scheme']['fixed_price']['value'],
+                            "currency_code": bc['pricing_scheme']['fixed_price']['currency_code']
+                        }
+                    } if bc.get('pricing_scheme') else None
+                } for bc in validated_data['billing_cycles']
+            ],
+            "payment_preferences": {
+                "auto_bill_outstanding": validated_data['payment_preferences']['auto_bill_outstanding'],
+                "setup_fee": {
+                    "value": validated_data['payment_preferences']['setup_fee']['value'],
+                    "currency_code": validated_data['payment_preferences']['setup_fee']['currency_code']
+                },
+                "setup_fee_failure_action": validated_data['payment_preferences']['setup_fee_failure_action'],
+                "payment_failure_threshold": validated_data['payment_preferences']['payment_failure_threshold']
+            },
+            "taxes": {
+                "percentage": validated_data['taxes']['percentage'],
+                "inclusive": validated_data['taxes']['inclusive']
+            }
+        }
+
+        response = requests.post('https://api-m.sandbox.paypal.com/v1/billing/plans',
+                                 headers=headers, data=json.dumps(data))
+
+        if response.status_code == 201:
+            response_data = response.json()
+
+            # Parse and save payment preferences
+            payment_preferences_data = response_data['payment_preferences']
+            setup_fee_data = payment_preferences_data['setup_fee']
+            setup_fee = FixedPrice.objects.create(**setup_fee_data)
+            payment_preferences = PaymentPreferences.objects.create(
+                setup_fee=setup_fee,
+                auto_bill_outstanding=payment_preferences_data['auto_bill_outstanding'],
+                setup_fee_failure_action=payment_preferences_data['setup_fee_failure_action'],
+                payment_failure_threshold=payment_preferences_data['payment_failure_threshold']
+            )
+
+            # Parse and save taxes
+            taxes_data = response_data['taxes']
+            taxes = Taxes.objects.create(
+                percentage=taxes_data['percentage'],
+                inclusive=taxes_data['inclusive']
+            )
+
+            # Parse PayPal response and create the subscription
+            subscription = PayPalSubscriptionPlan.objects.create(
+                plan_id=response_data['id'],
+                product_id=response_data['product_id'],
+                name=response_data['name'],
+                description=response_data['description'],
+                status=response_data['status'],
+            )
+
+            # Parse and save billing cycles
+            for bc in response_data['billing_cycles']:
+                frequency_data = bc['frequency']
+                frequency = Frequency.objects.create(**frequency_data)
+
+                pricing_scheme_data = bc.get('pricing_scheme')
+                if pricing_scheme_data:
+                    fixed_price_data = pricing_scheme_data['fixed_price']
+                    fixed_price = FixedPrice.objects.create(**fixed_price_data)
+                    pricing_scheme = PricingScheme.objects.create(fixed_price=fixed_price)
+                else:
+                    pricing_scheme = None
+
+                billing_cycle = BillingCycle.objects.create(
+                    # subscription=subscription,
+                    frequency=frequency,
+                    tenure_type=bc['tenure_type'],
+                    sequence=bc['sequence'],
+                    total_cycles=bc['total_cycles'],
+                    pricing_scheme=pricing_scheme
+                )
+                subscription.billing_cycles.add(billing_cycle)
+
+            subscription.payment_preferences = payment_preferences
+            subscription.taxes = taxes
+            subscription.links = response_data['links']
+
+            subscription.save()
+            return Response(response.json(), status=status.HTTP_201_CREATED)
+        else:
+            return Response(response.json(), status=response.status_code)
