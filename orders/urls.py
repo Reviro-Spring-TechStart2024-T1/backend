@@ -13,7 +13,8 @@ from .views import (
 
 urlpatterns = [
     path('partners/', PartnersOrderListView.as_view(), name='partners-order-list'),
-    path('partners/<int:establishment_id>/', PartnersOrderListView.as_view(), name='partners-order-list-by-establishment'),
+    path('partners/establishments/<int:establishment_id>/',
+         PartnersOrderListView.as_view(), name='partners-order-list-by-establishment'),
     path('partners/create/', PartnersOrderCreateView.as_view(), name='partners-order-create'),
     path('partners/<int:pk>/', PartnersOrderDetailView.as_view(), name='partners-order-detail'),
     path('partner-customers/', PartnerCustomersListView.as_view(), name='partner-customers-list'),
