@@ -47,3 +47,18 @@ class EstablishmentSerializer(serializers.ModelSerializer):
             'happy_hour_end',
             'menu'
         ]
+
+
+class EstablishmentMapSerializer(serializers.ModelSerializer):
+    banners = EstablishmentBannerSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Establishment
+        fields = [
+            'name',
+            'street_name',
+            'street_number',
+            'latitude',
+            'longitude',
+            'banners'
+        ]

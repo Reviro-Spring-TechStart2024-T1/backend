@@ -98,7 +98,6 @@ class PartnersOrderListView(generics.ListAPIView):
         '''
 
         partner = self.request.user
-
         queryset = Order.objects.filter(beverage__menu__establishment__owner=partner).select_related(
             'beverage',
             'menu',
