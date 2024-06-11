@@ -4,7 +4,6 @@ from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework import filters, generics, status
-from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -99,21 +98,14 @@ class PartnersOrderListView(generics.ListAPIView):
         '''
 
         partner = self.request.user
-        establishment = self.request.selected_establishment
+        queryset = Order.objects.filter(beverage__menu__establishment__owner=partner).select_related(
+            'beverage',
+            'menu',
+            'menu__establishment',
+            # 'user'
+        ).order_by('-order_date')
 
-        try:
-            if establishment:
-                queryset = Order.objects.filter(beverage__menu__establishment=establishment).select_related(
-                    'beverage', 'menu', 'menu__establishment'
-                ).order_by('-order_date')
-            else:
-                queryset = Order.objects.filter(beverage__menu__establishment__owner=partner).select_related(
-                    'beverage', 'menu', 'menu__establishment'
-                ).order_by('-order_date')
-
-            return queryset
-        except Exception as e:
-            raise APIException(f"Error loading data: {str(e)}")
+        return queryset
 
 
 class PartnersOrderDetailView(generics.RetrieveUpdateAPIView):
@@ -210,6 +202,7 @@ class PartnerCustomersListView(generics.ListAPIView):
         '''
         Filter orders to get those related to the establishments owned by the partner
         '''
+        partner = self.request.user
         partner_orders = Order.objects.filter(beverage__menu__establishment__owner=partner)
         customer_ids = partner_orders.values_list('user', flat=True).distinct()
         queryset = User.objects.filter(id__in=customer_ids)
