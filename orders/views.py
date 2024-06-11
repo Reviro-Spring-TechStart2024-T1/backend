@@ -98,12 +98,17 @@ class PartnersOrderListView(generics.ListAPIView):
         '''
 
         partner = self.request.user
-        queryset = Order.objects.filter(beverage__menu__establishment__owner=partner).select_related(
-            'beverage',
-            'menu',
-            'menu__establishment',
-            # 'user'
-        ).order_by('-order_date')
+        establishment_id = self.kwargs.get('establishment_id', None)
+
+        if establishment_id:
+            queryset = Order.objects.filter(
+                beverage__menu__establishment__owner=partner,
+                beverage__menu__establishment__id=establishment_id
+            ).select_related('beverage', 'menu', 'menu__establishment').order_by('-order_date')
+        else:
+            queryset = Order.objects.filter(
+                beverage__menu__establishment__owner=partner
+            ).select_related('beverage', 'menu', 'menu__establishment').order_by('-order_date')
 
         return queryset
 
@@ -203,7 +208,17 @@ class PartnerCustomersListView(generics.ListAPIView):
         Filter orders to get those related to the establishments owned by the partner
         '''
         partner = self.request.user
-        partner_orders = Order.objects.filter(beverage__menu__establishment__owner=partner)
+        establishment_id = self.kwargs.get('establishment_id', None)
+        if establishment_id:
+            partner_orders = Order.objects.filter(
+                beverage__menu__establishment__owner=partner,
+                beverage__menu__establishment__id=establishment_id
+            )
+        else:
+            partner_orders = Order.objects.filter(
+                beverage__menu__establishment__owner=partner
+            )
+
         customer_ids = partner_orders.values_list('user', flat=True).distinct()
         queryset = User.objects.filter(id__in=customer_ids)
         return queryset
@@ -410,6 +425,7 @@ class OrderStatisticsView(generics.GenericAPIView):
     def get(self, request, *args, **kwargs):
         today = timezone.now()
         partner = self.request.user
+        establishment_id = self.kwargs.get('establishment_id', None)
 
         this_week_start = self.get_start_of_week(today)
         last_week_end = this_week_start - timedelta(days=1)
@@ -428,14 +444,14 @@ class OrderStatisticsView(generics.GenericAPIView):
         last_year_end = self.get_end_of_year(today - timedelta(days=360))
 
         response_data = {
-            'this_week': Order.statistics.get_stats_by_day(partner, this_week_start, today),
-            'last_week': Order.statistics.get_stats_by_day(partner, last_week_start, last_week_end),
-            'this_month': Order.statistics.get_stats_by_week(partner, this_month_start, today),
-            'last_month': Order.statistics.get_stats_by_week(partner, last_month_start, last_month_end),
-            'this_quarter': Order.statistics.get_stats_by_month(partner, this_quarter_start, today),
-            'last_quarter': Order.statistics.get_stats_by_month(partner, last_quarter_start, last_quarter_end),
-            'this_year': Order.statistics.get_stats_by_quarter(partner, this_year_start, today),
-            'last_year': Order.statistics.get_stats_by_quarter(partner, last_year_start, last_year_end),
+            'this_week': Order.statistics.get_stats_by_day(partner, this_week_start, today, establishment_id),
+            'last_week': Order.statistics.get_stats_by_day(partner, last_week_start, last_week_end, establishment_id),
+            'this_month': Order.statistics.get_stats_by_week(partner, this_month_start, today, establishment_id),
+            'last_month': Order.statistics.get_stats_by_week(partner, last_month_start, last_month_end, establishment_id),
+            'this_quarter': Order.statistics.get_stats_by_month(partner, this_quarter_start, today, establishment_id),
+            'last_quarter': Order.statistics.get_stats_by_month(partner, last_quarter_start, last_quarter_end, establishment_id),
+            'this_year': Order.statistics.get_stats_by_quarter(partner, this_year_start, today, establishment_id),
+            'last_year': Order.statistics.get_stats_by_quarter(partner, last_year_start, last_year_end, establishment_id),
         }
 
         return Response(response_data)
