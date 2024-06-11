@@ -1,4 +1,5 @@
 from rest_framework import filters, generics
+from rest_framework.permissions import IsAuthenticated
 
 from .models import Establishment, EstablishmentBanner
 from .permissions import IsPartnerOrReadOnly
@@ -47,6 +48,7 @@ class EstablishmentMapListView(generics.ListAPIView):
     queryset = Establishment.objects.all()
     serializer_class = EstablishmentMapSerializer
     pagination_class = None
+    permission_classes = [IsAuthenticated]
 
 
 class PartnerEstablishmentListView(generics.ListAPIView):
