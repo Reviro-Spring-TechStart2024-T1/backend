@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from subscriptions.choices import PayPalProductChoices
 
-from .models import (
+from .models import (  # SubscriptionPlan,; UserSubscription,
     BillingCycle,
     FixedPrice,
     Frequency,
@@ -10,87 +10,84 @@ from .models import (
     PayPalProduct,
     PayPalSubscriptionPlan,
     PricingScheme,
-    SubscriptionPlan,
     Taxes,
-    UserSubscription,
 )
 
-
-class SubscriptionPlanSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SubscriptionPlan
-        fields = [
-            'id',
-            'name',
-            'description',
-            'duration',
-            'price',
-            'free_trial_days'
-        ]
-
-
-class UserSubscriptionSerializer(serializers.ModelSerializer):
-    plan = SubscriptionPlanSerializer(read_only=True)
-    remaining_days = serializers.SerializerMethodField()
-
-    class Meta:
-        model = UserSubscription
-        fields = [
-            'id',
-            'user',
-            'plan',
-            'start_date',
-            'end_date',
-            'is_active',
-            'is_trial',
-            'remaining_days',
-        ]
-
-    def get_remaining_days(self, obj):
-        return obj.remaining_days()
+# class SubscriptionPlanSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = SubscriptionPlan
+#         fields = [
+#             'id',
+#             'name',
+#             'description',
+#             'duration',
+#             'price',
+#             'free_trial_days'
+#         ]
 
 
-class UserSubscriptionCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = UserSubscription
-        fields = ['plan', 'is_trial']
+# class UserSubscriptionSerializer(serializers.ModelSerializer):
+#     plan = SubscriptionPlanSerializer(read_only=True)
+#     remaining_days = serializers.SerializerMethodField()
 
-    def validate(self, attrs):
-        user = self.context['request'].user
-        plan = attrs['plan']
-        is_trial = attrs.get('is_trial', False)
+#     class Meta:
+#         model = UserSubscription
+#         fields = [
+#             'id',
+#             'user',
+#             'plan',
+#             'start_date',
+#             'end_date',
+#             'is_active',
+#             'is_trial',
+#             'remaining_days',
+#         ]
 
-        # Check if user has already used a free trial
-        if is_trial and plan.free_trial_days > 0:
-            has_had_free_trial = UserSubscription.objects.filter(
-                user=user,
-                plan__free_trial_days__gt=0,
-                is_trial=True
-            ).exists()
-            if has_had_free_trial:
-                raise serializers.ValidationError('User has already used a free trial.')
+#     def get_remaining_days(self, obj):
+#         return obj.remaining_days()
 
-        return attrs
 
-    def create(self, validated_data):
-        user = self.context['request'].user
-        plan = validated_data['plan']
-        is_trial = validated_data.get('is_trial', False)
+# class UserSubscriptionCreateSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = UserSubscription
+#         fields = ['plan', 'is_trial']
 
-        subscription = UserSubscription(
-            user=user,
-            plan=plan,
-            is_trial=is_trial,
-        )
-        subscription.save()
-        return subscription
+#     def validate(self, attrs):
+#         user = self.context['request'].user
+#         plan = attrs['plan']
+#         is_trial = attrs.get('is_trial', False)
+
+#         # Check if user has already used a free trial
+#         if is_trial and plan.free_trial_days > 0:
+#             has_had_free_trial = UserSubscription.objects.filter(
+#                 user=user,
+#                 plan__free_trial_days__gt=0,
+#                 is_trial=True
+#             ).exists()
+#             if has_had_free_trial:
+#                 raise serializers.ValidationError('User has already used a free trial.')
+
+#         return attrs
+
+#     def create(self, validated_data):
+#         user = self.context['request'].user
+#         plan = validated_data['plan']
+#         is_trial = validated_data.get('is_trial', False)
+
+#         subscription = UserSubscription(
+#             user=user,
+#             plan=plan,
+#             is_trial=is_trial,
+#         )
+#         subscription.save()
+#         return subscription
 
 
 class CreatePaymentSerializer(serializers.Serializer):
-    plan_id = serializers.IntegerField()
+    plan_id = serializers.CharField()
 
     def validate_plan_id(self, value):
-        if not SubscriptionPlan.objects.filter(id=value).exists():
+        if not PayPalSubscriptionPlan.objects.filter(plan_id=value).exists():
             raise serializers.ValidationError("Invalid plan_id")
         return value
 
