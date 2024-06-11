@@ -1,15 +1,14 @@
-import logging
-
 from rest_framework import filters, generics
 
 from .models import Establishment, EstablishmentBanner
 from .permissions import IsPartnerOrReadOnly
-from .serializers import EstablishmentBannerSerializer, EstablishmentSerializer
+from .serializers import (
+    EstablishmentBannerSerializer,
+    EstablishmentMapSerializer,
+    EstablishmentSerializer,
+)
 
 # from django_filters.rest_framework import DjangoFilterBackend
-
-
-logger = logging.getLogger(__name__)
 
 
 class EstablishmentListCreateView(generics.ListCreateAPIView):
@@ -41,7 +40,19 @@ class EstablishmentBannerDeleteView(generics.DestroyAPIView):
     permission_classes = [IsPartnerOrReadOnly]
 
 
+class EstablishmentMapListView(generics.ListAPIView):
+    '''
+    This endpoint for customers to see all the existing establishments in maps
+    '''
+    queryset = Establishment.objects.all()
+    serializer_class = EstablishmentMapSerializer
+    pagination_class = None
+
+
 class PartnerEstablishmentListView(generics.ListAPIView):
+    '''
+    This view for partners to see their list of establishments
+    '''
     serializer_class = EstablishmentSerializer
     permission_classes = [IsPartnerOrReadOnly]
 

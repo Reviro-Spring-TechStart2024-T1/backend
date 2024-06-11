@@ -210,13 +210,7 @@ class PartnerCustomersListView(generics.ListAPIView):
         '''
         Filter orders to get those related to the establishments owned by the partner
         '''
-        partner = self.request.user
-        establishment = self.request.selected_establishment
-        if establishment:
-            partner_orders = Order.objects.filter(beverage__menu__establishment=establishment)
-        else:
-            partner_orders = Order.objects.filter(beverage__menu__establishment__owner=partner)
-
+        partner_orders = Order.objects.filter(beverage__menu__establishment__owner=partner)
         customer_ids = partner_orders.values_list('user', flat=True).distinct()
         queryset = User.objects.filter(id__in=customer_ids)
         return queryset
