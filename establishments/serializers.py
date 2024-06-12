@@ -26,7 +26,7 @@ class EstablishmentBannerSerializer(serializers.ModelSerializer):
 class EstablishmentSerializer(serializers.ModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(role='partner'))
     banners = EstablishmentBannerSerializer(many=True, read_only=True)
-    menu = serializers.PrimaryKeyRelatedField(queryset=Menu.objects.all(), required=False)
+    menu_id = serializers.PrimaryKeyRelatedField(source='menus', queryset=Menu.objects.all(), required=False)
 
     class Meta:
         model = Establishment
@@ -45,7 +45,7 @@ class EstablishmentSerializer(serializers.ModelSerializer):
             'banners',
             'happy_hour_start',
             'happy_hour_end',
-            'menu'
+            'menu_id'
         ]
 
 
