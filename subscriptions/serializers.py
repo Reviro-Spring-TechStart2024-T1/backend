@@ -93,7 +93,6 @@ class CreatePaymentSerializer(serializers.Serializer):
 
 
 class CreatePayPalProductSerializer(serializers.Serializer, PayPalProductChoices):
-
     name = serializers.CharField(max_length=255, required=True, help_text="The name of the product.")
     description = serializers.CharField(required=True, help_text="The description of the product.")
     product_type = serializers.ChoiceField(
