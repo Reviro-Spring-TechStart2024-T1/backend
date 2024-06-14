@@ -22,12 +22,20 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
     """
     # send an e-mail to the user
     base_url = instance.request.build_absolute_uri(reverse('password_reset:reset-password-confirm'))
+
+    # Modify the URL prefix
+    if base_url.startswith('https'):
+        custom_url = base_url.replace('https', 'drink', 1)
+    elif base_url.startswith('http'):
+        custom_url = base_url.replace('http', 'drink', 1)
+    else:
+        custom_url = base_url
+
     context = {
         'current_user': reset_password_token.user,
         'email': reset_password_token.user.email,
         'reset_password_url_1': f'{base_url}?token={reset_password_token.key}',
-        'reset_password_url_2':
-            f'drink://kunasyl-backender.org.kg/users/forgot-password/confirm/?token={reset_password_token.key}'  # noqa: E231
+        'reset_password_url_2': f'{custom_url}?token={reset_password_token.key}'
     }
 
     # render email text
