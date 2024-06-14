@@ -43,22 +43,12 @@ to dump:
 ```shell
 python manage.py dumpdata accounts.User --indent 2 > fixtures/users.json
 python manage.py dumpdata menu.Category --indent 2 > fixtures/categories.json
-python manage.py dumpdata establishments.Establishment --indent 2 > fixtures/establishments.json
-python manage.py dumpdata menu.Menu --indent 2 > fixtures/menus.json
-python manage.py dumpdata menu.Beverage --indent 2 > fixtures/beverages.json
-python manage.py dumpdata establishments.EstablishmentBanner --indent 2 > fixtures/establishment_banners.json
-python manage.py dumpdata orders.Order --indent 2 > fixtures/orders.json
 ```
 
 to load:
 ```shell
 python manage.py loaddata fixtures/users.json --app accounts.User
 python manage.py loaddata fixtures/categories.json --app menu.Category
-python manage.py loaddata fixtures/establishments.json --app establishments.Establishment
-python manage.py loaddata fixtures/menus.json --app menu.Menu
-python manage.py loaddata fixtures/beverages.json --app menu.Beverage
-python manage.py loaddata fixtures/establishment_banners.json --app establishments.EstablishmentBanner
-python manage.py loaddata fixtures/orders.json --app orders.Order
 ```
 
 
