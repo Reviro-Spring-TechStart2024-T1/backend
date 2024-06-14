@@ -22,11 +22,6 @@ services:
       python manage.py migrate &&
       python manage.py loaddata fixtures/users.json --app accounts.User &&
       python manage.py loaddata fixtures/categories.json --app menu.Category &&
-      python manage.py loaddata fixtures/establishments.json --app establishments.Establishment &&
-      python manage.py loaddata fixtures/menus.json --app menu.Menu &&
-      python manage.py loaddata fixtures/beverages.json --app menu.Beverage &&
-      python manage.py loaddata fixtures/establishment_banners.json --app establishments.EstablishmentBanner &&
-      python manage.py loaddata fixtures/orders.json --app orders.Order &&
       gunicorn core.wsgi:application -w 4 -b 0.0.0.0:8000"
 
     env_file:
