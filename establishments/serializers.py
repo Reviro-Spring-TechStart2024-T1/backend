@@ -50,15 +50,14 @@ class EstablishmentSerializer(serializers.ModelSerializer):
 
 
 class EstablishmentMapSerializer(serializers.ModelSerializer):
-    banners = EstablishmentBannerSerializer(many=True, read_only=True)
 
     class Meta:
         model = Establishment
         fields = [
             'name',
-            'street_name',
-            'street_number',
             'latitude',
             'longitude',
-            'banners'
+            'happy_hour_start',
+            'happy_hour_end',
+            'logo'
         ]
