@@ -16,6 +16,8 @@ my_api = paypalrestsdk.Api({
     'client_secret': settings.PAYPAL_CLIENT_SECRET,
 })
 
+# reason for hard coding keys is in that when getting token from PayPal the .env variables were passed as null
+# TODO: research and dea with this bug (maybe try using export to computers env's)
 PAYPAL_CLIENT_ID = 'ARwvbKUESLbr9ezp2xr66HPo9KYSZU71pl3TkuRqcy9YAJCxCJTpF15Xzyd4IAlEQ_oPZm10QXw35tMs'
 PAYPAL_CLIENT_SECRET = 'EMC1rq0KXwC2PvKyWvpz6Nc9gfjKRUJgzBZkPEFxfCAD2Lp7R821EiJAchG3IxDm55OtZv1DkESymeLd'
 

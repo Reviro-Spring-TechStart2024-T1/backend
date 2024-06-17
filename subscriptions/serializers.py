@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from subscriptions.choices import PayPalProductChoices
 
-from .models import (  # SubscriptionPlan,; UserSubscription,
+from .models import (
     BillingCycle,
     FixedPrice,
     Frequency,
@@ -11,6 +11,7 @@ from .models import (  # SubscriptionPlan,; UserSubscription,
     PayPalSubscriptionPlan,
     PricingScheme,
     Taxes,
+    UserSubscription,
 )
 
 # class SubscriptionPlanSerializer(serializers.ModelSerializer):
@@ -300,3 +301,33 @@ class PayPalSubscriptionSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
+
+class UserSubscriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserSubscription
+        fields = [
+            'user',
+            'status',
+            'status_update_time',
+            'subscription_id',
+            'plan_id',
+            'start_time',
+            'quantity',
+            'subscriber_email',
+            'subscriber_payer_id',
+            'subscriber_given_name',
+            'subscriber_surname',
+            'billing_info',
+            'create_time',
+            'update_time',
+            'links',
+        ]
+        read_only_fields = [
+            'user'
+        ]
+
+    def create(self, validated_data):
+        user = self.context['request'].user
+        validated_data['user'] = user
+        return super().create(validated_data)
