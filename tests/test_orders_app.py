@@ -35,11 +35,13 @@ def test_history_customer_orders(
 
 @pytest.mark.django_db
 def test_create_order_during_happy_hours_as_customer(
-    jwt_auth_api_client,
-    create_beverage_from_factory
+    jwt_auth_api_user_and_client,
+    create_beverage_from_factory,
+    create_user_subscription
 ):
     # given: authenticated customer and a beverage during happy hours
-    client = jwt_auth_api_client(role='customer')
+    user, client = jwt_auth_api_user_and_client(role='customer')
+    create_user_subscription(user)
     beverage = create_beverage_from_factory
     establishment = beverage.menu.establishment
     establishment.happy_hour_start = timezone.localtime(timezone.now()).time()
@@ -62,11 +64,13 @@ def test_create_order_during_happy_hours_as_customer(
 
 @pytest.mark.django_db
 def test_create_order_outside_happy_hours_as_customer(
-    jwt_auth_api_client,
-    create_beverage_from_factory
+    jwt_auth_api_user_and_client,
+    create_beverage_from_factory,
+    create_user_subscription
 ):
     # given: authenticated customer and a beverage outside happy hours
-    client = jwt_auth_api_client(role='customer')
+    user, client = jwt_auth_api_user_and_client(role='customer')
+    create_user_subscription(user)
     beverage = create_beverage_from_factory
     establishment = beverage.menu.establishment
     establishment.happy_hour_start = (timezone.localtime(timezone.now()) - timezone.timedelta(hours=2)).time()
@@ -89,6 +93,60 @@ def test_create_order_outside_happy_hours_as_customer(
     error_message = match.group(1) if match else None
     expected_message = 'It is not happy hour currently. Please order within establishment happy hours'
     assert expected_message in error_message
+
+
+@pytest.mark.django_db
+def test_create_order_during_happy_hours_as_unsubscribed_customer(
+    jwt_auth_api_client,
+    create_beverage_from_factory
+):
+    # given: authenticated customer and a beverage during happy hours
+    client = jwt_auth_api_client(role='customer')
+    beverage = create_beverage_from_factory
+    establishment = beverage.menu.establishment
+    establishment.happy_hour_start = timezone.localtime(timezone.now()).time()
+    establishment.happy_hour_end = (timezone.localtime(timezone.now()) + timezone.timedelta(hours=1)).time()
+    establishment.save()
+
+    order_data = {'beverage_id': beverage.id}
+    # when:
+    url = reverse('customers-order-list-create')
+    response = client.post(
+        url,
+        data=json.dumps(order_data),
+        content_type='application/json'
+    )
+    # then:
+    print(response.json())
+    assert response.status_code == 403
+    assert response.json()['error'] == 'No subscription found. Please subscribe to use this service.'
+
+
+@pytest.mark.django_db
+def test_create_order_outside_happy_hours_as_unsubscribed_customer(
+    jwt_auth_api_client,
+    create_beverage_from_factory
+):
+    # given: authenticated customer and a beverage outside happy hours
+    client = jwt_auth_api_client(role='customer')
+    beverage = create_beverage_from_factory
+    establishment = beverage.menu.establishment
+    establishment.happy_hour_start = (timezone.localtime(timezone.now()) - timezone.timedelta(hours=2)).time()
+    establishment.happy_hour_end = (timezone.localtime(timezone.now()) - timezone.timedelta(hours=1)).time()
+    establishment.save()
+
+    order_data = {'beverage_id': beverage.id}
+    # when:
+    url = reverse('customers-order-list-create')
+    response = client.post(
+        url,
+        data=json.dumps(order_data),
+        content_type='application/json'
+    )
+    print(response.json().get('error'))
+    # then:
+    assert response.status_code == 403
+    assert response.json()['error'] == 'No subscription found. Please subscribe to use this service.'
 
 
 @pytest.mark.django_db

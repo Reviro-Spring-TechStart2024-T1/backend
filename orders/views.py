@@ -8,6 +8,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from accounts.models import User
+from subscriptions.models import UserSubscription
 
 from .filters import PartnersOrdersListCustomFilter, UsersOrderListCustomFilter
 from .models import Order
@@ -339,6 +340,15 @@ class CustomersOrderListCreateView(generics.ListCreateAPIView):
         '''
         Create a new order.
         '''
+        user = request.user
+        # Check if the user has an active subscription
+        try:
+            subscription = UserSubscription.objects.get(user=user)
+            if subscription.status != 'ACTIVE':
+                return Response({'error': 'Your subscription is not active. Please renew your subscription.'}, status=status.HTTP_403_FORBIDDEN)
+        except UserSubscription.DoesNotExist:
+            return Response({'error': 'No subscription found. Please subscribe to use this service.'}, status=status.HTTP_403_FORBIDDEN)
+
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             try:
