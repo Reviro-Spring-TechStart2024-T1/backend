@@ -9,6 +9,7 @@ from .views import (  # CreatePaymentView,; ExecutePaymentView,; SubscriptionPla
     PayPalCreatePlanView,
     ProductsListView,
     ProductView,
+    UserSubscriptionView,
 )
 
 # from rest_framework.routers import DefaultRouter
@@ -27,6 +28,7 @@ urlpatterns = [
     path('create-subscription/', CreatePayPalSubscriptionAPI.as_view(), name='create-subscription'),
     path('capture-order/', CaputeOrderViewV2PayPalAPI.as_view(), name='capture-order'),
     path('capture-subscription/', CaputePayPalSubscriptionAPI.as_view(), name='capture-subscription'),
+    path('captured/', UserSubscriptionView.as_view(), name='capured-subscriptions'),
     path('create-product/', CreateProductView.as_view(), name='create-product'),
     path('products/', ProductsListView.as_view(), name='subs-products'),
     path('products/<int:pk>/', ProductView.as_view(), name='subs-products'),

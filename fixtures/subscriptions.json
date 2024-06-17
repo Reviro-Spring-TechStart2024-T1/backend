@@ -1,0 +1,492 @@
+[
+    {
+        "model": "subscriptions.usersubscription",
+        "pk": 1,
+        "fields": {
+            "user": 1,
+            "status": "ACTIVE",
+            "status_update_time": "2024-06-14T10:17:08Z",
+            "subscription_id": "I-AWP0M64L9MMV",
+            "plan_id": "P-10T85283X2638940RMZWBOJI",
+            "start_time": "2024-06-14T10:12:25Z",
+            "quantity": "1",
+            "subscriber_email": "sb-2m01431023466@personal.example.com",
+            "subscriber_payer_id": "RETDUB8DRFHM2",
+            "subscriber_given_name": "John test",
+            "subscriber_surname": "Doe",
+            "billing_info": {
+                "last_payment": {
+                    "time": "2024-06-14T10:17:07Z",
+                    "amount": {
+                        "value": "2.2",
+                        "currency_code": "USD"
+                    }
+                },
+                "cycle_executions": [
+                    {
+                        "sequence": 1,
+                        "tenure_type": "REGULAR",
+                        "total_cycles": 1,
+                        "cycles_completed": 0,
+                        "cycles_remaining": 1,
+                        "current_pricing_scheme_version": 1
+                    }
+                ],
+                "next_billing_time": "2024-06-14T10:17:07Z",
+                "final_payment_time": "2024-06-14T10:17:07Z",
+                "outstanding_balance": {
+                    "value": "0.0",
+                    "currency_code": "USD"
+                },
+                "failed_payments_count": 0
+            },
+            "create_time": "2024-06-14T10:17:07Z",
+            "update_time": "2024-06-14T10:17:08Z",
+            "links": [
+                {
+                    "rel": "cancel",
+                    "href": "https://api.sandbox.paypal.com/v1/billing/subscriptions/I-AWP0M64L9MMV/cancel",
+                    "method": "POST"
+                },
+                {
+                    "rel": "edit",
+                    "href": "https://api.sandbox.paypal.com/v1/billing/subscriptions/I-AWP0M64L9MMV",
+                    "method": "PATCH"
+                },
+                {
+                    "rel": "self",
+                    "href": "https://api.sandbox.paypal.com/v1/billing/subscriptions/I-AWP0M64L9MMV",
+                    "method": "GET"
+                },
+                {
+                    "rel": "suspend",
+                    "href": "https://api.sandbox.paypal.com/v1/billing/subscriptions/I-AWP0M64L9MMV/suspend",
+                    "method": "POST"
+                },
+                {
+                    "rel": "capture",
+                    "href": "https://api.sandbox.paypal.com/v1/billing/subscriptions/I-AWP0M64L9MMV/capture",
+                    "method": "POST"
+                }
+            ]
+        }
+    },
+    {
+        "model": "subscriptions.paypalproduct",
+        "pk": 1,
+        "fields": {
+            "product_id": "PROD-9L12605115881351F",
+            "name": "DrinkJoy HappyHour",
+            "description": "HappyHour is an innovative digital platform designed to connect people with exclusive free drink offers during happy hours at their favorite establishments to enhance social experiences and drive traffic to bars, pubs, and restaurants.",
+            "create_time": "2024-06-17T10:08:43Z",
+            "links": [
+                {
+                    "rel": "self",
+                    "href": "https://api.sandbox.paypal.com/v1/catalogs/products/PROD-9L12605115881351F",
+                    "method": "GET"
+                },
+                {
+                    "rel": "edit",
+                    "href": "https://api.sandbox.paypal.com/v1/catalogs/products/PROD-9L12605115881351F",
+                    "method": "PATCH"
+                }
+            ]
+        }
+    },
+    {
+        "model": "subscriptions.frequency",
+        "pk": 1,
+        "fields": {
+            "interval_unit": "DAY",
+            "interval_count": 7
+        }
+    },
+    {
+        "model": "subscriptions.frequency",
+        "pk": 2,
+        "fields": {
+            "interval_unit": "MONTH",
+            "interval_count": 1
+        }
+    },
+    {
+        "model": "subscriptions.frequency",
+        "pk": 3,
+        "fields": {
+            "interval_unit": "DAY",
+            "interval_count": 7
+        }
+    },
+    {
+        "model": "subscriptions.frequency",
+        "pk": 4,
+        "fields": {
+            "interval_unit": "MONTH",
+            "interval_count": 3
+        }
+    },
+    {
+        "model": "subscriptions.frequency",
+        "pk": 5,
+        "fields": {
+            "interval_unit": "DAY",
+            "interval_count": 14
+        }
+    },
+    {
+        "model": "subscriptions.frequency",
+        "pk": 6,
+        "fields": {
+            "interval_unit": "YEAR",
+            "interval_count": 1
+        }
+    },
+    {
+        "model": "subscriptions.fixedprice",
+        "pk": 1,
+        "fields": {
+            "value": "1.0",
+            "currency_code": "USD"
+        }
+    },
+    {
+        "model": "subscriptions.fixedprice",
+        "pk": 2,
+        "fields": {
+            "value": "0.0",
+            "currency_code": "USD"
+        }
+    },
+    {
+        "model": "subscriptions.fixedprice",
+        "pk": 3,
+        "fields": {
+            "value": "140.0",
+            "currency_code": "USD"
+        }
+    },
+    {
+        "model": "subscriptions.fixedprice",
+        "pk": 4,
+        "fields": {
+            "value": "1.0",
+            "currency_code": "USD"
+        }
+    },
+    {
+        "model": "subscriptions.fixedprice",
+        "pk": 5,
+        "fields": {
+            "value": "0.0",
+            "currency_code": "USD"
+        }
+    },
+    {
+        "model": "subscriptions.fixedprice",
+        "pk": 6,
+        "fields": {
+            "value": "400.0",
+            "currency_code": "USD"
+        }
+    },
+    {
+        "model": "subscriptions.fixedprice",
+        "pk": 7,
+        "fields": {
+            "value": "1.0",
+            "currency_code": "USD"
+        }
+    },
+    {
+        "model": "subscriptions.fixedprice",
+        "pk": 8,
+        "fields": {
+            "value": "0.0",
+            "currency_code": "USD"
+        }
+    },
+    {
+        "model": "subscriptions.fixedprice",
+        "pk": 9,
+        "fields": {
+            "value": "800.0",
+            "currency_code": "USD"
+        }
+    },
+    {
+        "model": "subscriptions.pricingscheme",
+        "pk": 1,
+        "fields": {
+            "fixed_price": 2
+        }
+    },
+    {
+        "model": "subscriptions.pricingscheme",
+        "pk": 2,
+        "fields": {
+            "fixed_price": 3
+        }
+    },
+    {
+        "model": "subscriptions.pricingscheme",
+        "pk": 3,
+        "fields": {
+            "fixed_price": 5
+        }
+    },
+    {
+        "model": "subscriptions.pricingscheme",
+        "pk": 4,
+        "fields": {
+            "fixed_price": 6
+        }
+    },
+    {
+        "model": "subscriptions.pricingscheme",
+        "pk": 5,
+        "fields": {
+            "fixed_price": 8
+        }
+    },
+    {
+        "model": "subscriptions.pricingscheme",
+        "pk": 6,
+        "fields": {
+            "fixed_price": 9
+        }
+    },
+    {
+        "model": "subscriptions.billingcycle",
+        "pk": 1,
+        "fields": {
+            "frequency": 1,
+            "tenure_type": "TRIAL",
+            "sequence": 1,
+            "total_cycles": 1,
+            "pricing_scheme": 1
+        }
+    },
+    {
+        "model": "subscriptions.billingcycle",
+        "pk": 2,
+        "fields": {
+            "frequency": 2,
+            "tenure_type": "REGULAR",
+            "sequence": 2,
+            "total_cycles": 1,
+            "pricing_scheme": 2
+        }
+    },
+    {
+        "model": "subscriptions.billingcycle",
+        "pk": 3,
+        "fields": {
+            "frequency": 3,
+            "tenure_type": "TRIAL",
+            "sequence": 1,
+            "total_cycles": 1,
+            "pricing_scheme": 3
+        }
+    },
+    {
+        "model": "subscriptions.billingcycle",
+        "pk": 4,
+        "fields": {
+            "frequency": 4,
+            "tenure_type": "REGULAR",
+            "sequence": 2,
+            "total_cycles": 1,
+            "pricing_scheme": 4
+        }
+    },
+    {
+        "model": "subscriptions.billingcycle",
+        "pk": 5,
+        "fields": {
+            "frequency": 5,
+            "tenure_type": "TRIAL",
+            "sequence": 1,
+            "total_cycles": 1,
+            "pricing_scheme": 5
+        }
+    },
+    {
+        "model": "subscriptions.billingcycle",
+        "pk": 6,
+        "fields": {
+            "frequency": 6,
+            "tenure_type": "REGULAR",
+            "sequence": 2,
+            "total_cycles": 1,
+            "pricing_scheme": 6
+        }
+    },
+    {
+        "model": "subscriptions.paymentpreferences",
+        "pk": 1,
+        "fields": {
+            "auto_bill_outstanding": true,
+            "setup_fee": 1,
+            "setup_fee_failure_action": "CONTINUE",
+            "payment_failure_threshold": 3
+        }
+    },
+    {
+        "model": "subscriptions.paymentpreferences",
+        "pk": 2,
+        "fields": {
+            "auto_bill_outstanding": true,
+            "setup_fee": 4,
+            "setup_fee_failure_action": "CONTINUE",
+            "payment_failure_threshold": 3
+        }
+    },
+    {
+        "model": "subscriptions.paymentpreferences",
+        "pk": 3,
+        "fields": {
+            "auto_bill_outstanding": true,
+            "setup_fee": 7,
+            "setup_fee_failure_action": "CONTINUE",
+            "payment_failure_threshold": 3
+        }
+    },
+    {
+        "model": "subscriptions.taxes",
+        "pk": 1,
+        "fields": {
+            "percentage": "1.0",
+            "inclusive": false
+        }
+    },
+    {
+        "model": "subscriptions.taxes",
+        "pk": 2,
+        "fields": {
+            "percentage": "1.0",
+            "inclusive": false
+        }
+    },
+    {
+        "model": "subscriptions.taxes",
+        "pk": 3,
+        "fields": {
+            "percentage": "1.0",
+            "inclusive": false
+        }
+    },
+    {
+        "model": "subscriptions.paypalsubscriptionplan",
+        "pk": 1,
+        "fields": {
+            "plan_id": "P-7WK89395LS760183DMZYCGUQ",
+            "product_id": "PROD-9L12605115881351F",
+            "name": "Monthly",
+            "description": "Monthly plan",
+            "price": "140.0",
+            "status": "ACTIVE",
+            "payment_preferences": 1,
+            "taxes": 1,
+            "links": [
+                {
+                    "rel": "self",
+                    "href": "https://api.sandbox.paypal.com/v1/billing/plans/P-7WK89395LS760183DMZYCGUQ",
+                    "method": "GET",
+                    "encType": "application/json"
+                },
+                {
+                    "rel": "edit",
+                    "href": "https://api.sandbox.paypal.com/v1/billing/plans/P-7WK89395LS760183DMZYCGUQ",
+                    "method": "PATCH",
+                    "encType": "application/json"
+                },
+                {
+                    "rel": "self",
+                    "href": "https://api.sandbox.paypal.com/v1/billing/plans/P-7WK89395LS760183DMZYCGUQ/deactivate",
+                    "method": "POST",
+                    "encType": "application/json"
+                }
+            ],
+            "billing_cycles": [
+                1,
+                2
+            ]
+        }
+    },
+    {
+        "model": "subscriptions.paypalsubscriptionplan",
+        "pk": 2,
+        "fields": {
+            "plan_id": "P-4E261117E7360574TMZYCHFY",
+            "product_id": "PROD-9L12605115881351F",
+            "name": "Quarterly",
+            "description": "Quarterly plan",
+            "price": "400.0",
+            "status": "ACTIVE",
+            "payment_preferences": 2,
+            "taxes": 2,
+            "links": [
+                {
+                    "rel": "self",
+                    "href": "https://api.sandbox.paypal.com/v1/billing/plans/P-4E261117E7360574TMZYCHFY",
+                    "method": "GET",
+                    "encType": "application/json"
+                },
+                {
+                    "rel": "edit",
+                    "href": "https://api.sandbox.paypal.com/v1/billing/plans/P-4E261117E7360574TMZYCHFY",
+                    "method": "PATCH",
+                    "encType": "application/json"
+                },
+                {
+                    "rel": "self",
+                    "href": "https://api.sandbox.paypal.com/v1/billing/plans/P-4E261117E7360574TMZYCHFY/deactivate",
+                    "method": "POST",
+                    "encType": "application/json"
+                }
+            ],
+            "billing_cycles": [
+                3,
+                4
+            ]
+        }
+    },
+    {
+        "model": "subscriptions.paypalsubscriptionplan",
+        "pk": 3,
+        "fields": {
+            "plan_id": "P-6BV6186666438615KMZYCH5Y",
+            "product_id": "PROD-9L12605115881351F",
+            "name": "Yearly",
+            "description": "Yearly plan",
+            "price": "800.0",
+            "status": "ACTIVE",
+            "payment_preferences": 3,
+            "taxes": 3,
+            "links": [
+                {
+                    "rel": "self",
+                    "href": "https://api.sandbox.paypal.com/v1/billing/plans/P-6BV6186666438615KMZYCH5Y",
+                    "method": "GET",
+                    "encType": "application/json"
+                },
+                {
+                    "rel": "edit",
+                    "href": "https://api.sandbox.paypal.com/v1/billing/plans/P-6BV6186666438615KMZYCH5Y",
+                    "method": "PATCH",
+                    "encType": "application/json"
+                },
+                {
+                    "rel": "self",
+                    "href": "https://api.sandbox.paypal.com/v1/billing/plans/P-6BV6186666438615KMZYCH5Y/deactivate",
+                    "method": "POST",
+                    "encType": "application/json"
+                }
+            ],
+            "billing_cycles": [
+                5,
+                6
+            ]
+        }
+    }
+]

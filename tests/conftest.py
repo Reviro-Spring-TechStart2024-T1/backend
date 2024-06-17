@@ -25,6 +25,7 @@ from tests.factories import (
     OrderFactory,
     PostFactory,
     UserFactory,
+    UserSubscriptionFactory,
 )
 
 register(UserFactory)
@@ -36,6 +37,7 @@ register(EstablishmentBannerFactory)
 register(OrderFactory)
 register(PostFactory)
 register(CommentFactory)
+register(UserSubscriptionFactory)
 
 
 fake = Faker()
@@ -445,3 +447,10 @@ def dict_data_to_create_comment() -> dict:
         'author': None,
     }
     return data
+
+
+@pytest.fixture
+def create_user_subscription(db):
+    def make_subs(user: User):
+        return UserSubscriptionFactory.create(user=user)
+    return make_subs

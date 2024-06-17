@@ -43,12 +43,14 @@ to dump:
 ```shell
 python manage.py dumpdata accounts.User --indent 2 > fixtures/users.json
 python manage.py dumpdata menu.Category --indent 2 > fixtures/categories.json
+python manage.py dumpdata subscriptions > fixtures/subscriptions.json
 ```
 
 to load:
 ```shell
 python manage.py loaddata fixtures/users.json --app accounts.User
 python manage.py loaddata fixtures/categories.json --app menu.Category
+python manage.py loaddata fixtures/subscriptions --app subscriptions
 ```
 
 

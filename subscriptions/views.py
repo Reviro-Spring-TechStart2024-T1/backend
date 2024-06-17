@@ -4,7 +4,7 @@ import requests
 from django.urls import reverse
 from django.utils.dateparse import parse_datetime
 from drf_spectacular.utils import extend_schema
-from rest_framework import generics, status
+from rest_framework import generics, permissions, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -20,12 +20,14 @@ from .models import (
     PayPalSubscriptionPlan,
     PricingScheme,
     Taxes,
+    UserSubscription,
 )
 from .serializers import (
     CreatePaymentSerializer,
     CreatePayPalProductSerializer,
     PayPalSubscriptionSerializer,
     ProductsSerializer,
+    UserSubscriptionSerializer,
 )
 from .utils import paypal_token
 
@@ -504,3 +506,14 @@ class CaputePayPalSubscriptionAPI(APIView):
             headers=headers,
         )
         return Response(response.json())
+
+
+class UserSubscriptionView(generics.ListCreateAPIView):
+    serializer_class = UserSubscriptionSerializer
+    queryset = UserSubscription.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context

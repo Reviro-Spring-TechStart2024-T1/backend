@@ -14,6 +14,7 @@ from accounts.models import User
 from establishments.models import Establishment, EstablishmentBanner
 from menu.models import Beverage, Category, Menu
 from orders.models import Order
+from subscriptions.models import UserSubscription
 from support.models import Comment, Post
 
 
@@ -28,6 +29,16 @@ class KyrgyzPhoneNumberProvider(BaseProvider):
 class StatusProvider(BaseProvider):
     def order_status(self):
         return self.random_element(elements=('pending', 'completed', 'cancelled'))
+
+    def subscription_status(self):
+        return self.random_element(elements=(
+            'APPROVAL_PENDING',
+            'APPROVED',
+            'ACTIVE',
+            'SUSPENDED',
+            'CANCELLED',
+            'EXPIRED'
+        ))
 
 
 fake = Faker()
@@ -151,3 +162,24 @@ class CommentFactory(DjangoModelFactory):
     message = LazyFunction(fake.sentence)
     post = SubFactory(PostFactory)
     author = SubFactory(UserFactory)
+
+
+class UserSubscriptionFactory(DjangoModelFactory):
+    class Meta:
+        model = UserSubscription
+
+    user = SubFactory(UserFactory)
+    status = 'ACTIVE'
+    status_update_time = LazyFunction(fake.word)
+    subscription_id = LazyFunction(fake.word)
+    plan_id = LazyFunction(fake.word)
+    start_time = LazyFunction(fake.word)
+    quantity = LazyFunction(fake.word)
+    subscriber_email = LazyFunction(fake.word)
+    subscriber_payer_id = LazyFunction(fake.word)
+    subscriber_given_name = LazyFunction(fake.word)
+    subscriber_surname = LazyFunction(fake.word)
+    billing_info = {"fake": str(fake.word())}
+    create_time = LazyFunction(fake.word)
+    update_time = LazyFunction(fake.word)
+    links = {"fake": str(fake.word())}
