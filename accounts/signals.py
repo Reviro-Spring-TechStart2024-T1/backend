@@ -31,11 +31,14 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
     else:
         custom_url = base_url
 
+    frontend_url = 'https://reviro-frontend.vercel.app/forgot-password'
+
     context = {
         'current_user': reset_password_token.user,
         'email': reset_password_token.user.email,
         'reset_password_url_1': f'{base_url}?token={reset_password_token.key}',
-        'reset_password_url_2': f'{custom_url}?token={reset_password_token.key}'
+        'reset_password_url_2': f'{custom_url}?token={reset_password_token.key}',
+        'reset_password_url_3': f'{frontend_url}?token={reset_password_token.key}'
     }
 
     # render email text
