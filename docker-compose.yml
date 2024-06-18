@@ -19,10 +19,11 @@ services:
     - "8000:8000"
     command: >
       bash -c "python manage.py collectstatic --no-input &&
+      python manage.py makemigrations &&
       python manage.py migrate &&
       python manage.py loaddata fixtures/users.json --app accounts.User &&
       python manage.py loaddata fixtures/categories.json --app menu.Category &&
-      python manage.py loaddata fixtures/subscriptions --app subscriptions &&
+      python manage.py loaddata fixtures/subscriptions.json --app subscriptions &&
       gunicorn core.wsgi:application -w 4 -b 0.0.0.0:8000"
 
     env_file:
