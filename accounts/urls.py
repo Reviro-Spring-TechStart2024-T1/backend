@@ -1,9 +1,13 @@
-from django.urls import include, path
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from django.urls import path
 
 from .views import (
     BlockPartnerView,
     ChangePasswordView,
+    CustomResetPasswordConfirmViewSet,
+    CustomResetPasswordRequestTokenViewSet,
+    CustomResetPasswordValidateTokenViewSet,
+    CustomTokenObtainPairView,
+    CustomTokenRefreshView,
     LogoutView,
     PartnerListCreateView,
     UnblockPartnerView,
@@ -17,10 +21,15 @@ urlpatterns = [
     path('register/partner/', PartnerListCreateView.as_view(), name='register_partner'),
     path('profile/', UserProfileView.as_view(), name='profile'),
     path('change-password/', ChangePasswordView.as_view(), name='change_password'),
-    path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('token/refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('forgot-password/', include('django_rest_passwordreset.urls', namespace='password_reset')),
+    path('forgot-password/',
+         CustomResetPasswordRequestTokenViewSet.as_view({'post': 'create'}), name='request-token'),
+    path('forgot-password/confirm/',
+         CustomResetPasswordConfirmViewSet.as_view({'post': 'create'}), name='confirm'),
+    path('forgot-password/validate-token/',
+         CustomResetPasswordValidateTokenViewSet.as_view({'post': 'create'}), name='validate-token'),
     path('', UserListView.as_view(), name='users_list'),
     path('partner/block/', BlockPartnerView.as_view(), name='block-partner'),
     path('partner/unblock/', UnblockPartnerView.as_view(), name='unblock-partner'),
