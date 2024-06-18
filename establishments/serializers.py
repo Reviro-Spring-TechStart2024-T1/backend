@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from accounts.models import User
 from menu.models import Menu
 
 from .models import Establishment, EstablishmentBanner
@@ -24,7 +23,7 @@ class EstablishmentBannerSerializer(serializers.ModelSerializer):
 
 
 class EstablishmentSerializer(serializers.ModelSerializer):
-    owner = serializers.PrimaryKeyRelatedField(queryset=User.objects.filter(role='partner'))
+    owner = serializers.PrimaryKeyRelatedField(read_only=True)
     banners = EstablishmentBannerSerializer(many=True, read_only=True)
     menu_id = serializers.PrimaryKeyRelatedField(source='menus', queryset=Menu.objects.all(), required=False)
 
