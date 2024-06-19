@@ -224,6 +224,18 @@ class PartnerCustomersListView(generics.ListAPIView):
         queryset = User.objects.filter(id__in=customer_ids)
         return queryset
 
+    @extend_schema(
+        summary='Get establishments list of customers.',
+        description=(
+            'Retrieve a list of customers who have made orders at the partner\'s establishments. '
+            'Supports search by first name, last name, or email. '
+            'If `establishment_id` is passed, get filtered list of customers for the specific establishment.\n'
+            '- Permissions: Partner only.'
+        )
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
 
 class DetailedCustomerProfileView(generics.RetrieveAPIView):
     '''
@@ -238,6 +250,17 @@ class DetailedCustomerProfileView(generics.RetrieveAPIView):
     def get_queryset(self):
         return super().get_queryset()
 
+    @extend_schema(
+        summary='Get customer profile.',
+        description=(
+            'Retrieve a detailed profile of a customer, including personal information and '
+            'order history for the partner\'s establishments.\n'
+            '- Permissions: Partner only.'
+        )
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
 
 class FindCustomerByEmailView(APIView):
     '''
@@ -246,6 +269,13 @@ class FindCustomerByEmailView(APIView):
     serializer_class = FindCustomerByEmailSerializer
     permission_classes = [IsPartnerOnly]
 
+    @extend_schema(
+        summary='Find customer by email',
+        description=(
+            'Find any existing customer by email address.'
+            '- Permission: Partner only.'
+        )
+    )
     def post(self, request):
         serializer = FindCustomerByEmailSerializer(data=request.data)
         if serializer.is_valid():
