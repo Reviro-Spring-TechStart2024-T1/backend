@@ -204,6 +204,11 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     # OTHER SETTINGS
+    'ENUM_NAME_OVERRIDES': {
+        'UserSubscriptionStatusEnum': 'subscriptions.models.UserSubscription.USER_SUBSCRIPTION_STATUS_CHOICES',
+        'PayPalSubscriptionPlanStatusEnum': 'subscriptions.models.PayPalSubscriptionPlan.STATUS_CHOICES',
+        'OrderStatusEnum': 'orders.models.Order.ORDER_STATUS_CHOICES'
+    }
 }
 
 # CORS Headers django-cors-headers settings

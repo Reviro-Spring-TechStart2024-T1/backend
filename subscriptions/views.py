@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.utils.dateparse import parse_datetime
 from drf_spectacular.utils import extend_schema
 from rest_framework import generics, permissions, status
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -394,14 +395,15 @@ class CreateOrderViewV2PayPalAPI(APIView):
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class CaputeOrderViewV2PayPalAPI(APIView):
+class CaputeOrderViewV2PayPalAPI(generics.GenericAPIView):
     @extend_schema(
         summary='Capture order',
         description=(
             'Endpoint that allows to capture the PayPal payment for a **single order** from a user.\n'
             'Not applicable to the logic of Subscription.\n'
             '- Permission: Allowed to anyone.'
-        )
+        ),
+        exclude=True
     )
     def get(self, request):
         token = paypal_token()
@@ -481,7 +483,7 @@ class CreatePayPalSubscriptionAPI(APIView):
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class CaputePayPalSubscriptionAPI(APIView):
+class CaputePayPalSubscriptionAPI(generics.GenericAPIView):
     @extend_schema(
         summary='Capture subscription',
         description=(
@@ -489,7 +491,8 @@ class CaputePayPalSubscriptionAPI(APIView):
             'After the payment is made PayPal sends three params to the endpoint: `subscription_id`, `ba_token` and `token`.\n'
             'For this endpoint only subscription_id is currently used to access GET method on the PayPal part.\n'
             '- Permission: Allowed to anyone.'
-        )
+        ),
+        exclude=True
     )
     def get(self, request):
         token = paypal_token()
@@ -517,3 +520,54 @@ class UserSubscriptionView(generics.ListCreateAPIView):
         context = super().get_serializer_context()
         context['request'] = self.request
         return context
+
+    @extend_schema(
+        summary='Get subscribed users list',
+        description=(
+            'Allows users to see the subscriptions registered on the DrinkJoy\'s backend.\n'
+            'Logically better suited for the admin page to be used.\n'
+            '- Requires authentication.\n'
+            '- Permissions: Allowed to anyone.'
+        )
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    @extend_schema(
+        summary='Register subscribed user',
+        description=(
+            'Allows to register data sent by `/subscriptions/capture-subscription/` '
+            'endpoint to the DrinkJoy\'s database.\n\n'
+            'Please make sure that the fields `billing_info` and `links` expect json, '
+            'whereas all the other fields expect string.\n'
+            'Do not forget to include JWT access token in the header of request.\n'
+            '- Requires authentication.\n'
+            '- Permissions: Allowed to anyone.'
+        )
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
+class UserSubscriptionDetailView(generics.RetrieveAPIView):
+    serializer_class = UserSubscriptionSerializer
+    queryset = UserSubscription.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        user_subscription = UserSubscription.objects.filter(user=self.request.user).first()
+        if user_subscription:
+            return user_subscription
+        else:
+            raise PermissionDenied('You do not have a subscription.')
+
+    @extend_schema(
+        summary='Get subscribed user',
+        description=(
+            'Allows user to see their subscription registered on the DrinkJoy\'s backend.\n'
+            '- Requires authentication.\n'
+            '- Permissions: Allowed to anyone.'
+        )
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
