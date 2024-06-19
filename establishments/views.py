@@ -57,6 +57,7 @@ class PartnerEstablishmentListView(generics.ListAPIView):
     '''
     serializer_class = EstablishmentSerializer
     permission_classes = [IsPartnerOrReadOnly]
+    queryset = Establishment.objects.none()
 
     def get_queryset(self):
         return Establishment.objects.filter(owner=self.request.user)

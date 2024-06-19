@@ -395,14 +395,15 @@ class CreateOrderViewV2PayPalAPI(APIView):
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class CaputeOrderViewV2PayPalAPI(APIView):
+class CaputeOrderViewV2PayPalAPI(generics.GenericAPIView):
     @extend_schema(
         summary='Capture order',
         description=(
             'Endpoint that allows to capture the PayPal payment for a **single order** from a user.\n'
             'Not applicable to the logic of Subscription.\n'
             '- Permission: Allowed to anyone.'
-        )
+        ),
+        exclude=True
     )
     def get(self, request):
         token = paypal_token()
@@ -482,7 +483,7 @@ class CreatePayPalSubscriptionAPI(APIView):
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
-class CaputePayPalSubscriptionAPI(APIView):
+class CaputePayPalSubscriptionAPI(generics.GenericAPIView):
     @extend_schema(
         summary='Capture subscription',
         description=(
@@ -490,7 +491,8 @@ class CaputePayPalSubscriptionAPI(APIView):
             'After the payment is made PayPal sends three params to the endpoint: `subscription_id`, `ba_token` and `token`.\n'
             'For this endpoint only subscription_id is currently used to access GET method on the PayPal part.\n'
             '- Permission: Allowed to anyone.'
-        )
+        ),
+        exclude=True
     )
     def get(self, request):
         token = paypal_token()
