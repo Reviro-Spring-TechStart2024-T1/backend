@@ -1,11 +1,8 @@
-from django.urls import path
+from django.urls import include, path
 
 from .views import (
     BlockPartnerView,
     ChangePasswordView,
-    CustomResetPasswordConfirmViewSet,
-    CustomResetPasswordRequestTokenViewSet,
-    CustomResetPasswordValidateTokenViewSet,
     CustomTokenObtainPairView,
     CustomTokenRefreshView,
     LogoutView,
@@ -24,12 +21,7 @@ urlpatterns = [
     path('token/', CustomTokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', CustomTokenRefreshView.as_view(), name='token_refresh'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('forgot-password/',
-         CustomResetPasswordRequestTokenViewSet.as_view({'post': 'create'}), name='request-token'),
-    path('forgot-password/confirm/',
-         CustomResetPasswordConfirmViewSet.as_view({'post': 'create'}), name='confirm'),
-    path('forgot-password/validate-token/',
-         CustomResetPasswordValidateTokenViewSet.as_view({'post': 'create'}), name='validate-token'),
+    path('forgot-password/', include('django_rest_passwordreset.urls', namespace='password_reset')),
     path('', UserListView.as_view(), name='users_list'),
     path('partner/block/', BlockPartnerView.as_view(), name='block-partner'),
     path('partner/unblock/', UnblockPartnerView.as_view(), name='unblock-partner'),

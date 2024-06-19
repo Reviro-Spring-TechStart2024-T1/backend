@@ -1,8 +1,3 @@
-from django_rest_passwordreset.views import (
-    ResetPasswordConfirmViewSet,
-    ResetPasswordRequestTokenViewSet,
-    ResetPasswordValidateTokenViewSet,
-)
 from drf_spectacular.utils import extend_schema
 from rest_framework import generics, permissions, status, views
 from rest_framework.response import Response
@@ -266,42 +261,6 @@ class UnblockPartnerView(views.APIView):
                 return Response({'error': 'Given user is not of role partner.'})
         except User.DoesNotExist:
             return Response({'error': 'Partner not found'}, status=status.HTTP_404_NOT_FOUND)
-
-
-@extend_schema(
-    summary="Validate token",
-    description=(
-        "This endpoint allows you to validate a reset password token. "
-        "It ensures the token is valid and has not expired.\n"
-        "- Permissions: Allowed to anyone."
-    )
-)
-class CustomResetPasswordValidateTokenViewSet(ResetPasswordValidateTokenViewSet):
-    pass
-
-
-@extend_schema(
-    summary="Confirm reset",
-    description=(
-        "This endpoint allows you to confirm a password reset. "
-        "It takes the token and the new password and updates the user's password.\n"
-        "- Permissions: Allowed to anyone."
-    )
-)
-class CustomResetPasswordConfirmViewSet(ResetPasswordConfirmViewSet):
-    pass
-
-
-@extend_schema(
-    summary="Request token",
-    description=(
-        "This endpoint allows you to request a password reset token. "
-        "You need to provide the email associated with the user account.\n"
-        "- Permissions: Allowed to anyone."
-    )
-)
-class CustomResetPasswordRequestTokenViewSet(ResetPasswordRequestTokenViewSet):
-    pass
 
 
 @extend_schema(
