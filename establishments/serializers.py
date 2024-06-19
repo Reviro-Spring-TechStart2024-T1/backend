@@ -53,6 +53,7 @@ class EstablishmentMapSerializer(serializers.ModelSerializer):
     class Meta:
         model = Establishment
         fields = [
+            'id',
             'name',
             'latitude',
             'longitude',

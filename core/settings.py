@@ -32,7 +32,7 @@ DEBUG = os.environ.get('DEBUG', True)  # config('DEBUG', default=False, cast=boo
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS').split(',')
 
-CSRF_TRUSTED_ORIGINS = ['https://kunasyl-backender.org.kg']
+CSRF_TRUSTED_ORIGINS = ['https://www.kunasyl-backender.org.kg']
 
 # Application definition
 
