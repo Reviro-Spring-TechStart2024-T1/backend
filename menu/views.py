@@ -194,10 +194,75 @@ class BeverageListCreateView(generics.ListCreateAPIView):
     filter_backends = [filters.SearchFilter]
     search_fields = ['name', 'price', 'category__name']
 
+    @extend_schema(
+        summary='Get beverages',
+        description=(
+            'Allows to get list of paginated beverages. '
+            'Search can be made by name, price and category name.\n'
+            '- Requires authentication.\n'
+            '- Permission: Allowed to anyone.'
+        )
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    @extend_schema(
+        summary='Create beverage',
+        description=(
+            'Allows partner to create beverage.\n'
+            '- Requires authentication.\n'
+            '- Permission: Partner only.'
+        )
+    )
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
 
 class BeverageDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Beverage.objects.all()
     serializer_class = BeverageSerializer
     permission_classes = [IsPartnerOrReadOnly]
-    # filter_backends = [filters.SearchFilter]
-    # search_fields = ['name', 'price']
+
+    @extend_schema(
+        summary='Get beverage',
+        description=(
+            'Allows to get beverage.\n'
+            '- Requires authentication.\n'
+            '- Permission: Allowed to anyone.'
+        )
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
+    @extend_schema(
+        summary='Update beverage',
+        description=(
+            'Allows partner to update beverage.\n'
+            '- Requires authentication.\n'
+            '- Permission: Partner only.'
+        )
+    )
+    def put(self, request, *args, **kwargs):
+        return super().put(request, *args, **kwargs)
+
+    @extend_schema(
+        summary='Partially update beverage',
+        description=(
+            'Allows partner to partially update beverage.\n'
+            '- Requires authentication.\n'
+            '- Permission: Partner only.'
+        )
+    )
+    def patch(self, request, *args, **kwargs):
+        return super().patch(request, *args, **kwargs)
+
+    @extend_schema(
+        summary='Delete beverage',
+        description=(
+            'Allows partner to delete beverage.\n'
+            '- Requires authentication.\n'
+            '- Permission: Partner only.'
+        )
+    )
+    def delete(self, request, *args, **kwargs):
+        return super().delete(request, *args, **kwargs)
