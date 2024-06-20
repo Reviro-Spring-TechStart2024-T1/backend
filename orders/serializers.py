@@ -1,9 +1,10 @@
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema_field
-from rest_framework import serializers
+from rest_framework import exceptions, serializers
 
 from accounts.models import User
 from menu.models import Beverage, Menu
+from subscriptions.models import UserSubscription
 
 from .models import Order
 
@@ -59,6 +60,14 @@ class CustomerOrderSerializer(serializers.ModelSerializer):
             beverage = Beverage.objects.get(id=beverage_id)
             menu = Menu.objects.get(id=beverage.menu.id)
             establishment = menu.establishment
+
+            # Check if the user has an active subscription
+            subscription = UserSubscription.objects.get(user=user)
+            if subscription.status != 'ACTIVE':
+                raise exceptions.PermissionDenied('Your subscription is not active. Please renew your subscription.')
+        except UserSubscription.DoesNotExist:
+            raise exceptions.PermissionDenied('No subscription found. Please subscribe to use this service.')
+
         except Beverage.DoesNotExist:
             raise serializers.ValidationError({'error': 'Beverage with given ID does not exist.'})
         except Menu.DoesNotExist:
