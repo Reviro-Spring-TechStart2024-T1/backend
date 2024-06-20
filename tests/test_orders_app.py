@@ -118,7 +118,7 @@ def test_create_order_during_happy_hours_as_unsubscribed_customer(
     )
     # then:
     print(response.json())
-    assert response.status_code == 403
+    assert response.status_code == 400
     assert response.json()['error'] == 'No subscription found. Please subscribe to use this service.'
 
 
@@ -145,7 +145,7 @@ def test_create_order_outside_happy_hours_as_unsubscribed_customer(
     )
     print(response.json().get('error'))
     # then:
-    assert response.status_code == 403
+    assert response.status_code == 400
     assert response.json()['error'] == 'No subscription found. Please subscribe to use this service.'
 
 
