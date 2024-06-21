@@ -7,6 +7,7 @@ from .views import (  # CreatePaymentView,; ExecutePaymentView,; SubscriptionPla
     CreatePayPalSubscriptionAPI,
     CreateProductView,
     PayPalCreatePlanView,
+    PlanActivateDeactivateView,
     ProductsListView,
     ProductView,
     UserSubscriptionDetailView,
@@ -35,4 +36,5 @@ urlpatterns = [
     path('products/', ProductsListView.as_view(), name='subs-products'),
     path('products/<int:pk>/', ProductView.as_view(), name='subs-products'),
     path('plans/', PayPalCreatePlanView.as_view(), name='paypal-plans'),
+    path('plans/actions/', PlanActivateDeactivateView.as_view(), name='paypal-plans-actions'),
 ]

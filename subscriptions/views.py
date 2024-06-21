@@ -27,6 +27,7 @@ from .serializers import (
     CreatePaymentSerializer,
     CreatePayPalProductSerializer,
     PayPalSubscriptionSerializer,
+    PlanActivateDeactivateSerializer,
     ProductsSerializer,
     UserSubscriptionSerializer,
 )
@@ -294,6 +295,11 @@ class PayPalCreatePlanView(generics.ListCreateAPIView):
             return Response(response.json(), status=status.HTTP_201_CREATED)
         else:
             return Response(response.json(), status=response.status_code)
+    # only active plans are shown
+
+    def get_queryset(self):
+        queryset = PayPalSubscriptionPlan.objects.filter(status=PayPalSubscriptionPlan.ACTIVE)
+        return queryset
 
     @extend_schema(
         summary='Create plan',
@@ -571,3 +577,50 @@ class UserSubscriptionDetailView(generics.RetrieveAPIView):
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
+
+
+class PlanActivateDeactivateView(APIView):
+    serializer_class = PlanActivateDeactivateSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+    @extend_schema(
+        summary='Plans status updates',
+        description=(
+            'Allows to update status of plans on our server and PayPal server. '
+            'Available choices are in action enum that has only two action options:\n'
+            '- `activate` - changes status of plan to `ACTIVE`, if previously it was inactive.\n'
+            '- `deactivate` - changes status of plan to `INACTIVE`, if previously it was active.\n'
+            '- Requires authentication.\n'
+            '- Permission: Admin only.'
+        )
+    )
+    def post(self, request):
+        serializer = PlanActivateDeactivateSerializer(data=request.data)
+        if serializer.is_valid():
+
+            token = paypal_token()
+            plan_id = serializer.validated_data['plan_id']
+            action = serializer.validated_data['action']
+            headers = {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+            plan_activate_url = f'https://api-m.sandbox.paypal.com/v1/billing/plans/{plan_id}/{action}'
+            response = requests.post(plan_activate_url, headers=headers)
+            if response.status_code != 204:
+                return Response(
+                    {'error': response.json(), 'detail': 'Error from PayPal server.'}, status=status.HTTP_409_CONFLICT,
+                )
+            our_plan = PayPalSubscriptionPlan.objects.get(plan_id=plan_id)
+            if action == 'activate':
+                our_plan.status = 'ACTIVE'
+                our_plan.save()
+                return Response(
+                    {'detail': 'Plan is activated on our server and PayPal server.'}, status=status.HTTP_200_OK
+                )
+            our_plan.status = 'INACTIVE'
+            our_plan.save()
+            return Response(
+                {'detail': 'Plan is deactivated on our server and PayPal server.'}, status=status.HTTP_200_OK
+            )
