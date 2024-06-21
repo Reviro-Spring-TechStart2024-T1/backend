@@ -8,8 +8,8 @@ The DrinkJoy project aims to address the challenge faced by restaurants and cafe
 - **Soft Delete**: This feature introduces a BaseModel class with a soft delete functionality, which allows models to be marked as deleted without physically removing them from the database.
 - **API Endpoints**: RESTful API for managing orders, establishments, subscriptions and support with role-based access control.
 - **Pytests**: To maintain the robustness of the application by catching bugs early and ensuring that new changes do not break existing functionalities.
-- **Github Actions**: 
-- **Pre-commit**: 
+- **Github Actions**: Continuous integration and deployment setup using GitHub Actions.
+- **Pre-commit**: Automated checks to ensure code quality and consistency before committing changes.
 
 ## 📑 Project structure
 - **Accounts**: Manages user registration, profile management, password changes, logout, and partner-specific operations (listing, creating, blocking, and unblocking partners). Admin permissions are required for user listing and partner-related actions, while other views require general user authentication.
@@ -19,7 +19,8 @@ The DrinkJoy project aims to address the challenge faced by restaurants and cafe
 - **Orders**: Manages endpoints for listing, creating, updating, and retrieving orders and customer information, with specific permissions for partners and customers. Provides order statistics for partners based on various timeframes.
 - **Support**: Handles endpoints for listing, creating, updating, and deleting posts and comments with specific permissions to ensure only the authors can modify or delete their own content.
 - **Subscriptions**: Manages endpoints for product and subscription creation, retrieval, updates, and deletions on both the platform and PayPal, with specific permissions for admin users and general accessibility for others.
-
+- **Tests**: Contains pytests for the project.
+- **Fixtures**: Contains initial data fixtures for populating the database.
 
 ## 🛠️ Technologies and Libraries
 ![Alt text for Logo1](https://camo.githubusercontent.com/0562f16a4ae7e35dae6087bf8b7805fb7e664a9e7e20ae6d163d94e56b94f32d/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f707974686f6e2d3336373041303f7374796c653d666f722d7468652d6261646765266c6f676f3d707974686f6e266c6f676f436f6c6f723d666664643534)
@@ -49,7 +50,7 @@ These instructions will guide you through setting up the project on your local m
 1. **Clone the repository:**
 
     ```bash
-    git clone <repository_url>
+    git clone git@github.com:Reviro-Spring-TechStart2024-T1/backend.git
     ```
 
 2. **Set up and activate a virtual environment:**
@@ -211,10 +212,6 @@ Enter any necessary parameters.
 Click the "Execute" button to send a request to the API.
 The response, including status code and payload, will be displayed directly in the UI.
 
-
-
-# Backend for Reviro-Techstart-Spring-2024-Team-1 DrinkJoy project
-
 ![](https://github.com/Reviro-Spring-TechStart2024-T1/backend/workflows/Django%20CI/badge.svg)
 ![](https://github.com/Reviro-Spring-TechStart2024-T1/backend/workflows/Pytest%20CI/badge.svg)
 
@@ -266,17 +263,4 @@ to load:
 python manage.py loaddata fixtures/users.json --app accounts.User
 python manage.py loaddata fixtures/categories.json --app menu.Category
 python manage.py loaddata fixtures/subscriptions --app subscriptions
-```
-
-
-# Notes on GIT and branches
-
-To delete branch locally
-```shell
-git branch -d localBranchName
-```
-
-To delete branch remotely
-```shell
-git push origin --delete remoteBranchName
 ```
