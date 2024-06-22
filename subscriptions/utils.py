@@ -1,20 +1,6 @@
 import json
 
-import paypalrestsdk
 import requests
-from django.conf import settings
-
-paypalrestsdk.configure({
-    'mode': settings.PAYPAL_MODE,
-    'client_id': settings.PAYPAL_CLIENT_ID,
-    'client_secret': settings.PAYPAL_CLIENT_SECRET,
-})  # this part for my account is not working
-
-my_api = paypalrestsdk.Api({
-    'mode': 'sandbox',
-    'client_id': settings.PAYPAL_CLIENT_ID,
-    'client_secret': settings.PAYPAL_CLIENT_SECRET,
-})
 
 # reason for hard coding keys is in that when getting token from PayPal the .env variables were passed as null
 # TODO: research and dea with this bug (maybe try using export to computers env's)
@@ -41,47 +27,3 @@ def paypal_token(
     else:
         print('error:', response.text)
         raise
-
-
-def create_payment(amount, return_url, cancel_url):
-    payment = paypalrestsdk.Payment({
-        'intent': 'sale',
-        'payer': {
-            'payment_method': 'paypal'
-        },
-        'redirect_urls': {
-            'return_url': return_url,
-            'cancel_url': cancel_url
-        },
-        'transactions': [{
-            'item_list': {
-                'items': [{
-                    'name': 'Subscription',
-                    'sku': 'subscription',
-                    'price': str(amount),
-                    'currency': 'USD',
-                    'quantity': 1
-                }]
-            },
-            'amount': {
-                'total': str(amount),
-                'currency': 'USD'
-            },
-            'description': 'Subscription payment.'
-        }]
-    }, api=my_api)
-    if payment.create():
-        return payment
-    else:
-        return None
-
-
-def execute_payment(payment_id, payer_id):
-    payment = paypalrestsdk.Payment.find(payment_id)
-    if payment.execute({'payer_id': payer_id}):
-        return payment
-    else:
-        return None
-
-
-# def create_billing_plan(plan, return_url, cancel_url)
