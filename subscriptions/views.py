@@ -27,7 +27,10 @@ from .serializers import (
     CreatePaymentSerializer,
     CreatePayPalProductSerializer,
     PayPalSubscriptionSerializer,
+    PlanActivateDeactivateSerializer,
+    PlanPatchSerializer,
     ProductsSerializer,
+    UpdatePricingShemeSerializer,
     UserSubscriptionSerializer,
 )
 from .utils import paypal_token
@@ -175,6 +178,7 @@ class PayPalCreatePlanView(generics.ListCreateAPIView):
     queryset = PayPalSubscriptionPlan.objects.all()
     serializer_class = PayPalSubscriptionSerializer
     permission_classes = [IsAdminOrReadOnly]
+    pagination_class = None
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -294,6 +298,11 @@ class PayPalCreatePlanView(generics.ListCreateAPIView):
             return Response(response.json(), status=status.HTTP_201_CREATED)
         else:
             return Response(response.json(), status=response.status_code)
+    # only active plans are shown
+
+    def get_queryset(self):
+        queryset = PayPalSubscriptionPlan.objects.filter(status=PayPalSubscriptionPlan.ACTIVE)
+        return queryset
 
     @extend_schema(
         summary='Create plan',
@@ -571,3 +580,174 @@ class UserSubscriptionDetailView(generics.RetrieveAPIView):
     )
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
+
+
+class PlanActivateDeactivateView(APIView):
+    serializer_class = PlanActivateDeactivateSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+    @extend_schema(
+        summary='Plans status updates',
+        description=(
+            'Allows to update status of plans on our server and PayPal server. '
+            'Available choices are in action enum that has only two action options:\n'
+            '- `activate` - changes status of plan to `ACTIVE`, if previously it was inactive.\n'
+            '- `deactivate` - changes status of plan to `INACTIVE`, if previously it was active.\n'
+            '- Requires authentication.\n'
+            '- Permission: Admin only.'
+        )
+    )
+    def post(self, request):
+        serializer = PlanActivateDeactivateSerializer(data=request.data)
+        if serializer.is_valid():
+
+            token = paypal_token()
+            plan_id = serializer.validated_data['plan_id']
+            action = serializer.validated_data['action']
+            headers = {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+            plan_activate_url = f'https://api-m.sandbox.paypal.com/v1/billing/plans/{plan_id}/{action}'
+            response = requests.post(plan_activate_url, headers=headers)
+            if response.status_code != 204:
+                return Response(
+                    {'error': response.json(), 'detail': 'Error from PayPal server.'}, status=status.HTTP_409_CONFLICT,
+                )
+            our_plan = PayPalSubscriptionPlan.objects.get(plan_id=plan_id)
+            if action == 'activate':
+                our_plan.status = 'ACTIVE'
+                our_plan.save()
+                return Response(
+                    {'detail': 'Plan is activated on our server and PayPal server.'}, status=status.HTTP_200_OK
+                )
+            our_plan.status = 'INACTIVE'
+            our_plan.save()
+            return Response(
+                {'detail': 'Plan is deactivated on our server and PayPal server.'}, status=status.HTTP_200_OK
+            )
+
+
+class PlanPatchView(APIView):
+    serializer_class = PlanPatchSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+    @extend_schema(
+        summary='Partially update subscription plan',
+        description=(
+            'Allows to partially update `name` and `description` of subscription plan on both our and PayPal ends. '
+            'Required field is `plan_id`.\n'
+            '- Requires authentication.\n'
+            '- Permission: Admin only.'
+        )
+    )
+    def patch(self, request, *args, **kwargs):
+        serializer = PlanPatchSerializer(data=request.data)
+        if serializer.is_valid():
+            token = paypal_token()
+            plan_id = serializer.validated_data['plan_id']
+            name = serializer.validated_data['name']
+            description = serializer.validated_data['description']
+            payload = serializer.to_representation(serializer.instance)
+            headers = {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+            plan_patch_url = f'https://api-m.sandbox.paypal.com/v1/billing/plans/{plan_id}'
+
+            response = requests.patch(plan_patch_url, headers=headers, json=payload)
+
+            if response.status_code != 204:
+                return Response(
+                    {'error': response.json(), 'detail': 'Error from PayPal server.'}, status=status.HTTP_409_CONFLICT,
+                )
+            our_plan = PayPalSubscriptionPlan.objects.get(plan_id=plan_id)
+            if name:
+                our_plan.name = name
+                our_plan.save()
+            if description:
+                our_plan.description = description
+                our_plan.save()
+            return Response(
+                {'detail': 'Plan is patched on our server and PayPal server.'}, status=status.HTTP_200_OK
+            )
+
+
+class PlanUpdatePricingSchemeView(APIView):
+    serializer_class = UpdatePricingShemeSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+    @extend_schema(
+        summary='Update pricing schema',
+        description=(
+            'Allows to update pricing schema of subscription plans REGULAR tenure type price. '
+            'Other types like trial will be ignored, please bear in mind that.\n'
+            '- Requires authentication.\n'
+            '- Permission: Admin only.'
+        )
+    )
+    def post(self, request, *args, **kwargs):
+        plan_id = request.data.get('plan_id')
+        if not plan_id:
+            return Response({'detail': 'plan_id is required.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            subscription_plan = PayPalSubscriptionPlan.objects.get(plan_id=plan_id)
+        except PayPalSubscriptionPlan.DoesNotExist:
+            return Response({'detail': 'Subscription plan not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        # Filter billing cycles by tenure type 'REGULAR'
+        regular_billing_cycle = subscription_plan.billing_cycles.filter(tenure_type=BillingCycle.REGULAR)
+
+        if not regular_billing_cycle.exists():
+            return Response(
+                {'detail': 'No regular billing cycles found for this subscription plan.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        for billing_cycle in regular_billing_cycle:
+            pricing_scheme = billing_cycle.pricing_scheme
+            if not pricing_scheme:
+                continue
+
+            serializer = UpdatePricingShemeSerializer(pricing_scheme, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+
+                # Generate PayPal payload
+                paypal_payload = {
+                    "pricing_schemes": [
+                        {
+                            "billing_cycle_sequence": billing_cycle.sequence,
+                            "pricing_scheme": {
+                                "fixed_price": serializer.validated_data['fixed_price']
+                            }
+                        }
+                    ]
+                }
+
+                token = paypal_token()
+                headers = {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                }
+                price_update_url = f'https://api-m.sandbox.paypal.com/v1/billing/plans/{plan_id}/update-pricing-schemes'
+                response = requests.post(price_update_url, headers=headers, json=paypal_payload)
+
+                if response.status_code != 204:
+                    return Response(
+                        {'error': response.json(), 'detail': 'Error from PayPal server.'}, status=status.HTTP_409_CONFLICT,
+                    )
+
+                return Response(
+                    {
+                        'detail': 'Updated successfully both on our and PayPal servers.',
+                        'paypal_payload': paypal_payload,
+                        'plan_id': plan_id
+                    },
+                    status=status.HTTP_200_OK
+                )
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

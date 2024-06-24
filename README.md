@@ -1,4 +1,7 @@
 # 🥤 DrinkJoy Project | Backend side
+![](https://github.com/Reviro-Spring-TechStart2024-T1/backend/workflows/Django%20CI/badge.svg)
+![](https://github.com/Reviro-Spring-TechStart2024-T1/backend/workflows/Pytest%20CI/badge.svg)
+
 The DrinkJoy project aims to address the challenge faced by restaurants and cafes during off-peak hours by implementing a subscription-based model for free beverages. This initiative increases foot traffic and revenue for participating businesses.
 
 
@@ -24,9 +27,9 @@ The DrinkJoy project aims to address the challenge faced by restaurants and cafe
 
 ## 🛠️ Technologies and Libraries
 ![Alt text for Logo1](https://camo.githubusercontent.com/0562f16a4ae7e35dae6087bf8b7805fb7e664a9e7e20ae6d163d94e56b94f32d/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f707974686f6e2d3336373041303f7374796c653d666f722d7468652d6261646765266c6f676f3d707974686f6e266c6f676f436f6c6f723d666664643534)
-![Alt text for Logo2](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=green) 
+![Alt text for Logo2](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=green)
 ![Alt text for Logo3](https://img.shields.io/badge/django%20rest-ff1709?style=for-the-badge&logo=django&logoColor=white)
-![Alt text for Logo3](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white) 
+![Alt text for Logo3](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Alt text for Logo3](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=Swagger&logoColor=white)
 ![Alt text for Logo3](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)
 ![Alt text for Logo3](https://img.shields.io/badge/PayPal-00457C?style=for-the-badge&logo=paypal&logoColor=white)
@@ -135,7 +138,7 @@ These instructions will guide you through setting up the project on your local m
 
     The application will be running at [http://localhost:8000](http://localhost:8000).
 
-   
+
 ### Production
 For production, use Gunicorn to run the application. Ensure the necessary environment variables are set, then use the following command to start the server:
 
@@ -211,56 +214,3 @@ If required, click the "Try it out" button.
 Enter any necessary parameters.
 Click the "Execute" button to send a request to the API.
 The response, including status code and payload, will be displayed directly in the UI.
-
-![](https://github.com/Reviro-Spring-TechStart2024-T1/backend/workflows/Django%20CI/badge.svg)
-![](https://github.com/Reviro-Spring-TechStart2024-T1/backend/workflows/Pytest%20CI/badge.svg)
-
-# Django database fixtures to dump and upload them
-
-## Explanation:
-To dump from existing db:
-
-```shell
-python manage.py dumpdata app_name.ModelName --indent 2 > fixtures/fixture_file.json
-```
-
-To load fixtures to db:
-
-```shell
-python manage.py loaddata fixtures/fixture_file.json --app app_name.ModelName
-```
-
-## DrinkJoys example
-
-### dump users:
-
-users
-```shell
-python manage.py dumpdata accounts.User --indent 2 > fixtures/users.json
-```
-
-### load users:
-```shell
-python manage.py loaddata fixtures/users.json --app accounts.User
-```
-
-
-# Frequently Used Before Release
-
-Fixtures for main parts are usually used after dropping db.
-
-> Note has to be made that after release, NEVER, ABSOLUTELY NEVER drop db. After that part if models will be anyhow changed, it is necessary to `makemigrations` and `migrate` them properly.
-
-to dump:
-```shell
-python manage.py dumpdata accounts.User --indent 2 > fixtures/users.json
-python manage.py dumpdata menu.Category --indent 2 > fixtures/categories.json
-python manage.py dumpdata subscriptions > fixtures/subscriptions.json
-```
-
-to load:
-```shell
-python manage.py loaddata fixtures/users.json --app accounts.User
-python manage.py loaddata fixtures/categories.json --app menu.Category
-python manage.py loaddata fixtures/subscriptions --app subscriptions
-```
