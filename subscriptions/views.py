@@ -766,19 +766,21 @@ class DeletePayPalSubscriptionPlanView(APIView):
         except PayPalSubscriptionPlan.DoesNotExist:
             return Response({'detail': 'Subscription plan not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        token = paypal_token()
-        action = 'deactivate'
-        headers = {
-            'Authorization': 'Bearer ' + token,
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-        }
-        plan_activate_url = f'https://api-m.sandbox.paypal.com/v1/billing/plans/{plan_id}/{action}'
-        response = requests.post(plan_activate_url, headers=headers)
-        if response.status_code != 204:
-            return Response(
-                {'error': response.json(), 'detail': 'Error from PayPal server.'}, status=status.HTTP_409_CONFLICT,
-            )
+        if subscription_plan.status == 'ACTIVE':
+            token = paypal_token()
+            action = 'deactivate'
+            headers = {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+            plan_activate_url = f'https://api-m.sandbox.paypal.com/v1/billing/plans/{plan_id}/{action}'
+            response = requests.post(plan_activate_url, headers=headers)
+            if response.status_code != 204:
+                return Response(
+                    {'error': response.json(), 'detail': 'Error from PayPal server.'}, status=status.HTTP_409_CONFLICT,
+                )
+
         subscription_plan.delete()
         return Response(
             {
