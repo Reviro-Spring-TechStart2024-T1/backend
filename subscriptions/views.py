@@ -298,11 +298,6 @@ class PayPalCreatePlanView(generics.ListCreateAPIView):
             return Response(response.json(), status=status.HTTP_201_CREATED)
         else:
             return Response(response.json(), status=response.status_code)
-    # only active plans are shown
-
-    def get_queryset(self):
-        queryset = PayPalSubscriptionPlan.objects.filter(status=PayPalSubscriptionPlan.ACTIVE)
-        return queryset
 
     @extend_schema(
         summary='Create plan',
@@ -751,3 +746,46 @@ class PlanUpdatePricingSchemeView(APIView):
                     status=status.HTTP_200_OK
                 )
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeletePayPalSubscriptionPlanView(APIView):
+    permission_classes = [IsAdminOrReadOnly]
+
+    @extend_schema(
+        summary='Delete plan',
+        description=(
+            'Allows to delete subscription plan on our server, '
+            'and deactivates plan on PayPal server if not done before.\n'
+            '- Requires authentication.\n'
+            '- Permission: Admin only.'
+        )
+    )
+    def delete(self, request, plan_id, *args, **kwargs):
+        try:
+            subscription_plan = PayPalSubscriptionPlan.objects.get(plan_id=plan_id)
+        except PayPalSubscriptionPlan.DoesNotExist:
+            return Response({'detail': 'Subscription plan not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        if subscription_plan.status == 'ACTIVE':
+            token = paypal_token()
+            action = 'deactivate'
+            headers = {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+            }
+            plan_activate_url = f'https://api-m.sandbox.paypal.com/v1/billing/plans/{plan_id}/{action}'
+            response = requests.post(plan_activate_url, headers=headers)
+            if response.status_code != 204:
+                return Response(
+                    {'error': response.json(), 'detail': 'Error from PayPal server.'}, status=status.HTTP_409_CONFLICT,
+                )
+
+        subscription_plan.delete()
+        return Response(
+            {
+                'detail_our_server': 'Subscription plan deleted successfully.',
+                'detail_PayPal_server': 'Subscription plan deactivated on PayPal server successfully.'
+            },
+            status=status.HTTP_204_NO_CONTENT
+        )
