@@ -78,6 +78,17 @@ class PricingSchemeSerializer(serializers.ModelSerializer):
         model = PricingScheme
         fields = ['fixed_price']
 
+    def update(self, instance, validated_data):
+        fixed_price_data = validated_data.pop('fixed_price')
+        fixed_price = instance.fixed_price
+
+        # Update FixedPrice fields
+        fixed_price.value = fixed_price_data.get('value', fixed_price.value)
+        fixed_price.currency_code = fixed_price_data.get('currency_code', fixed_price.currency_code)
+        fixed_price.save()
+
+        return instance
+
 
 class BillingCycleSerializer(serializers.ModelSerializer):
     frequency = FrequencySerializer()
@@ -279,3 +290,44 @@ class PlanActivateDeactivateSerializer(serializers.Serializer):
         if not PayPalSubscriptionPlan.objects.filter(plan_id=value).exists():
             raise serializers.ValidationError("Invalid plan_id")
         return value
+
+
+class PlanPatchSerializer(serializers.Serializer):
+    plan_id = serializers.CharField(required=True)
+    name = serializers.CharField(required=False)
+    description = serializers.CharField(required=False)
+
+    def to_representation(self, instance):
+        # This method is used to convert the instance into a dict that will be serialized to JSON
+        # In this case, we are dynamically creating a patch payload
+        payload = []
+        for field in self.fields:
+            if field in self.initial_data and field != 'plan_id':
+                path = f"/{field}"
+                value = self.initial_data[field]
+                payload.append({
+                    "op": "replace",
+                    "path": path,
+                    "value": value
+                })
+        return payload
+
+
+class UpdatePricingShemeSerializer(serializers.ModelSerializer):
+    fixed_price = FixedPriceSerializer()
+    plan_id = serializers.CharField(write_only=True, required=True)
+
+    class Meta:
+        model = PricingScheme
+        fields = ['fixed_price', 'plan_id']
+
+    def update(self, instance, validated_data):
+        fixed_price_data = validated_data.pop('fixed_price')
+        fixed_price = instance.fixed_price
+
+        # Update FixedPrice fields
+        fixed_price.value = fixed_price_data.get('value', fixed_price.value)
+        fixed_price.currency_code = fixed_price_data.get('currency_code', fixed_price.currency_code)
+        fixed_price.save()
+
+        return instance
