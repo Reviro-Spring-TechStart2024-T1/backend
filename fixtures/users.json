@@ -1,24 +1,25 @@
 [
-  {
-    "model": "accounts.user",
-    "pk": 1,
-    "fields": {
-      "password": "pbkdf2_sha256$720000$XH9FH2vsCxY83ZrCcQI57V$bfRNlRIHw1ZLXcJ5rg/chZumYJE/FxhsgT1FEh/Fm78=",
-      "last_login": "2024-05-08T15:11:47.062Z",
-      "is_superuser": true,
-      "is_deleted": false,
-      "deleted_at": null,
-      "email": "admin@drinkjoy.kg",
-      "first_name": null,
-      "last_name": null,
-      "date_of_birth": null,
-      "avatar": "",
-      "role": "admin",
-      "sex": "not_say",
-      "is_active": true,
-      "is_staff": true,
-      "groups": [],
-      "user_permissions": []
-    }
+{
+  "model": "accounts.user",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$720000$j3L4zRq3rPo8lSylHBLbbo$J7Qyw+HEQKWCRMI+/MLiCuJqDhnWGu9TbceXLochPGA=",
+    "last_login": "2024-06-19T19:06:48.560Z",
+    "is_superuser": true,
+    "is_deleted": false,
+    "deleted_at": null,
+    "email": "admin@drinkjoy.kg",
+    "first_name": null,
+    "last_name": null,
+    "date_of_birth": null,
+    "avatar": "",
+    "role": "admin",
+    "sex": "not_say",
+    "is_active": true,
+    "is_staff": true,
+    "is_blocked": false,
+    "groups": [],
+    "user_permissions": []
   }
+}
 ]
