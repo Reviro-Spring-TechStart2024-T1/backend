@@ -160,7 +160,9 @@ These instructions will guide you through setting up the project on your local m
 
 ### Production
 For production, use Gunicorn to run the application. Ensure the necessary environment variables are set, then use the following command to start the server:
-
+```bash
+gunicorn core.wsgi:application -w 4 -b 0.0.0.0:8000
+```
 ## Docker Files
 
 ### Dockerfile
@@ -214,6 +216,36 @@ services:
     depends_on:
       - db
 ```
+#  ⓘ Additional Information
+ - #### Testing: To run tests, use the following command:
+```bash
+pytest tests
+```
+ - #### Linting: To lint your code, use:
+```bash
+pre-commit run --all-files
+```
+ - #### Deployment: Detailed deployment instructions will vary depending on your environment but generally involve pushing your Docker image to a container registry and deploying it to a server or cloud service that can run Docker containers.
+
+# 💾 Environment Variables
+### Ensure you fill in the required environment variables in the .env file:
+```text
+SECRET_KEY=
+DEBUG=
+DRINKJOY_EMAIL_USER=
+DRINKJOY_EMAIL_PASSWORD=
+CLOUD_NAME=
+CLOUD_API_KEY=
+CLOUD_API_SECRET=
+POSTGRES_DB=
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_HOST=
+POSTGRES_PORT=
+POSTGRES_HOST_AUTH_METHOD=
+ALLOWED_HOSTS=
+```
+
 # 🌐 API Documentation and Testing
 ## 📗 Swagger UI
 The project utilizes drf-spectacular for generating real-time API documentation using Swagger UI. This documentation provides a clear overview of all available API endpoints, their expected parameters, and response formats. Additionally, you can directly interact with the API through the Swagger UI to test endpoints.
