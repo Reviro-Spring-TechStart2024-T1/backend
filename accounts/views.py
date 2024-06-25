@@ -221,6 +221,8 @@ class BlockPartnerView(views.APIView):
             if partner.role == 'partner':
                 partner.is_blocked = is_blocked
                 partner.save()
+
+                partner.soft_delete_related_objects()
                 serializer = PartnerBlockUnblockSerializer(partner)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
@@ -245,7 +247,7 @@ class UnblockPartnerView(views.APIView):
     def patch(self, request, format=None):
         return self.update_block_status(request, False)
 
-    def update_block_status(self, request, is_unblocked=False):
+    def update_block_status(self, request, is_blocked=False):
         email = request.data.get('email')
         if not email:
             return Response({'error': 'Email is required'}, status=status.HTTP_400_BAD_REQUEST)
@@ -253,8 +255,9 @@ class UnblockPartnerView(views.APIView):
         try:
             partner = User.objects.get(email=email)
             if partner.role == 'partner':
-                partner.is_blocked = is_unblocked
+                partner.is_blocked = is_blocked
                 partner.save()
+                partner.restore_related_objects()
                 serializer = PartnerBlockUnblockSerializer(partner)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             else:
