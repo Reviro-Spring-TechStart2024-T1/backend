@@ -139,6 +139,25 @@ These instructions will guide you through setting up the project on your local m
     The application will be running at [http://localhost:8000](http://localhost:8000).
 
 
+3. **Running pytests via Docker**
+    - In the directory where the repository was cloned enter following command:
+    - For Linux/MacOS:
+
+    ```
+    docker compose -f compose.test.yaml up -d && docker logs --follow test_web && docker compose -f compose.test.yaml down -v
+    ```
+
+    - For Windows:
+
+    ```
+    docker compose -f compose.test.yaml up -d; docker logs --follow test_web; docker compose -f compose.test.yaml down -v
+    ```
+
+    - Command will run 165 unit tests and show them in terminal. At the end you should see something like this:
+    ![](./documentation/image.png)
+
+
+
 ### Production
 For production, use Gunicorn to run the application. Ensure the necessary environment variables are set, then use the following command to start the server:
 
@@ -188,7 +207,6 @@ services:
                python manage.py migrate &&
                python manage.py loaddata fixtures/users.json --app accounts.User &&
                python manage.py loaddata fixtures/categories.json --app menu.Category &&
-               python manage.py loaddata fixtures/subscriptions.json --app subscriptions &&
                gunicorn core.wsgi:application -w 4 -b 0.0.0.0:8000"
 
     env_file:
