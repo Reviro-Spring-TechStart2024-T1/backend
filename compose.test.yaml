@@ -1,0 +1,41 @@
+services:
+  test_web:
+    build:
+      context: .
+    container_name: test_web
+    volumes:
+      - .:/app
+    networks:
+      - DrinkJoyweb_test
+    ports:
+      - 8080:8000
+    command: sh -c "pytest -v"
+    env_file:
+      - .env.test
+    depends_on:
+      test_db:
+        condition: service_healthy
+
+  test_db:
+    image: postgres:15.1-alpine
+    networks:
+      - DrinkJoyweb_test
+    volumes:
+      - test_db_data:/var/lib/postgresql/data
+    env_file:
+      - .env.test
+    expose:
+      - 5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d revintdb -U revint"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  DrinkJoyweb_test:
+    name: DrinkJoyweb_test
+
+volumes:
+  test_db_data:
+    name: test_db_data
