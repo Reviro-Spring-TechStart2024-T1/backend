@@ -27,7 +27,7 @@ The DrinkJoy project aims to address the challenge faced by restaurants and cafe
 
 ## 📂 Database Schema
 
-![](./documentation/Schema Drinkjoy.png)
+![](./documentation/Schema_Drinkjoy.png)
 
 ## 🔗 Database Relationships
 
