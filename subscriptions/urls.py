@@ -1,6 +1,6 @@
-from django.urls import path  # include,
+from django.urls import path
 
-from .views import (  # CreatePaymentView,; ExecutePaymentView,; SubscriptionPlanViewSet,; UserSubscriptionViewSet,
+from .views import (
     CaputeOrderViewV2PayPalAPI,
     CaputePayPalSubscriptionAPI,
     CreateOrderViewV2PayPalAPI,
@@ -8,6 +8,7 @@ from .views import (  # CreatePaymentView,; ExecutePaymentView,; SubscriptionPla
     CreateProductView,
     DeletePayPalSubscriptionPlanView,
     PayPalCreatePlanView,
+    PayPalInactivePlanView,
     PlanActivateDeactivateView,
     PlanPatchView,
     PlanUpdatePricingSchemeView,
@@ -17,18 +18,7 @@ from .views import (  # CreatePaymentView,; ExecutePaymentView,; SubscriptionPla
     UserSubscriptionView,
 )
 
-# from rest_framework.routers import DefaultRouter
-
-
-# router = DefaultRouter()
-# router.register(r'plans', SubscriptionPlanViewSet, basename='subscription-plan')
-# router.register(r'users', UserSubscriptionViewSet, basename='user-subscription')
-
-
 urlpatterns = [
-    # path('', include(router.urls)),
-    # path('create-payment/', CreatePaymentView.as_view(), name='create-payment'),
-    # path('execute-payment/', ExecutePaymentView.as_view(), name='execute-payment'),
     path('create-order/', CreateOrderViewV2PayPalAPI.as_view(), name='create-order'),
     path('create-subscription/', CreatePayPalSubscriptionAPI.as_view(), name='create-subscription'),
     path('capture-order/', CaputeOrderViewV2PayPalAPI.as_view(), name='capture-order'),
@@ -39,6 +29,7 @@ urlpatterns = [
     path('products/', ProductsListView.as_view(), name='subs-products'),
     path('products/<int:pk>/', ProductView.as_view(), name='subs-products'),
     path('plans/', PayPalCreatePlanView.as_view(), name='paypal-plans'),
+    path('plans/inactives/', PayPalInactivePlanView.as_view(), name='paypal-plans-inactives'),
     path('plans/actions/', PlanActivateDeactivateView.as_view(), name='paypal-plans-actions'),
     path('plans/patch/', PlanPatchView.as_view(), name='paypal-plans-patch'),
     path('plans/update-pricing-scheme/', PlanUpdatePricingSchemeView.as_view(), name='paypal-plans-update-pricing-scheme'),

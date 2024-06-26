@@ -178,7 +178,6 @@ class PayPalCreatePlanView(generics.ListCreateAPIView):
     queryset = PayPalSubscriptionPlan.objects.all()
     serializer_class = PayPalSubscriptionSerializer
     permission_classes = [IsAdminOrReadOnly]
-    pagination_class = None
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -313,9 +312,35 @@ class PayPalCreatePlanView(generics.ListCreateAPIView):
         return super().post(request, *args, **kwargs)
 
     @extend_schema(
-        summary='Get plans',
+        summary='Get active plans',
         description=(
             'List of plans that are stored on our end, with all info.\n'
+            '- Requires authentication.\n'
+            '- Permission: Allowed to anyone.'
+        )
+    )
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+    # only active plans are shown
+
+    def get_queryset(self):
+        queryset = PayPalSubscriptionPlan.objects.filter(status=PayPalSubscriptionPlan.ACTIVE)
+        return queryset
+
+
+class PayPalInactivePlanView(generics.ListAPIView):
+    queryset = PayPalSubscriptionPlan.objects.all()
+    serializer_class = PayPalSubscriptionSerializer
+    permission_classes = [IsAdminOrReadOnly]
+
+    def get_queryset(self):
+        queryset = PayPalSubscriptionPlan.objects.filter(status=PayPalSubscriptionPlan.INACTIVE)
+        return queryset
+
+    @extend_schema(
+        summary='Get inactive plans',
+        description=(
+            'List of inactive plans that are stored on our end, with all info.\n'
             '- Requires authentication.\n'
             '- Permission: Allowed to anyone.'
         )
