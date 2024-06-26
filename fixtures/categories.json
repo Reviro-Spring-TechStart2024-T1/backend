@@ -5,7 +5,7 @@
   "fields": {
     "is_deleted": false,
     "deleted_at": null,
-    "name": "Carbonated Beverages"
+    "name": "Carbonated"
   }
 },
 {
@@ -14,7 +14,7 @@
   "fields": {
     "is_deleted": false,
     "deleted_at": null,
-    "name": "Hot Beverages"
+    "name": "Hot"
   }
 },
 {
@@ -23,7 +23,7 @@
   "fields": {
     "is_deleted": false,
     "deleted_at": null,
-    "name": "Cold Beverages"
+    "name": "Cold"
   }
 },
 {
@@ -32,7 +32,7 @@
   "fields": {
     "is_deleted": false,
     "deleted_at": null,
-    "name": "Dairy Beverages"
+    "name": "Dairy"
   }
 },
 {
@@ -41,7 +41,7 @@
   "fields": {
     "is_deleted": false,
     "deleted_at": null,
-    "name": "Plant-Based Beverages"
+    "name": "Plant-Based"
   }
 },
 {
@@ -50,7 +50,7 @@
   "fields": {
     "is_deleted": false,
     "deleted_at": null,
-    "name": "Fermented Beverages"
+    "name": "Fermented"
   }
 },
 {
@@ -59,7 +59,7 @@
   "fields": {
     "is_deleted": false,
     "deleted_at": null,
-    "name": "Regional and Cultural Beverages"
+    "name": "Regional and Cultural"
   }
 },
 {
@@ -68,7 +68,7 @@
   "fields": {
     "is_deleted": false,
     "deleted_at": null,
-    "name": "Specialty Beverages"
+    "name": "Specialty"
   }
 },
 {
@@ -77,7 +77,7 @@
   "fields": {
     "is_deleted": false,
     "deleted_at": null,
-    "name": "Non-Caffeinated Beverages"
+    "name": "Non-Caffeinated"
   }
 },
 {
@@ -86,7 +86,7 @@
   "fields": {
     "is_deleted": true,
     "deleted_at": "2024-05-08T19:12:53.880Z",
-    "name": "Condensed Beverages"
+    "name": "Condensed"
   }
 },
 {
@@ -95,7 +95,7 @@
   "fields": {
     "is_deleted": true,
     "deleted_at": "2024-05-08T19:14:28.308Z",
-    "name": "Hybrid Beverages"
+    "name": "Hybrid"
   }
 },
 {
@@ -104,79 +104,7 @@
   "fields": {
     "is_deleted": true,
     "deleted_at": "2024-05-08T19:15:39.481Z",
-    "name": "Homemade Beverages"
-  }
-},
-{
-  "model": "menu.category",
-  "pk": 13,
-  "fields": {
-    "is_deleted": true,
-    "deleted_at": "2024-05-08T19:16:21.799Z",
-    "name": "test_category"
-  }
-},
-{
-  "model": "menu.category",
-  "pk": 14,
-  "fields": {
-    "is_deleted": true,
-    "deleted_at": "2024-05-08T19:29:59.184Z",
-    "name": "new test category"
-  }
-},
-{
-  "model": "menu.category",
-  "pk": 15,
-  "fields": {
-    "is_deleted": true,
-    "deleted_at": "2024-05-08T19:32:11.643Z",
-    "name": "new test category"
-  }
-},
-{
-  "model": "menu.category",
-  "pk": 16,
-  "fields": {
-    "is_deleted": true,
-    "deleted_at": "2024-05-08T19:32:33.503Z",
-    "name": "new test category 1"
-  }
-},
-{
-  "model": "menu.category",
-  "pk": 17,
-  "fields": {
-    "is_deleted": true,
-    "deleted_at": "2024-05-08T19:43:25.075Z",
-    "name": "new test category"
-  }
-},
-{
-  "model": "menu.category",
-  "pk": 18,
-  "fields": {
-    "is_deleted": true,
-    "deleted_at": "2024-05-08T21:01:25.285Z",
-    "name": "new test category 1"
-  }
-},
-{
-  "model": "menu.category",
-  "pk": 19,
-  "fields": {
-    "is_deleted": true,
-    "deleted_at": "2024-05-08T21:12:58.596Z",
-    "name": "new test category"
-  }
-},
-{
-  "model": "menu.category",
-  "pk": 20,
-  "fields": {
-    "is_deleted": true,
-    "deleted_at": "2024-05-09T04:08:39.508Z",
-    "name": "test bev"
+    "name": "Homemade"
   }
 }
 ]

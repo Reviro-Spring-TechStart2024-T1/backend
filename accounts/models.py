@@ -90,11 +90,11 @@ class User(BaseModel, AbstractBaseUser, PermissionsMixin):
         from django.apps import apps  # was necessary to avoid circular import problems
         Establishment = apps.get_model('establishments', 'Establishment')
         Beverage = apps.get_model('menu', 'Beverage')
+        Menu = apps.get_model('menu', 'Menu')
 
         for establishment in Establishment.everything.filter(owner=self, is_deleted=True):
             establishment.restore()
-            if hasattr(establishment, 'menu'):
-                menu = establishment.menu
+            for menu in Menu.everything.filter(establishment=establishment, is_deleted=True):
                 menu.restore()
                 for beverage in Beverage.everything.filter(menu=menu, is_deleted=True):
                     beverage.restore()

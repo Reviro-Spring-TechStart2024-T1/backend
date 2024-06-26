@@ -5,7 +5,6 @@ from django.contrib.auth.hashers import check_password
 from django.core.mail import send_mail
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.reverse import reverse
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
@@ -217,7 +216,7 @@ class PartnerUserRegisterSerializer(serializers.ModelSerializer):
         user.save()
 
         # Send email to the created user
-        login_url = settings.ALLOWED_HOSTS[0] + reverse('token_obtain_pair')
+        login_url = 'drinkjoy-frontend.vercel.app/login/ '
         subject = 'Your DrinkJoy Account Information'
         message = (f'Your account with the role \'partner\' has been created.\n\n'
                    f'Email: {validated_data["email"]}\n'

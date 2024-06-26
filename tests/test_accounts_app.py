@@ -736,6 +736,66 @@ def test_get_responses_for_absence_in_lists_of_blocked_partners_as_customer(
 
 
 @pytest.mark.django_db
+def test_get_responses_for_absence_in_lists_of_unblocked_partners_as_customer(
+    create_user_from_factory,
+    jwt_auth_api_client_pass_user,
+    create_partner_establishment_menu_and_num_of_beverages_as_dict
+):
+    # given: auth admin blocks one partner with related entities
+    bevs_in_dict = 3
+    dict_data = create_partner_establishment_menu_and_num_of_beverages_as_dict(bevs_in_dict)
+    partner = dict_data['partner']
+    establishment = dict_data['establishment']
+    menu = dict_data['menu']
+    admin = create_user_from_factory('admin')
+    customer = create_user_from_factory('customer')
+    admin_client = jwt_auth_api_client_pass_user(admin)
+    customer_client = jwt_auth_api_client_pass_user(customer)
+    block_url = reverse('block-partner')
+    block_response = admin_client.patch(
+        block_url,
+        data=json.dumps({'email': partner.email}),
+        content_type='application/json'
+    )
+    assert block_response.data['is_blocked'] is True
+    # when: customer tries to access the related entites' detail endpoints
+    establishments_detail_url_b = reverse('establishment-detail', args=[establishment.id])
+    menus_detail_url_b = reverse('menu-detail', args=[menu.id])
+    beverages_list_url_b = reverse('beverage-list')
+    establishments_detail_response_b = customer_client.get(establishments_detail_url_b)
+    menus_detail_response_b = customer_client.get(menus_detail_url_b)
+    beverages_list_response_b = customer_client.get(beverages_list_url_b)
+    # then: expects to get 404 for detailed pages of those related entities
+    assert establishments_detail_response_b.status_code == 404
+    assert menus_detail_response_b.status_code == 404
+    assert beverages_list_response_b.status_code == 200
+    assert beverages_list_response_b.data['results'] == []
+    # when: admin unblocks previously blocked partner
+    unblock_url = reverse('unblock-partner')
+    unblock_response = admin_client.patch(
+        unblock_url,
+        data=json.dumps({'email': partner.email}),
+        content_type='application/json'
+    )
+    assert unblock_response.status_code == 200
+    assert unblock_response.data['is_blocked'] is False
+    # when: customer tries to access the related entites' detail endpoints
+    establishments_detail_url_ub = reverse('establishment-detail', args=[establishment.id])
+    menus_detail_url_ub = reverse('menu-detail', args=[menu.id])
+    beverages_list_url_ub = reverse('beverage-list')
+    establishments_detail_response_ub = customer_client.get(establishments_detail_url_ub)
+    menus_detail_response_ub = customer_client.get(menus_detail_url_ub)
+    beverages_list_response_ub = customer_client.get(beverages_list_url_ub)
+    # then: expects to get 200 for detailed pages of those related entities
+    assert establishments_detail_response_ub.status_code == 200
+    assert establishments_detail_response_ub.data['id'] == establishment.id
+    assert menus_detail_response_ub.status_code == 200
+    assert menus_detail_response_ub.data['id'] == menu.id
+    assert beverages_list_response_ub.status_code == 200
+    assert len(beverages_list_response_ub.data['results']) == bevs_in_dict
+
+
+@pytest.mark.django_db
 def test_post_token_api_for_blocked_partner(
     create_user_from_factory,
     jwt_auth_api_client_pass_user
