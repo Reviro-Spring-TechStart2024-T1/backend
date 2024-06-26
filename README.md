@@ -25,6 +25,70 @@ The DrinkJoy project aims to address the challenge faced by restaurants and cafe
 - **Tests**: Contains pytests for the project.
 - **Fixtures**: Contains initial data fixtures for populating the database.
 
+## 📂 Database Schema
+
+![](./documentation/Schema Drinkjoy.png)
+
+## 🔗 Database Relationships
+
+### Users
+- **One-to-Many** with **Establishments**: One or more establishments is owned by a user with a partner role.
+- **One-to-Many** with **Orders**: A user can place multiple orders.
+- **One-to-Many** with **Posts**: A user can author multiple posts.
+- **One-to-Many** with **Comments**: A user can author multiple comments.
+- **One-to-Many** with **UserSubscriptions**: A user can have multiple subscriptions.
+
+### Establishments
+- **Many-to-One** with **Users**: An establishment is owned by a user(role-partner).
+- **One-to-Many** with **EstablishmentBanners**: An establishment can have multiple banners.
+- **One-to-One** with **Menus**: An establishment can have one menu.
+
+### EstablishmentBanners
+- **Many-to-One** with **Establishments**: A banner is associated with an establishment.
+
+### Menus
+- **One-to-One** with **Establishments**: A menu belongs to an establishment.
+- **One-to-Many** with **Beverages**: A menu can have multiple beverages.
+
+### Beverages
+- **Many-to-One** with **Menus**: A beverage belongs to a menu.
+- **Many-to-One** with **Categories**: A beverage is categorized under a category.
+- **One-to-Many** with **Orders**: A beverage can be included in multiple orders.
+
+### Categories
+- **One-to-Many** with **Beverages**: A category can have multiple beverages.
+
+### Orders
+- **Many-to-One** with **Users**: An order is placed by a user.
+- **Many-to-One** with **Beverages**: An order includes a specific beverage.
+
+### Posts
+- **Many-to-One** with **Users**: A post is authored by a user.
+- **One-to-Many** with **Comments**: A post can have multiple comments.
+
+### Comments
+- **Many-to-One** with **Posts**: A comment is associated with a post.
+- **Many-to-One** with **Users**: A comment is authored by a user.
+
+### UserSubscriptions
+- **Many-to-One** with **Users**: A user subscription belongs to a user.
+
+### PricingSchemes
+- **One-to-One** with **FixedPrices**: A pricing scheme has one fixed price.
+
+### BillingCycles
+- **One-to-One** with **Frequencies**: A billing cycle is defined by a frequency.
+- **One-to-One** with **PricingSchemes**: A billing cycle has a pricing scheme.
+
+### PaymentPreferences
+- **One-to-One** with **FixedPrices**: A payment preference includes a setup fee.
+
+### PayPalSubscriptionPlans
+- **One-to-Many** with **BillingCycles**: A PayPal subscription plan can have multiple billing cycles.
+- **One-to-One** with **PaymentPreferences**: A PayPal subscription plan has a payment preference.
+- **One-to-One** with **Taxes**: A PayPal subscription plan has an associated tax.
+
+
 ## 🛠️ Technologies and Libraries
 ![Alt text for Logo1](https://camo.githubusercontent.com/0562f16a4ae7e35dae6087bf8b7805fb7e664a9e7e20ae6d163d94e56b94f32d/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f707974686f6e2d3336373041303f7374796c653d666f722d7468652d6261646765266c6f676f3d707974686f6e266c6f676f436f6c6f723d666664643534)
 ![Alt text for Logo2](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=green)
@@ -160,7 +224,9 @@ These instructions will guide you through setting up the project on your local m
 
 ### Production
 For production, use Gunicorn to run the application. Ensure the necessary environment variables are set, then use the following command to start the server:
-
+```bash
+gunicorn core.wsgi:application -w 4 -b 0.0.0.0:8000
+```
 ## Docker Files
 
 ### Dockerfile
@@ -214,6 +280,36 @@ services:
     depends_on:
       - db
 ```
+#  ⓘ Additional Information
+ - #### Testing: To run tests, use the following command:
+```bash
+pytest tests
+```
+ - #### Linting: To lint your code, use:
+```bash
+pre-commit run --all-files
+```
+ - #### Deployment: Detailed deployment instructions will vary depending on your environment but generally involve pushing your Docker image to a container registry and deploying it to a server or cloud service that can run Docker containers.
+
+# 💾 Environment Variables
+### Ensure you fill in the required environment variables in the .env file:
+```text
+SECRET_KEY=
+DEBUG=
+DRINKJOY_EMAIL_USER=
+DRINKJOY_EMAIL_PASSWORD=
+CLOUD_NAME=
+CLOUD_API_KEY=
+CLOUD_API_SECRET=
+POSTGRES_DB=
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_HOST=
+POSTGRES_PORT=
+POSTGRES_HOST_AUTH_METHOD=
+ALLOWED_HOSTS=
+```
+
 # 🌐 API Documentation and Testing
 ## 📗 Swagger UI
 The project utilizes drf-spectacular for generating real-time API documentation using Swagger UI. This documentation provides a clear overview of all available API endpoints, their expected parameters, and response formats. Additionally, you can directly interact with the API through the Swagger UI to test endpoints.
