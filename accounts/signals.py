@@ -28,7 +28,7 @@ def password_reset_token_created(sender, instance, reset_password_token, *args, 
     else:
         custom_url = base_url
 
-    frontend_url = 'https://reviro-frontend.vercel.app/update-password'
+    frontend_url = 'https://drinkjoy-frontend.vercel.app/update-password'
 
     context = {
         'current_user': reset_password_token.user,
