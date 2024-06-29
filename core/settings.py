@@ -240,5 +240,3 @@ DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
 
 PAYPAL_CLIENT_ID = os.environ.get('PAYPAL_CLIENT_ID')
 PAYPAL_CLIENT_SECRET = os.environ.get('PAYPAL_CLIENT_SECRET')
-PAYPAL_MODE = 'sandbox'  # or 'live' or 'sandbox'for production
-PAYPAL_BASE_URL = 'https://api.sandbox.paypal.com'
